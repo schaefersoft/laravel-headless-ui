@@ -1,0 +1,39 @@
+{
+  "name": "schaefersoft/laravel-headless-ui",
+  "description": "A simple to use, completely unstyled laravel blade ui package.",
+  "type": "laravel-package",
+  "license": "MIT",
+  "version": "1.0.0",
+  "autoload": {
+    "psr-4": {
+      "Schaefersoft\\HeadlessUI\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Daniel Elskamp",
+      "email": "delskamp@schaefersoft.ch",
+      "homepage": "https://schaefersoft.ch"
+    },
+    {
+      "name": "Luca Schäfer",
+      "email": "lschaefer@schaefersoft.ch",
+      "homepage": "https://schaefersoft.ch"
+    }
+  ],
+  "require": {
+    "php": "^8.4"
+  },
+  "require-dev": {
+    "laravel/framework": "^12.0"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Schaefersoft\\HeadlessUI\\Providers\\HeadlessUIProvider"
+      ]
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}

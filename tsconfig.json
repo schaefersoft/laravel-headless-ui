@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {},
+    "types": ["vitest/importMeta", "vitest/globals", "node"],
+    "skipLibCheck": true
+  },
+  "include": ["resources/**/*.ts"]
+}
