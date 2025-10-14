@@ -5,6 +5,22 @@
 A collection of fully blade UI components. All build with performance, customization and accessibiltiy in mind. **No
 additional dependencies required**
 
+## Usage
+Import the required assets as shown below.
+
+`css`
+```css
+@import '../../vendor/schaefersoft/laravel-headless-ui/resources/css/hui.css';
+
+/* If you are using TailwindCSS, append layer(base) */
+@import '../../vendor/schaefersoft/laravel-headless-ui/resources/css/hui.css' layer(base);
+```
+
+`js`
+```javascript
+import '../../vendor/schaefersoft/laravel-headless-ui/resources/js/hui.js'
+```
+
 ## Components
 
 | Component                  | Preview                                               |
