@@ -1,6 +1,6 @@
 <?php
 
-namespace Schaefersoft\HeadlessUI\View\Components;
+namespace Schaefersoft\HeadlessUI\View\Components\Avatar;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
