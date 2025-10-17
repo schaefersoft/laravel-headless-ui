@@ -6,9 +6,11 @@ A collection of fully blade UI components. All build with performance, customiza
 additional dependencies required**
 
 ## Usage
+
 Import the required assets as shown below.
 
 `css`
+
 ```css
 @import '../../vendor/schaefersoft/laravel-headless-ui/resources/css/hui.css';
 
@@ -17,12 +19,14 @@ Import the required assets as shown below.
 ```
 
 `js`
+
 ```javascript
 import '../../vendor/schaefersoft/laravel-headless-ui/resources/js/hui.js'
 ```
 
 ## Components
 
-| Component                  | Preview                                               |
-|----------------------------|-------------------------------------------------------|
-| [Avatar](./docs/avatar.md) | ![Avatar example](./docs/assets/avatar/avatar_01.png) |
+| Component                              | Preview                                                           |
+|----------------------------------------|-------------------------------------------------------------------|
+| [Avatar](./docs/avatar.md)             | ![Avatar example](./docs/assets/avatar/avatar_01.png)             |
+| [Range slider](./docs/range-slider.md) | ![Range slider example](./docs/assets/range-slider/range-slider_01.png) |
