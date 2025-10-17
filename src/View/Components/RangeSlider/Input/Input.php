@@ -1,17 +1,17 @@
 <?php
 
-namespace Schaefersoft\HeadlessUI\View\Components\RangeSlider\Thumb;
+namespace Schaefersoft\HeadlessUI\View\Components\RangeSlider\Input;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 use InvalidArgumentException;
 use Schaefersoft\HeadlessUI\Enums\RangeSlider\ThumbRole;
 
-class Thumb extends Component
+class Input extends Component
 {
     public function __construct(
+        public string $class = '',
         public ThumbRole | string $role,
-        public string $class = ''
     )
     {
         if ($this->role instanceof ThumbRole) {
@@ -25,7 +25,7 @@ class Thumb extends Component
 
     public function render(): View
     {
-        return view('hui::range-slider.thumb.thumb');
+        return view('hui::range-slider.input.input');
     }
 }
 

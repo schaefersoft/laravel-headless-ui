@@ -10,15 +10,28 @@ function pct(value: number, min: number, max: number) {
 }
 
 export function registerRangeSliders(root: Root = document) {
+    //All range sliders on the page
     const containers = Array.from(root.querySelectorAll<HTMLElement>('[data-hui-range-slider]'));
 
     containers.forEach((container) => {
+        //Track and track fill
         const track = container.querySelector<HTMLElement>('[data-hui-range-slider-track]') || container;
         const fill = container.querySelector<HTMLElement>('[data-hui-range-slider-track-value]');
+
+        //Thumb controls for the slider
         const minThumb = container.querySelector<HTMLInputElement>('input.hui-range-slider-thumb[data-hui-range-slider-thumb="min"]');
         const maxThumb = container.querySelector<HTMLInputElement>('input.hui-range-slider-thumb[data-hui-range-slider-thumb="max"]');
         const hasMax = !!maxThumb;
         const thumbs = [minThumb, maxThumb].filter(Boolean) as HTMLInputElement[];
+
+        // Optional mirrored inputs or display elements
+        const minTargets = Array.from(container.querySelectorAll<HTMLElement>('[data-hui-range-slider-value="min"]'));
+        const maxTargets = Array.from(container.querySelectorAll<HTMLElement>('[data-hui-range-slider-value="max"]'));
+        const minInputs = minTargets.filter((el): el is HTMLInputElement => el instanceof HTMLInputElement);
+        const maxInputs = maxTargets.filter((el): el is HTMLInputElement => el instanceof HTMLInputElement);
+        const minDisplays = minTargets.filter((el) => !(el instanceof HTMLInputElement));
+        const maxDisplays = maxTargets.filter((el) => !(el instanceof HTMLInputElement));
+
         if (!minThumb && !maxThumb) return;
 
         const getBounds = () => {
@@ -30,6 +43,7 @@ export function registerRangeSliders(root: Root = document) {
         };
         const { min: rangeMin, max: rangeMax, step: rangeStep } = getBounds();
 
+        //Update the wrappers aria-disabled attribute if all o fthe thumbs are disabled
         function updateDisabled() {
             const anyEnabled = thumbs.some(t => !t.disabled);
             container.setAttribute('aria-disabled', anyEnabled ? 'false' : 'true');
@@ -50,6 +64,13 @@ export function registerRangeSliders(root: Root = document) {
 
             if (minThumb && Number(minThumb.value) !== lo) minThumb.value = String(lo);
             if (hasMax && Number(maxThumb!.value) !== hi) maxThumb!.value = String(hi);
+
+            // Reflect into optional inputs and display elements
+            minInputs.forEach(input => { if (Number(input.value) !== lo) input.value = String(lo); });
+            maxInputs.forEach(input => { if (hasMax && Number(input.value) !== hi) input.value = String(hi); });
+            minDisplays.forEach(el => { if (el.textContent !== String(lo)) el.textContent = String(lo); });
+            // Show the effective hi (rangeMax when single-thumb)
+            maxDisplays.forEach(el => { const val = String(hi); if (el.textContent !== val) el.textContent = val; });
 
             if (fill) {
                 if (hasMax) {
@@ -75,6 +96,56 @@ export function registerRangeSliders(root: Root = document) {
         if (maxThumb) {
             maxThumb.addEventListener('input', () => updateFill('max'));
             maxThumb.addEventListener('change', () => updateFill('max'));
+        }
+
+        // Helper to snap arbitrary values to the slider's step grid
+        const snap = (value: number) => {
+            const step = rangeStep || 1;
+            return Math.round((value - rangeMin) / step) * step + rangeMin;
+        };
+
+        // Input fields -> thumbs
+        if (minInputs.length && minThumb) {
+            const applyMinFromInput = () => {
+                // Use last edited input; all inputs mirror each other after updateFill
+                const raw = Number(minInputs[minInputs.length - 1].value);
+                if (Number.isNaN(raw)) return;
+                const snapped = snap(raw);
+                const upper = hasMax ? Number(maxThumb!.value) : rangeMax;
+                const next = clamp(snapped, rangeMin, upper);
+                if (String(next) !== minThumb.value) {
+                    minThumb.value = String(next);
+                    minThumb.dispatchEvent(new Event('input', { bubbles: true }));
+                    minThumb.dispatchEvent(new Event('change', { bubbles: true }));
+                } else {
+                    updateFill('min');
+                }
+            };
+            minInputs.forEach(input => {
+                input.addEventListener('input', applyMinFromInput);
+                input.addEventListener('change', applyMinFromInput);
+            });
+        }
+
+        if (maxInputs.length && maxThumb) {
+            const applyMaxFromInput = () => {
+                const raw = Number(maxInputs[maxInputs.length - 1].value);
+                if (Number.isNaN(raw)) return;
+                const snapped = snap(raw);
+                const lower = minThumb ? Number(minThumb.value) : rangeMin;
+                const next = clamp(snapped, lower, rangeMax);
+                if (String(next) !== maxThumb.value) {
+                    maxThumb.value = String(next);
+                    maxThumb.dispatchEvent(new Event('input', { bubbles: true }));
+                    maxThumb.dispatchEvent(new Event('change', { bubbles: true }));
+                } else {
+                    updateFill('max');
+                }
+            };
+            maxInputs.forEach(input => {
+                input.addEventListener('input', applyMaxFromInput);
+                input.addEventListener('change', applyMaxFromInput);
+            });
         }
 
         // Click-to-move: clicking without dragging moves the nearest thumb
@@ -179,7 +250,7 @@ export function registerRangeSliders(root: Root = document) {
                 window.addEventListener('mouseup', onMouseUp, true);
             }, true);
         }
-        installClickToMove(container);
+        installClickToMove(track);
 
         const mo = new MutationObserver(() => updateDisabled());
         thumbs.forEach(t => mo.observe(t, { attributes: true, attributeFilter: ['disabled'] }));
