@@ -1,10 +1,10 @@
 type Root = Document | HTMLElement;
 
-function clamp(n: number, min: number, max: number) {
+export function clamp(n: number, min: number, max: number) {
     return Math.min(Math.max(n, min), max);
 }
 
-function pct(value: number, min: number, max: number) {
+export function pct(value: number, min: number, max: number) {
     if (max === min) return 0;
     return ((value - min) / (max - min)) * 100;
 }
