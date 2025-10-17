@@ -53,14 +53,16 @@ export function registerRangeSliders(root: Root = document) {
 
             if (fill) {
                 if (hasMax) {
+                    // Two-thumb (or single max) – fill between lo and hi
                     const left = pct(lo, rangeMin, rangeMax);
                     const right = pct(hi, rangeMin, rangeMax);
                     fill.style.left = `${left}%`;
                     fill.style.width = `${Math.max(0, right - left)}%`;
                 } else {
-                    const width = pct(lo, rangeMin, rangeMax);
-                    fill.style.left = '0%';
-                    fill.style.width = `${Math.max(0, width)}%`;
+                    // Single min – treat missing max as rangeMax and fill from thumb to end
+                    const left = pct(lo, rangeMin, rangeMax);
+                    fill.style.left = `${left}%`;
+                    fill.style.width = `${Math.max(0, 100 - left)}%`;
                 }
             }
         }
