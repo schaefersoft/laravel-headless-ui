@@ -4,14 +4,31 @@
 }
 
 .hui-tooltip-content {
-    position: fixed; /* positioned by JS */
+    position: fixed; /* positioned through JS */
     z-index: 9999;
-    background: rgba(0,0,0,0.9);
-    color: white;
     max-width: min(90vw, 32rem);
+    overflow: visible; /* arrow can overflow, if enabled */
 }
 
 .hui-tooltip-content[data-open="false"] {
     display: none;
 }
 
+.hui-tooltip-content[data-hui-tooltip-arrow]::before {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: var(--hui-tooltip-bg, rgba(0,0,0,0.9));
+    transform: translateX(-50%) rotate(45deg);
+    left: var(--hui-tooltip-arrow-x, 50%);
+    pointer-events: none;
+}
+
+.hui-tooltip-content[data-hui-tooltip-arrow][data-placement="top"]::before {
+    bottom: -4px;
+}
+
+.hui-tooltip-content[data-hui-tooltip-arrow][data-placement="bottom"]::before {
+    top: -4px;
+}

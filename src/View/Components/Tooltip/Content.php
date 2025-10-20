@@ -8,7 +8,8 @@ use Illuminate\View\Component;
 class Content extends Component
 {
     public function __construct(
-        public string $class = ''
+        public string $class = '',
+        public bool $arrow = false,
     )
     {
     }
@@ -18,4 +19,3 @@ class Content extends Component
         return view('hui::tooltip.content');
     }
 }
-

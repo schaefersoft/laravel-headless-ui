@@ -56,6 +56,26 @@ export function registerTooltips(root: Root = document) {
 
             content.style.left = `${Math.round(x)}px`;
             content.style.top = `${Math.round(y)}px`;
+
+            content.setAttribute('data-placement', preferTop ? 'top' : 'bottom');
+
+            // Compute arrow offset relative to content if arrow is enabled
+            // Position arrow towards the host center, clamped within content width
+            const hostCenterX = host.left + (host.width / 2);
+            const arrowX = clamp(hostCenterX - x, 6, Math.max(6, w - 6));
+            content.style.setProperty('--hui-tooltip-arrow-x', `${Math.round(arrowX)}px`);
+
+            // Sync arrow color with actual background color of content
+            try {
+                const bg = getComputedStyle(content).backgroundColor;
+                const isTransparent = !bg || bg === 'transparent' || /rgba\([^\)]*,\s*0\s*\)/.test(bg);
+                if (!isTransparent) {
+                    content.style.setProperty('--hui-tooltip-bg', bg);
+                } else {
+                    content.style.removeProperty('--hui-tooltip-bg');
+                }
+            } catch (_) {
+            }
         }
 
         function show(): void {
