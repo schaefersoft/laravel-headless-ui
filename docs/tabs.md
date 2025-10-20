@@ -49,6 +49,9 @@ Notes:
 - To start active, mark a tab or panel with `data-active` or pass `:initial-index`. If neither is set, the first enabled tab is used.
 - Vertical mode uses Up/Down keys; horizontal uses Left/Right. `Home` and `End` jump to first/last enabled; `Enter`/`Space` activate.
 
+Styling:
+- The tabs can be styled thorough the `data-active` and `data-disabled` attributes.
+
 ## Props
 
 ### Tabs
