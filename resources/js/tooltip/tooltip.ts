@@ -26,6 +26,9 @@ export function registerTooltips(root: Root = document) {
         function isDisabled() {
             return container.hasAttribute('data-hui-tooltip-disabled');
         }
+        function isForcedOpen() {
+            return container.hasAttribute('data-hui-tooltip-open');
+        }
 
         function onKeydown(e: KeyboardEvent) {
             if (e.key === 'Escape' || (e as any).key === 'Esc') {
@@ -157,7 +160,8 @@ export function registerTooltips(root: Root = document) {
 
         function show(): void {
             if (content === null) return;
-            if (isDisabled()) return;
+            // Allow showing if explicitly forced open, even when disabled
+            if (isDisabled() && !isForcedOpen()) return;
 
             if (open) return;
 
@@ -176,6 +180,9 @@ export function registerTooltips(root: Root = document) {
             if (content === null) return;
 
             if (!open) return;
+
+            // If disabled and forced open, do not allow closing
+            if (isDisabled() && isForcedOpen()) return;
 
             open = false;
             content.style.display = 'none';
@@ -266,11 +273,24 @@ export function registerTooltips(root: Root = document) {
                 for (const m of mutations) {
                     if (m.type === 'attributes') {
                         if (m.attributeName === 'data-hui-tooltip-disabled') {
-                            if (isDisabled()) hide();
+                            if (isDisabled()) {
+                                if (isForcedOpen()) {
+                                    show();
+                                } else {
+                                    hide();
+                                }
+                            } else {
+                                // Disabled removed; respect open attr if present
+                                if (isForcedOpen()) show();
+                            }
                         }
                         if (m.attributeName === 'data-hui-tooltip-open') {
-                            if (container.hasAttribute('data-hui-tooltip-open') && !isDisabled()) show();
-                            else hide();
+                            if (isForcedOpen()) {
+                                // Forced open wins even if disabled
+                                show();
+                            } else {
+                                hide();
+                            }
                         }
                     }
                 }
