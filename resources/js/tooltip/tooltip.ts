@@ -23,6 +23,10 @@ export function registerTooltips(root: Root = document) {
         let hideTimer: number | null = null;
         let isTouch = false;
 
+        function isDisabled() {
+            return container.hasAttribute('data-hui-tooltip-disabled');
+        }
+
         function onKeydown(e: KeyboardEvent) {
             if (e.key === 'Escape' || (e as any).key === 'Esc') {
                 hide();
@@ -153,6 +157,7 @@ export function registerTooltips(root: Root = document) {
 
         function show(): void {
             if (content === null) return;
+            if (isDisabled()) return;
 
             if (open) return;
 
@@ -249,6 +254,31 @@ export function registerTooltips(root: Root = document) {
                 show();
             }
         });
+
+        // Open by default if requested
+        if (container.hasAttribute('data-hui-tooltip-open')) {
+            show();
+        }
+
+        // Observe attribute changes to support toggling open/disabled dynamically
+        try {
+            const observer = new MutationObserver((mutations) => {
+                for (const m of mutations) {
+                    if (m.type === 'attributes') {
+                        if (m.attributeName === 'data-hui-tooltip-disabled') {
+                            if (isDisabled()) hide();
+                        }
+                        if (m.attributeName === 'data-hui-tooltip-open') {
+                            if (container.hasAttribute('data-hui-tooltip-open') && !isDisabled()) show();
+                            else hide();
+                        }
+                    }
+                }
+            });
+            observer.observe(container, { attributes: true, attributeFilter: ['data-hui-tooltip-open', 'data-hui-tooltip-disabled']});
+        } catch (_) {
+            // ignore MutationObserver issues
+        }
     });
 }
 
