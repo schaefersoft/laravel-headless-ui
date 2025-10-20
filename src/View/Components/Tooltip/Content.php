@@ -9,7 +9,7 @@ class Content extends Component
 {
     public function __construct(
         public string $class = '',
-        public bool $arrow = false,
+        public bool $arrow = true,
         public string $position = 'top',
     )
     {
