@@ -1,0 +1,17 @@
+.hui-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.hui-tooltip-content {
+    position: fixed; /* positioned by JS */
+    z-index: 9999;
+    background: rgba(0,0,0,0.9);
+    color: white;
+    max-width: min(90vw, 32rem);
+}
+
+.hui-tooltip-content[data-open="false"] {
+    display: none;
+}
+
