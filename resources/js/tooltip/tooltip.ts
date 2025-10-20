@@ -23,6 +23,12 @@ export function registerTooltips(root: Root = document) {
         let hideTimer: number | null = null;
         let isTouch = false;
 
+        function onKeydown(e: KeyboardEvent) {
+            if (e.key === 'Escape' || (e as any).key === 'Esc') {
+                hide();
+            }
+        }
+
         function measure(): { w: number; h: number } {
             if (content === null) return {w: 0, h: 0};
 
@@ -158,6 +164,7 @@ export function registerTooltips(root: Root = document) {
             window.addEventListener('scroll', onScroll, true);
             window.addEventListener('resize', onResize, true);
             document.addEventListener('pointerdown', onOutsidePointerDown, true);
+            document.addEventListener('keydown', onKeydown, true);
         }
 
         function hide() {
@@ -172,6 +179,7 @@ export function registerTooltips(root: Root = document) {
             window.removeEventListener('scroll', onScroll, true);
             window.removeEventListener('resize', onResize, true);
             document.removeEventListener('pointerdown', onOutsidePointerDown, true);
+            document.removeEventListener('keydown', onKeydown, true);
         }
 
         function onOutsidePointerDown(e: PointerEvent) {
