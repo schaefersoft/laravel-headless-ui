@@ -20,15 +20,28 @@
     width: 8px;
     height: 8px;
     background-color: var(--hui-tooltip-bg, rgba(0,0,0,0.9));
-    transform: translateX(-50%) rotate(45deg);
-    left: var(--hui-tooltip-arrow-x, 50%);
     pointer-events: none;
 }
 
 .hui-tooltip-content[data-hui-tooltip-arrow][data-placement="top"]::before {
     bottom: -4px;
+    left: var(--hui-tooltip-arrow-x, 50%);
+    transform: translateX(-50%) rotate(45deg);
 }
 
 .hui-tooltip-content[data-hui-tooltip-arrow][data-placement="bottom"]::before {
     top: -4px;
+    left: var(--hui-tooltip-arrow-x, 50%);
+    transform: translateX(-50%) rotate(45deg);
+}
+
+.hui-tooltip-content[data-hui-tooltip-arrow][data-placement="left"]::before {
+    right: -4px;
+    top: var(--hui-tooltip-arrow-y, 50%);
+    transform: translateY(-50%) rotate(45deg);
+}
+.hui-tooltip-content[data-hui-tooltip-arrow][data-placement="right"]::before {
+    left: -4px;
+    top: var(--hui-tooltip-arrow-y, 50%);
+    transform: translateY(-50%) rotate(45deg);
 }
