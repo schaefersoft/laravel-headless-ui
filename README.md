@@ -26,7 +26,8 @@ import '../../vendor/schaefersoft/laravel-headless-ui/resources/js/hui.js'
 
 ## Components
 
-| Component                              | Preview                                                           |
-|----------------------------------------|-------------------------------------------------------------------|
-| [Avatar](./docs/avatar.md)             | ![Avatar example](./docs/assets/avatar/avatar_01.png)             |
+| Component                              | Preview                                                                 |
+|----------------------------------------|-------------------------------------------------------------------------|
+| [Avatar](./docs/avatar.md)             | ![Avatar example](./docs/assets/avatar/avatar_01.png)                   |
 | [Range slider](./docs/range-slider.md) | ![Range slider example](./docs/assets/range-slider/range-slider_01.png) |
+| [Tooltip](./docs/tooltip.md)           | ![Tooltip example](./docs/assets/tooltip/tooltip_01.png)            |
