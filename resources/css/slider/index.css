@@ -1,0 +1,37 @@
+.hui-slider {
+    display: inline-block;
+    width: 3rem;
+    height: 2rem;
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+    background-color: #aaaaaa;
+    border-radius: 9999px;
+    padding: 4px;
+}
+
+.hui-slider[aria-disabled="true"] {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.hui-slider[aria-checked="true"] {
+    background-color: blue;
+}
+
+.hui-slider .hui-slider-thumb {
+    height: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 9999px;
+
+    background-color: white;
+    margin-left: 0;
+
+    transition: all 0.15s ease-in-out;
+    transform: translateX(0);
+}
+
+.hui-slider[aria-checked="true"] .hui-slider-thumb {
+    margin-left: 100%;
+    transform: translateX(-100%);
+}
