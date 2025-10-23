@@ -5,13 +5,19 @@ export function registerToggles(root: Root = document) {
 
     containers.forEach((container) => {
         const input = container.querySelector<HTMLInputElement>('.hui-toggle-input') || undefined;
+        const thumb = container.querySelector<HTMLElement>('.hui-toggle-thumb') || undefined;
 
         const getDisabled = () => container.getAttribute('aria-disabled') === 'true';
-        const setAria = (checked: boolean) => container.setAttribute('aria-checked', checked ? 'true' : 'false');
+        const setAria = (checked: boolean) => {
+            const value = checked ? 'true' : 'false';
+            container.setAttribute('aria-checked', value);
+            if (thumb) thumb.setAttribute('aria-checked', value);
+        };
         const isChecked = () => container.getAttribute('aria-checked') === 'true';
 
         const initChecked = input ? !!input.checked : isChecked();
         setAria(initChecked);
+        if (thumb) thumb.setAttribute('aria-disabled', getDisabled() ? 'true' : 'false');
 
         function reflectToInput(checked: boolean) {
             if (!input) return;
@@ -60,6 +66,7 @@ export function registerToggles(root: Root = document) {
             input.addEventListener('change', () => setChecked(!!input.checked));
             const mo = new MutationObserver(() => {
                 container.setAttribute('aria-disabled', input.disabled ? 'true' : 'false');
+                if (thumb) thumb.setAttribute('aria-disabled', input.disabled ? 'true' : 'false');
                 setChecked(!!input.checked);
             });
             mo.observe(input, {attributes: true, attributeFilter: ['disabled', 'checked']});
