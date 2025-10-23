@@ -1,1 +1,3 @@
-<div @class(['hui-toggle-thumb', $class])></div>
+<div @class(['hui-toggle-thumb', $class])>
+    {{$slot}}
+</div>
