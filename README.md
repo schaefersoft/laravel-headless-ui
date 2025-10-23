@@ -32,3 +32,8 @@ import '../../vendor/schaefersoft/laravel-headless-ui/resources/js/hui.js'
 | [Tabs](./docs/tabs.md)                 | <img src="./docs/assets/tabs/tabs_01.png" style="max-height: 180px; max-width: 400px;">                 |
 | [Toggle](./docs/toggle.md)             | <img src="./docs/assets/toggle/toggle_01.png" style="max-height: 180px; max-width: 400px;">            |
 | [Tooltip](./docs/tooltip.md)           | <img src="./docs/assets/tooltip/tooltip_01.png" style="max-height: 180px; max-width: 400px;">           |
+
+## Features
+- Feature 1
+- Feature 2
+- Feature 3 (not yet implemented)
