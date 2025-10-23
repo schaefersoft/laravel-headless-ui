@@ -1,11 +1,11 @@
 <?php
 
-namespace Schaefersoft\HeadlessUI\View\Components\Slider;
+namespace Schaefersoft\HeadlessUI\View\Components\Toggle;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class Slider extends Component
+class Toggle extends Component
 {
     public function __construct(
         public string $class = '',
@@ -19,6 +19,6 @@ class Slider extends Component
 
     public function render(): View
     {
-        return view('hui::slider.slider');
+        return view('hui::toggle.toggle');
     }
 }

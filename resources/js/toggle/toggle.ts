@@ -1,10 +1,10 @@
 type Root = Document | HTMLElement;
 
-export function registerSliders(root: Root = document) {
-    const containers = Array.from(root.querySelectorAll<HTMLElement>('[data-hui-slider]'));
+export function registerToggles(root: Root = document) {
+    const containers = Array.from(root.querySelectorAll<HTMLElement>('[data-hui-toggle]'));
 
     containers.forEach((container) => {
-        const input = container.querySelector<HTMLInputElement>('.hui-slider-input') || undefined;
+        const input = container.querySelector<HTMLInputElement>('.hui-toggle-input') || undefined;
 
         const getDisabled = () => container.getAttribute('aria-disabled') === 'true';
         const setAria = (checked: boolean) => container.setAttribute('aria-checked', checked ? 'true' : 'false');
@@ -66,8 +66,8 @@ export function registerSliders(root: Root = document) {
 
 if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => registerSliders());
+        document.addEventListener('DOMContentLoaded', () => registerToggles());
     } else {
-        registerSliders();
+        registerToggles();
     }
 }

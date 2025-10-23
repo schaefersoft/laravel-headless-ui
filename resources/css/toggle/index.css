@@ -1,4 +1,4 @@
-.hui-slider {
+.hui-toggle {
     display: inline-block;
     width: 3rem;
     height: 2rem;
@@ -10,16 +10,16 @@
     padding: 4px;
 }
 
-.hui-slider[aria-disabled="true"] {
+.hui-toggle[aria-disabled="true"] {
     opacity: 0.6;
     cursor: not-allowed;
 }
 
-.hui-slider[aria-checked="true"] {
+.hui-toggle[aria-checked="true"] {
     background-color: blue;
 }
 
-.hui-slider .hui-slider-thumb {
+.hui-toggle .hui-toggle-thumb {
     height: 100%;
     aspect-ratio: 1/1;
     border-radius: 9999px;
@@ -31,7 +31,7 @@
     transform: translateX(0);
 }
 
-.hui-slider[aria-checked="true"] .hui-slider-thumb {
+.hui-toggle[aria-checked="true"] .hui-toggle-thumb {
     margin-left: 100%;
     transform: translateX(-100%);
 }

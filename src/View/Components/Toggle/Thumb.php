@@ -1,6 +1,6 @@
 <?php
 
-namespace Schaefersoft\HeadlessUI\View\Components\Slider;
+namespace Schaefersoft\HeadlessUI\View\Components\Toggle;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
@@ -15,6 +15,6 @@ class Thumb extends Component
 
     public function render(): View
     {
-        return view('hui::slider.thumb');
+        return view('hui::toggle.thumb');
     }
 }

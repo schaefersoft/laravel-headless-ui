@@ -1,5 +1,5 @@
-<div data-hui-slider
-     @class(['hui-slider', $class])
+<div data-hui-toggle
+     @class(['hui-toggle', $class])
      role="switch"
      tabindex="{{ $disabled ? '-1' : '0' }}"
      aria-checked="{{ $checked ? 'true' : 'false' }}"
@@ -10,7 +10,7 @@
 
     @if($name)
         <input type="checkbox"
-               class="hui-slider-input"
+               class="hui-toggle-input"
                name="{{ $name }}"
                value="{{ $value ?? '1' }}"
                @checked($checked)
