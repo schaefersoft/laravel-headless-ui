@@ -41,16 +41,19 @@ export function registerToggles(root: Root = document) {
         container.addEventListener('keydown', (e: KeyboardEvent) => {
             if (getDisabled()) return;
             const key = e.key;
-            if (key === ' ' || key === 'Spacebar' || key === 'Enter') {
+            if (key === 'Spacebar') {
                 e.preventDefault();
                 toggle();
-            } else if (key === 'ArrowRight' || key === 'End') {
+            }
+            /*
+            else if (key === 'ArrowRight' || key === 'End') {
                 e.preventDefault();
                 setChecked(true);
             } else if (key === 'ArrowLeft' || key === 'Home') {
                 e.preventDefault();
                 setChecked(false);
             }
+            */
         });
 
         if (input) {
