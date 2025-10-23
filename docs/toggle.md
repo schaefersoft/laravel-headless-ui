@@ -11,7 +11,6 @@ Blade component namespace: `x-hui::toggle.*`.
 The toggle consists of two parts, the `<x-hui::toggle/>` and the `<x-hui::toggle.thumb/>`.
 
 ```bladehtml
-
 <x-hui::toggle checked name="my_toggle">
     <x-hui::toggle.thumb/>
 </x-hui::toggle>
@@ -22,7 +21,6 @@ The toggle consists of two parts, the `<x-hui::toggle/>` and the `<x-hui::toggle
 The toggle can be disabled through the `disabled` attribute.
 
 ```bladehtml
-
 <x-hui::toggle disabled name="my_toggle">
     <x-hui::toggle.thumb/>
 </x-hui::toggle>
@@ -35,7 +33,6 @@ The thumb can contain child elements.
 ![Toggle example](assets/toggle/toggle_02.png)
 
 ```bladehtml
-
 <x-hui::toggle disabled name="my_toggle">
     <x-hui::toggle.thumb>
         <!-- Add any content - ex. SVG icon -->
