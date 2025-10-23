@@ -1,4 +1,4 @@
-# Laravel HeadlessUI
+# Laravel HeadlessUI 🦤
 <img src="https://schaefersoft.ch/_static/logo_full_dark.png" alt="SchäferSoft Logo" style="max-height: 180px; max-width: 400px;">
 
 A collection of fully blade UI components. All build with performance, customization and accessibiltiy in mind. **No
