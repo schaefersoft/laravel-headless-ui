@@ -30,4 +30,5 @@ import '../../vendor/schaefersoft/laravel-headless-ui/resources/js/hui.js'
 | [Avatar](./docs/avatar.md)             | <img src="./docs/assets/avatar/avatar_01.png" style="max-height: 180px; max-width: 400px;">             |
 | [Range slider](./docs/range-slider.md) | <img src="./docs/assets/range-slider/range-slider_01.png" style="max-height: 180px; max-width: 400px;"> |
 | [Tabs](./docs/tabs.md)                 | <img src="./docs/assets/tabs/tabs_01.png" style="max-height: 180px; max-width: 400px;">                 |
+| [Toggle](./docs/toggle.md)             | <img src="./docs/assets/toggle/toggle_01.png" style="max-height: 180px; max-width: 400px;">            |
 | [Tooltip](./docs/tooltip.md)           | <img src="./docs/assets/tooltip/tooltip_01.png" style="max-height: 180px; max-width: 400px;">           |

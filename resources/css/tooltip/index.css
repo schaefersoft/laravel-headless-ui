@@ -8,6 +8,7 @@
     z-index: 9999;
     max-width: min(90vw, 32rem);
     overflow: visible; /* arrow can overflow, if enabled */
+    isolation: isolate;
 }
 
 .hui-tooltip-content[data-open="false"] {
@@ -20,28 +21,33 @@
     width: 8px;
     height: 8px;
     background-color: var(--hui-tooltip-bg, rgba(0,0,0,0.9));
+    z-index: -1;
     pointer-events: none;
 }
 
 .hui-tooltip-content[data-hui-tooltip-arrow][data-placement="top"]::before {
     bottom: -4px;
     left: var(--hui-tooltip-arrow-x, 50%);
-    transform: translateX(-50%) rotate(45deg);
+    transform: translateX(-50%);
+    clip-path: polygon(0 50%, 50% 100%, 100% 50%);
 }
 
 .hui-tooltip-content[data-hui-tooltip-arrow][data-placement="bottom"]::before {
     top: -4px;
     left: var(--hui-tooltip-arrow-x, 50%);
-    transform: translateX(-50%) rotate(45deg);
+    transform: translateX(-50%);
+    clip-path: polygon(0 50%, 50% 0, 100% 50%);
 }
 
 .hui-tooltip-content[data-hui-tooltip-arrow][data-placement="left"]::before {
     right: -4px;
     top: var(--hui-tooltip-arrow-y, 50%);
-    transform: translateY(-50%) rotate(45deg);
+    transform: translateY(-50%);
+    clip-path: polygon(0 50%, 50% 0, 50% 100%);
 }
 .hui-tooltip-content[data-hui-tooltip-arrow][data-placement="right"]::before {
     left: -4px;
     top: var(--hui-tooltip-arrow-y, 50%);
-    transform: translateY(-50%) rotate(45deg);
+    transform: translateY(-50%);
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%);
 }
