@@ -1,0 +1,8 @@
+.hui-disclosure-summary {
+    cursor: pointer;
+    list-style: none;
+}
+
+.hui-disclosure-summary::-webkit-details-marker {
+    display:none;
+}
