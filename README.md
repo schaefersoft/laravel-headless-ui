@@ -1,4 +1,6 @@
 # Laravel HeadlessUI
+
+![Tests](https://github.com/schaefersoft/laravel-headless-ui/actions/workflows/tests.yml/badge.svg)
 <img src="https://schaefersoft.ch/_static/logo_full_dark.png" alt="SchäferSoft Logo" style="max-height: 180px; max-width: 400px;">
 
 A collection of fully blade UI components. All build with performance, customization and accessibiltiy in mind. **No
@@ -17,10 +19,22 @@ Import the required assets as shown below.
 @import '../../vendor/schaefersoft/laravel-headless-ui/resources/css/hui.css' layer(base);
 ```
 
-`js`
+`js` — choose one of the two options:
+
+**Option 1: Pre-built (recommended)**
+
+No TypeScript tooling needed. Works out of the box with any bundler or `<script type="module">`.
 
 ```javascript
-import '../../vendor/schaefersoft/laravel-headless-ui/resources/js/hui.js'
+import '../../vendor/schaefersoft/laravel-headless-ui/dist/js/hui.js'
+```
+
+**Option 2: TypeScript source**
+
+Import the TS source directly if your project already has a TypeScript build pipeline (e.g. Vite with `laravel-vite-plugin`).
+
+```javascript
+import '../../vendor/schaefersoft/laravel-headless-ui/resources/js/hui.ts'
 ```
 
 ## Components

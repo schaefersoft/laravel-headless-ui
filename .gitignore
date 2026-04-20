@@ -24,3 +24,5 @@ Homestead.json
 
 coverage
 .idea
+
+composer.lock
