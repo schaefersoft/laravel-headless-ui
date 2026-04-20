@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.2](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.1.1...v1.1.2) (2026-04-20)
+
+
+### Miscellaneous Chores
+
+* add support for php &gt;=8.1 and laravel &gt;=10.* ([4df2b56](https://github.com/schaefersoft/laravel-headless-ui/commit/4df2b567a0a831095255579493455d97f0e2dbab))
+* revert back to php &gt;=8.2 ([8428beb](https://github.com/schaefersoft/laravel-headless-ui/commit/8428bebcc0940f1231f3f13bc4455a076f23ac76))
+
 ## [1.1.1](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.1.0...v1.1.1) (2026-04-20)
 
 
