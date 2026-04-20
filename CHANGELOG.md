@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.1.2...v1.1.3) (2026-04-20)
+
+
+### Miscellaneous Chores
+
+* update docs to match php 8.2 dependency ([888bbdc](https://github.com/schaefersoft/laravel-headless-ui/commit/888bbdc2e55170615c82b30da4f000485062e8a9))
+
 ## [1.1.2](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.1.1...v1.1.2) (2026-04-20)
 
 
