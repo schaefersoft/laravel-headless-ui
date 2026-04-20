@@ -16,8 +16,8 @@ accessibility in mind. **No additional JavaScript dependencies required.**
 
 ## Requirements
 
-- PHP 8.4+
-- Laravel 12 or 13
+- PHP 8.1+
+- Laravel 10, 11, 12, or 13
 
 ## Installation
 

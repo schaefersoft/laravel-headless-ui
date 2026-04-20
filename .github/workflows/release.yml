@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20, 22]
+        node-version: [20, 22, 24]
 
     steps:
       - uses: actions/checkout@v4
@@ -31,12 +31,16 @@ jobs:
   php:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        php-version: ['8.2', '8.3', '8.4', '8.5']
+
     steps:
       - uses: actions/checkout@v4
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
+          php-version: ${{ matrix.php-version }}
           coverage: none
 
       - run: composer install --no-interaction --prefer-dist
