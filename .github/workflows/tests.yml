@@ -5,7 +5,8 @@ on:
     branches: [main, develop]
 
 jobs:
-  test:
+  js:
+    name: JS (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
 
     strategy:
@@ -23,3 +24,28 @@ jobs:
       - run: npm ci
 
       - run: npm test
+
+      - run: npm run build
+
+      - name: Check dist is up to date
+        run: git diff --exit-code dist/
+
+  php:
+    name: PHP ${{ matrix.php-version }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version: ['8.4']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: none
+
+      - run: composer install --no-interaction --prefer-dist
+
+      - run: vendor/bin/pest
