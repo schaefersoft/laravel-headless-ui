@@ -3,14 +3,26 @@
 ![Tests](https://github.com/schaefersoft/laravel-headless-ui/actions/workflows/tests.yml/badge.svg)
 <img src="https://schaefersoft.ch/_static/logo_full_dark.png" alt="SchäferSoft Logo" style="max-height: 180px; max-width: 400px;">
 
-A collection of fully blade UI components. All build with performance, customization and accessibiltiy in mind. **No
-additional dependencies required**
+A collection of completely unstyled, accessible Laravel Blade UI components. Built with performance, customization and accessibility in mind. **No additional JavaScript dependencies required.**
 
-## Usage
+## Requirements
 
-Import the required assets as shown below.
+- PHP 8.4+
+- Laravel 12 or 13
 
-`css`
+## Installation
+
+```bash
+composer require schaefersoft/laravel-headless-ui
+```
+
+The package auto-discovers its service provider. No manual registration needed.
+
+## Setup
+
+Import the required CSS and JS assets in your application.
+
+### CSS
 
 ```css
 @import '../../vendor/schaefersoft/laravel-headless-ui/resources/css/hui.css';
@@ -19,7 +31,7 @@ Import the required assets as shown below.
 @import '../../vendor/schaefersoft/laravel-headless-ui/resources/css/hui.css' layer(base);
 ```
 
-`js` — choose one of the two options:
+### JS
 
 **Option 1: Pre-built (recommended)**
 
@@ -38,6 +50,8 @@ import '../../vendor/schaefersoft/laravel-headless-ui/resources/js/hui.ts'
 ```
 
 ## Components
+
+All components use the `x-hui::` Blade prefix and are completely unstyled. Style them with your own CSS or utility classes.
 
 | Component                              | Preview                                                                                                 |
 |----------------------------------------|---------------------------------------------------------------------------------------------------------|
