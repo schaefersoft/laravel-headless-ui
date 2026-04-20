@@ -9,7 +9,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  test:
+  js:
     runs-on: ubuntu-latest
 
     strategy:
@@ -28,8 +28,23 @@ jobs:
 
       - run: npm test
 
+  php:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      - run: composer install --no-interaction --prefer-dist
+
+      - run: vendor/bin/pest
+
   release-please:
-    needs: test
+    needs: [js, php]
     runs-on: ubuntu-latest
 
     steps:
