@@ -1,0 +1,16 @@
+.hui-dialog {
+    padding: 0;
+    border: none;
+    background: transparent;
+    max-width: none;
+    max-height: none;
+}
+
+.hui-dialog::backdrop {
+    background: transparent;
+}
+
+.hui-dialog-overlay {
+    position: fixed;
+    inset: 0;
+}

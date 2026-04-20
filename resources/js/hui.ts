@@ -1,4 +1,5 @@
 import './avatar/avatar'
+import './dialog/dialog'
 import './disclosure/disclosure'
 import './range-slider/range-slider'
 import './tabs/tabs'
