@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.1](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.1.0...v1.1.1) (2026-04-20)
+
+
+### Miscellaneous Chores
+
+* add js build to releases ([7d81fd0](https://github.com/schaefersoft/laravel-headless-ui/commit/7d81fd0149ca6986c75fd0a36576158b681b1524))
+* remove hardcoded composer package version ([3ccc9e1](https://github.com/schaefersoft/laravel-headless-ui/commit/3ccc9e15e0cabe8fccf6b278cbf53d95a2d984f2))
+* update license and readme ([7f96f5f](https://github.com/schaefersoft/laravel-headless-ui/commit/7f96f5fcc53a26f98ba10376a07a941e5cdab63f))
+
 ## [1.1.0](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.0.0...v1.1.0) (2026-04-20)
 
 

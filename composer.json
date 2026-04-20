@@ -3,7 +3,6 @@
   "description": "A simple to use, completely unstyled laravel blade ui package.",
   "type": "laravel-package",
   "license": "MIT",
-
   "autoload": {
     "psr-4": {
       "Schaefersoft\\HeadlessUI\\": "src/"
