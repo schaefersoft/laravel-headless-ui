@@ -4,7 +4,7 @@ An accessible modal dialog built on the native `<dialog>` element. Includes focu
 
 ## Usage
 
-Blade components: `x-hui::dialog`, `x-hui::dialog.overlay`, `x-hui::dialog.panel`, `x-hui::dialog.title`, `x-hui::dialog.description`
+Blade components: `x-hui::dialog`, `x-hui::dialog.background`, `x-hui::dialog.overlay`, `x-hui::dialog.panel`, `x-hui::dialog.title`, `x-hui::dialog.description`
 
 ### Opening via trigger button
 
@@ -14,7 +14,7 @@ Use `data-hui-dialog-trigger` on any button to open a dialog by its `id`. Multip
 <button data-hui-dialog-trigger="confirm-dialog">Delete item</button>
 
 <x-hui::dialog id="confirm-dialog">
-    <x-hui::dialog.overlay/>
+    <x-hui::dialog.background/>
 
     <x-hui::dialog.panel>
         <x-hui::dialog.title>Delete item?</x-hui::dialog.title>
@@ -73,11 +73,11 @@ document.getElementById('confirm-dialog')
 
 ## Styling
 
-The dialog renders as a native `<dialog>` with all default styles reset (no padding, no border, transparent background). The overlay is a fixed full-screen `<div>`. Style everything with your own classes.
+The dialog renders as a native `<dialog>` with all default styles reset (no padding, no border, transparent background). The background is a fixed full-screen `<div>`. Style everything with your own classes.
 
 ```bladehtml
 <x-hui::dialog id="my-dialog">
-    <x-hui::dialog.overlay class="bg-black/50"/>
+    <x-hui::dialog.background class="bg-black/50"/>
 
     <x-hui::dialog.panel class="mx-auto mt-20 max-w-lg rounded-xl bg-white p-6 shadow-xl">
         <x-hui::dialog.title class="text-lg font-semibold">Title</x-hui::dialog.title>
@@ -106,6 +106,15 @@ The dialog renders as a native `<dialog>` with all default styles reset (no padd
 > [!NOTE]
 > Renders a native `<dialog/>` element. Requires an `id` attribute for trigger binding and JS API. Allows all valid HTML `<dialog/>` attributes.
 
+### Background
+
+| Prop    | Type     | Default | Description                          |
+|---------|----------|---------|--------------------------------------|
+| `class` | `string` | `""`    | Custom classes for the background.   |
+
+> [!NOTE]
+> Renders a full-screen `<div/>` with `aria-hidden="true"`. Use it to add a backdrop behind the dialog panel (e.g. `class="bg-black/50"`). Clicking the background area (outside the panel) closes the dialog.
+
 ### Overlay
 
 | Prop    | Type     | Default | Description                      |
@@ -113,7 +122,7 @@ The dialog renders as a native `<dialog>` with all default styles reset (no padd
 | `class` | `string` | `""`    | Custom classes for the overlay.  |
 
 > [!NOTE]
-> Renders a `<div/>` with `aria-hidden="true"`. Clicking the overlay closes the dialog.
+> Renders a `<div/>` with `aria-hidden="true"`. Behaves the same as `background` — use whichever name fits your mental model.
 
 ### Panel
 
@@ -159,4 +168,4 @@ The dialog renders as a native `<dialog>` with all default styles reset (no padd
 - `aria-describedby` is set automatically from `dialog.description`.
 - Focus is trapped inside the dialog while open.
 - When the dialog closes, focus returns to the element that was focused before opening.
-- The overlay is marked `aria-hidden="true"`.
+- The background/overlay is marked `aria-hidden="true"`.
