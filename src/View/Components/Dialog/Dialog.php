@@ -10,6 +10,9 @@ class Dialog extends Component
     public function __construct(
         public string $class = '',
         public bool $open = false,
+        public bool $closeOnEscape = true,
+        public bool $closeOnBackdropClick = true,
+        public bool $scrollLock = false,
     ) {}
 
     public function render(): View

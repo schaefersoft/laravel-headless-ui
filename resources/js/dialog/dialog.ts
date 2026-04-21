@@ -44,12 +44,20 @@ function setupDialog(dialog: HTMLDialogElement) {
 
     let previouslyFocused: HTMLElement | null = null;
 
+    const noEscape = dialog.hasAttribute('data-hui-dialog-no-escape');
+    const noBackdropClose = dialog.hasAttribute('data-hui-dialog-no-backdrop-close');
+    const scrollLock = dialog.hasAttribute('data-hui-dialog-scroll-lock');
+
     function open() {
         if (dialog.open) return;
 
         previouslyFocused = document.activeElement as HTMLElement | null;
         dialog.showModal();
         dialog.setAttribute('data-hui-dialog-open', '');
+
+        if (scrollLock) {
+            document.body.style.overflow = 'hidden';
+        }
 
         const focusable = getFocusable(dialog);
         if (focusable.length > 0) {
@@ -64,6 +72,16 @@ function setupDialog(dialog: HTMLDialogElement) {
 
         dialog.close();
         dialog.removeAttribute('data-hui-dialog-open');
+
+        if (scrollLock) {
+            // Only restore if no other scroll-locked dialog is still open
+            const otherLocked = document.querySelector<HTMLDialogElement>(
+                'dialog[data-hui-dialog][data-hui-dialog-scroll-lock][open]'
+            );
+            if (!otherLocked) {
+                document.body.style.overflow = '';
+            }
+        }
 
         if (previouslyFocused && previouslyFocused.focus) {
             previouslyFocused.focus();
@@ -81,12 +99,14 @@ function setupDialog(dialog: HTMLDialogElement) {
     // Close on Escape (native <dialog> handles this, but we need cleanup)
     dialog.addEventListener('cancel', (e) => {
         e.preventDefault();
-        close();
+        if (!noEscape) {
+            close();
+        }
     });
 
-    // Close on overlay click (click on <dialog> itself, not on panel)
+    // Close on backdrop click (click on <dialog> itself, not on panel)
     dialog.addEventListener('click', (e) => {
-        if (e.target === dialog) {
+        if (e.target === dialog && !noBackdropClose) {
             close();
         }
     });

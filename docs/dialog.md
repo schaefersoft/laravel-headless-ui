@@ -44,6 +44,33 @@ The dialog can be closed in several ways:
 - Click the overlay / backdrop (outside the panel)
 - Call `closeDialog('id')` from JavaScript
 
+### Preventing close
+
+Disable Escape and/or backdrop click to force the user to interact with the dialog content.
+
+```bladehtml
+<x-hui::dialog id="terms-dialog" :close-on-escape="false" :close-on-backdrop-click="false">
+    <x-hui::dialog.background class="bg-black/50"/>
+
+    <x-hui::dialog.panel>
+        <x-hui::dialog.title>Accept terms</x-hui::dialog.title>
+        <x-hui::dialog.description>You must accept to continue.</x-hui::dialog.description>
+
+        <button data-hui-dialog-close>I accept</button>
+    </x-hui::dialog.panel>
+</x-hui::dialog>
+```
+
+### Scroll locking
+
+Lock body scroll while the dialog is open. When multiple scroll-locked dialogs are nested, scroll is restored only after the last one closes.
+
+```bladehtml
+<x-hui::dialog id="my-dialog" :scroll-lock="true">
+    ...
+</x-hui::dialog>
+```
+
 ### Open by default
 
 ```bladehtml
@@ -98,10 +125,13 @@ The dialog renders as a native `<dialog>` with all default styles reset (no padd
 
 ### Dialog
 
-| Prop    | Type      | Default | Description                                        |
-|---------|-----------|---------|----------------------------------------------------|
-| `class` | `string`  | `""`    | Custom classes for the dialog.                     |
-| `open`  | `boolean` | `false` | Opens the dialog on page load.                     |
+| Prop                   | Type      | Default | Description                                        |
+|------------------------|-----------|---------|----------------------------------------------------|
+| `class`                | `string`  | `""`    | Custom classes for the dialog.                     |
+| `open`                 | `boolean` | `false` | Opens the dialog on page load.                     |
+| `close-on-escape`      | `boolean` | `true`  | Whether pressing Escape closes the dialog.         |
+| `close-on-backdrop-click` | `boolean` | `true`  | Whether clicking the backdrop closes the dialog.   |
+| `scroll-lock`          | `boolean` | `false` | Locks body scroll while the dialog is open.        |
 
 > [!NOTE]
 > Renders a native `<dialog/>` element. Requires an `id` attribute for trigger binding and JS API. Allows all valid HTML `<dialog/>` attributes.

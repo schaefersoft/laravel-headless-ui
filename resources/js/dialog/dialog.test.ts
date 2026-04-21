@@ -1,10 +1,24 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { registerDialogs, openDialog, closeDialog } from './dialog';
 
-function createDialog(id: string, opts: { open?: boolean } = {}): HTMLDialogElement {
+interface DialogOpts {
+    open?: boolean;
+    noEscape?: boolean;
+    noBackdropClose?: boolean;
+    scrollLock?: boolean;
+}
+
+function createDialog(id: string, opts: DialogOpts = {}): HTMLDialogElement {
+    const attrs = [
+        opts.open ? 'data-hui-dialog-open' : '',
+        opts.noEscape ? 'data-hui-dialog-no-escape' : '',
+        opts.noBackdropClose ? 'data-hui-dialog-no-backdrop-close' : '',
+        opts.scrollLock ? 'data-hui-dialog-scroll-lock' : '',
+    ].filter(Boolean).join(' ');
+
     document.body.innerHTML = `
         <button data-hui-dialog-trigger="${id}">Open</button>
-        <dialog data-hui-dialog id="${id}" ${opts.open ? 'data-hui-dialog-open' : ''}>
+        <dialog data-hui-dialog id="${id}" ${attrs}>
             <div data-hui-dialog-overlay aria-hidden="true"></div>
             <div data-hui-dialog-panel>
                 <h2 data-hui-dialog-title>Title</h2>
@@ -174,5 +188,59 @@ describe('Dialog', () => {
         // Should not throw
         openDialog('non-existent');
         closeDialog('non-existent');
+    });
+
+    it('does not close on Escape when data-hui-dialog-no-escape is set', () => {
+        const dialog = createDialog('test-dialog', { noEscape: true });
+
+        openDialog('test-dialog');
+        expect(dialog.open).toBe(true);
+
+        const cancelEvent = new Event('cancel', { cancelable: true });
+        dialog.dispatchEvent(cancelEvent);
+
+        expect(dialog.open).toBe(true);
+    });
+
+    it('does not close on backdrop click when data-hui-dialog-no-backdrop-close is set', () => {
+        const dialog = createDialog('test-dialog', { noBackdropClose: true });
+
+        openDialog('test-dialog');
+        expect(dialog.open).toBe(true);
+
+        dialog.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+        expect(dialog.open).toBe(true);
+    });
+
+    it('still closes via close button when escape and backdrop are disabled', () => {
+        const dialog = createDialog('test-dialog', { noEscape: true, noBackdropClose: true });
+
+        openDialog('test-dialog');
+        expect(dialog.open).toBe(true);
+
+        const closeBtn = dialog.querySelector<HTMLElement>('[data-hui-dialog-close]')!;
+        closeBtn.click();
+
+        expect(dialog.open).toBe(false);
+    });
+
+    it('locks body scroll on open when data-hui-dialog-scroll-lock is set', () => {
+        const dialog = createDialog('test-dialog', { scrollLock: true });
+
+        openDialog('test-dialog');
+        expect(document.body.style.overflow).toBe('hidden');
+
+        closeDialog('test-dialog');
+        expect(document.body.style.overflow).toBe('');
+    });
+
+    it('does not lock body scroll without scroll-lock attribute', () => {
+        createDialog('test-dialog');
+
+        openDialog('test-dialog');
+        expect(document.body.style.overflow).not.toBe('hidden');
+
+        closeDialog('test-dialog');
     });
 });
