@@ -7,7 +7,7 @@ use Illuminate\View\Component;
 
 class Panel extends Component
 {
-    public const array MAX_WIDTHS = [
+    public const MAX_WIDTHS = [
         'sm' => 'max-w-sm',
         'md' => 'max-w-md',
         'lg' => 'max-w-lg',
