@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.1](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.2.0...v1.2.1) (2026-04-21)
+
+
+### Miscellaneous Chores
+
+* cleanup readme badges and add downloads badge ([9a9de14](https://github.com/schaefersoft/laravel-headless-ui/commit/9a9de144d1ce82d5b59042fd2a94d644878ad1fd))
+* cleanup readme badges and add downloads badge ([128ebd4](https://github.com/schaefersoft/laravel-headless-ui/commit/128ebd43e5c8ac7562547a8957394a8296bdfcaf))
+
 ## [1.2.0](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.1.3...v1.2.0) (2026-04-21)
 
 
