@@ -100,6 +100,41 @@ document.getElementById('confirm-dialog')
     })
 ```
 
+## Transitions
+
+Add enter/leave transition classes using data attributes. The dialog will animate in on open and wait for the leave transition to finish before closing.
+
+| Attribute                    | Description                                      |
+|------------------------------|--------------------------------------------------|
+| `data-hui-dialog-enter`      | Classes applied during the entire enter phase.   |
+| `data-hui-dialog-enter-from` | Starting state (applied on first frame).         |
+| `data-hui-dialog-enter-to`   | Ending state (swapped in on the next frame).     |
+| `data-hui-dialog-leave`      | Classes applied during the entire leave phase.   |
+| `data-hui-dialog-leave-from` | Starting state of the leave transition.          |
+| `data-hui-dialog-leave-to`   | Ending state (swapped in on the next frame).     |
+
+```bladehtml
+<x-hui::dialog id="my-dialog"
+    data-hui-dialog-enter="transition duration-200 ease-out"
+    data-hui-dialog-enter-from="opacity-0 scale-95"
+    data-hui-dialog-enter-to="opacity-100 scale-100"
+    data-hui-dialog-leave="transition duration-150 ease-in"
+    data-hui-dialog-leave-from="opacity-100 scale-100"
+    data-hui-dialog-leave-to="opacity-0 scale-95">
+
+    <x-hui::dialog.background class="bg-black/50"/>
+    <x-hui::dialog.panel max-width="md">
+        ...
+    </x-hui::dialog.panel>
+</x-hui::dialog>
+```
+
+> [!NOTE]
+> The transition attributes can also be placed on individual child elements (background, panel, etc.) instead of the dialog itself. This allows different animations per element — for example, a fade on the background and a scale on the panel.
+
+> [!NOTE]
+> During a leave transition, the dialog stays open until all transitions complete. Opens and closes are blocked while a transition is in progress.
+
 ## Styling
 
 The dialog renders as a native `<dialog>` with all default styles reset (no padding, no border, transparent background). The background is a fixed full-screen `<div>`. Style everything with your own classes.

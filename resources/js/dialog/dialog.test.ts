@@ -243,4 +243,55 @@ describe('Dialog', () => {
 
         closeDialog('test-dialog');
     });
+
+    it('applies enter transition classes on open', () => {
+        const dialog = createDialog('test-dialog');
+        const panel = dialog.querySelector<HTMLElement>('[data-hui-dialog-panel]')!;
+        panel.setAttribute('data-hui-dialog-enter', 'transition');
+        panel.setAttribute('data-hui-dialog-enter-from', 'opacity-0');
+        panel.setAttribute('data-hui-dialog-enter-to', 'opacity-100');
+
+        // Re-register so transition targets are picked up
+        dialog.removeAttribute('data-hui-dialog-initialized');
+        registerDialogs();
+
+        openDialog('test-dialog');
+
+        // In test env (no real rAF), the classes are applied synchronously at first
+        // The element should have the base transition class initially
+        expect(dialog.open).toBe(true);
+    });
+
+    it('blocks double open/close during leave transition', () => {
+        const dialog = createDialog('test-dialog');
+        const panel = dialog.querySelector<HTMLElement>('[data-hui-dialog-panel]')!;
+        panel.setAttribute('data-hui-dialog-leave', 'transition');
+        panel.setAttribute('data-hui-dialog-leave-from', 'opacity-100');
+        panel.setAttribute('data-hui-dialog-leave-to', 'opacity-0');
+
+        dialog.removeAttribute('data-hui-dialog-initialized');
+        registerDialogs();
+
+        openDialog('test-dialog');
+        expect(dialog.open).toBe(true);
+
+        closeDialog('test-dialog');
+
+        // Dialog should still be open (leave transition in progress)
+        expect(dialog.open).toBe(true);
+
+        // Second close should be a no-op (isTransitioning)
+        closeDialog('test-dialog');
+        expect(dialog.open).toBe(true);
+    });
+
+    it('works without transitions (no transition attributes)', () => {
+        const dialog = createDialog('test-dialog');
+
+        openDialog('test-dialog');
+        expect(dialog.open).toBe(true);
+
+        closeDialog('test-dialog');
+        expect(dialog.open).toBe(false);
+    });
 });

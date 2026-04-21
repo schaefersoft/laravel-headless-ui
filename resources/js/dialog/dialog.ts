@@ -38,18 +38,96 @@ function trapFocus(dialog: HTMLElement, e: KeyboardEvent) {
     }
 }
 
+// --- Transition helpers ---
+
+function getTransitionClasses(el: HTMLElement, prefix: string): { base: string[]; from: string[]; to: string[] } {
+    const base = (el.getAttribute(`${prefix}`) || '').split(/\s+/).filter(Boolean);
+    const from = (el.getAttribute(`${prefix}-from`) || '').split(/\s+/).filter(Boolean);
+    const to = (el.getAttribute(`${prefix}-to`) || '').split(/\s+/).filter(Boolean);
+    return { base, from, to };
+}
+
+function hasTransition(el: HTMLElement, prefix: string): boolean {
+    return el.hasAttribute(prefix) || el.hasAttribute(`${prefix}-from`) || el.hasAttribute(`${prefix}-to`);
+}
+
+function nextFrame(): Promise<void> {
+    return new Promise((resolve) => {
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+    });
+}
+
+function afterTransition(el: HTMLElement): Promise<void> {
+    return new Promise((resolve) => {
+        const styles = getComputedStyle(el);
+        const duration = parseFloat(styles.transitionDuration || '0');
+        const delay = parseFloat(styles.transitionDelay || '0');
+        const total = (duration + delay) * 1000;
+
+        if (total <= 0) {
+            resolve();
+            return;
+        }
+
+        let done = false;
+        const finish = () => {
+            if (done) return;
+            done = true;
+            el.removeEventListener('transitionend', finish);
+            resolve();
+        };
+
+        el.addEventListener('transitionend', finish, { once: true });
+        // Safety timeout in case transitionend doesn't fire
+        setTimeout(finish, total + 50);
+    });
+}
+
+function runTransition(el: HTMLElement, prefix: string): Promise<void> {
+    const { base, from, to } = getTransitionClasses(el, prefix);
+    if (base.length === 0 && from.length === 0 && to.length === 0) {
+        return Promise.resolve();
+    }
+
+    // Step 1: apply base + from
+    el.classList.add(...base, ...from);
+
+    // Step 2: next frame, swap from → to, wait for transition
+    return nextFrame().then(() => {
+        el.classList.remove(...from);
+        el.classList.add(...to);
+        return afterTransition(el);
+    }).then(() => {
+        el.classList.remove(...base, ...to);
+    });
+}
+
+function getTransitionTargets(dialog: HTMLDialogElement): HTMLElement[] {
+    const targets: HTMLElement[] = [];
+    if (hasTransition(dialog, 'data-hui-dialog-enter') || hasTransition(dialog, 'data-hui-dialog-leave')) {
+        targets.push(dialog);
+    }
+    targets.push(...Array.from(dialog.querySelectorAll<HTMLElement>(
+        '[data-hui-dialog-enter], [data-hui-dialog-leave]'
+    )));
+    return targets;
+}
+
+// --- Dialog setup ---
+
 function setupDialog(dialog: HTMLDialogElement) {
     if (dialog.hasAttribute('data-hui-dialog-initialized')) return;
     dialog.setAttribute('data-hui-dialog-initialized', '');
 
     let previouslyFocused: HTMLElement | null = null;
+    let isTransitioning = false;
 
     const noEscape = dialog.hasAttribute('data-hui-dialog-no-escape');
     const noBackdropClose = dialog.hasAttribute('data-hui-dialog-no-backdrop-close');
     const scrollLock = dialog.hasAttribute('data-hui-dialog-scroll-lock');
 
     function open() {
-        if (dialog.open) return;
+        if (dialog.open || isTransitioning) return;
 
         previouslyFocused = document.activeElement as HTMLElement | null;
         dialog.showModal();
@@ -64,31 +142,54 @@ function setupDialog(dialog: HTMLDialogElement) {
             focusable[0].focus();
         }
 
+        // Run enter transitions on all targets
+        const targets = getTransitionTargets(dialog);
+        if (targets.length > 0) {
+            const transitions = targets
+                .filter((t) => hasTransition(t, 'data-hui-dialog-enter'))
+                .map((t) => runTransition(t, 'data-hui-dialog-enter'));
+            Promise.all(transitions);
+        }
+
         dialog.dispatchEvent(new CustomEvent('hui:dialog:open', { bubbles: true }));
     }
 
     function close() {
-        if (!dialog.open) return;
+        if (!dialog.open || isTransitioning) return;
 
-        dialog.close();
-        dialog.removeAttribute('data-hui-dialog-open');
+        // Run leave transitions on all targets
+        const targets = getTransitionTargets(dialog);
+        const leaveTargets = targets.filter((t) => hasTransition(t, 'data-hui-dialog-leave'));
 
-        if (scrollLock) {
-            // Only restore if no other scroll-locked dialog is still open
-            const otherLocked = document.querySelector<HTMLDialogElement>(
-                'dialog[data-hui-dialog][data-hui-dialog-scroll-lock][open]'
-            );
-            if (!otherLocked) {
-                document.body.style.overflow = '';
+        function finishClose() {
+            dialog.close();
+            dialog.removeAttribute('data-hui-dialog-open');
+
+            if (scrollLock) {
+                const otherLocked = document.querySelector<HTMLDialogElement>(
+                    'dialog[data-hui-dialog][data-hui-dialog-scroll-lock][open]'
+                );
+                if (!otherLocked) {
+                    document.body.style.overflow = '';
+                }
             }
+
+            if (previouslyFocused && previouslyFocused.focus) {
+                previouslyFocused.focus();
+            }
+            previouslyFocused = null;
+
+            isTransitioning = false;
+            dialog.dispatchEvent(new CustomEvent('hui:dialog:close', { bubbles: true }));
         }
 
-        if (previouslyFocused && previouslyFocused.focus) {
-            previouslyFocused.focus();
+        if (leaveTargets.length > 0) {
+            isTransitioning = true;
+            const transitions = leaveTargets.map((t) => runTransition(t, 'data-hui-dialog-leave'));
+            Promise.all(transitions).then(finishClose);
+        } else {
+            finishClose();
         }
-        previouslyFocused = null;
-
-        dialog.dispatchEvent(new CustomEvent('hui:dialog:close', { bubbles: true }));
     }
 
     // Focus trap
