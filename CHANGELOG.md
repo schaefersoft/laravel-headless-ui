@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.3.0](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.2.1...v1.3.0) (2026-04-21)
+
+
+### Features
+
+* **ui:** dropdown component ([83be048](https://github.com/schaefersoft/laravel-headless-ui/commit/83be048f941c3a867fcd7a8e3aff2bd75f102e3b))
+
+
+### Bug Fixes
+
+* **core:** build errors ([e5e4661](https://github.com/schaefersoft/laravel-headless-ui/commit/e5e4661aac76f0d8aa1d5588d840e27e47fffbc3))
+* **ui:** default maxWidth of modals ([df824e4](https://github.com/schaefersoft/laravel-headless-ui/commit/df824e4865f90c49af9b43af81e6b91f809806e8))
+
 ## [1.2.1](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.2.0...v1.2.1) (2026-04-21)
 
 
