@@ -8,8 +8,9 @@
 # Laravel HeadlessUI
 
 [![Tests](https://github.com/schaefersoft/laravel-headless-ui/actions/workflows/tests.yml/badge.svg)](https://github.com/schaefersoft/laravel-headless-ui/actions)
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/schaefersoft/laravel-headless-ui.svg)](https://packagist.org/packages/schaefersoft/laravel-headless-ui)
-[![License](https://img.shields.io/packagist/l/schaefersoft/laravel-headless-ui.svg)](LICENSE)
+[![Total downloads](https://img.shields.io/packagist/dt/schaefersoft/laravel-headless-ui)](https://packagist.org/packages/schaefersoft/laravel-headless-ui)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/schaefersoft/laravel-headless-ui)](https://packagist.org/packages/schaefersoft/laravel-headless-ui)
+[![License](https://img.shields.io/packagist/l/schaefersoft/laravel-headless-ui)](LICENSE)
 
 A collection of completely unstyled, accessible Laravel Blade UI components. Built with performance, customization and
 accessibility in mind. **No additional JavaScript dependencies required.**
