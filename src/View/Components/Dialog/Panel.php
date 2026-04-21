@@ -28,7 +28,7 @@ class Panel extends Component
 
     public function maxWidthClass(): string
     {
-        return self::MAX_WIDTHS[$this->maxWidth] ?? '';
+        return self::MAX_WIDTHS[$this->maxWidth] ?? 'lg';
     }
 
     public function render(): View
