@@ -7,7 +7,7 @@ use Illuminate\View\Component;
 
 class Panel extends Component
 {
-    public const MAX_WIDTHS = [
+    public const array MAX_WIDTHS = [
         'sm' => 'max-w-sm',
         'md' => 'max-w-md',
         'lg' => 'max-w-lg',
@@ -28,7 +28,7 @@ class Panel extends Component
 
     public function maxWidthClass(): string
     {
-        return self::MAX_WIDTHS[$this->maxWidth] ?? '';
+        return self::MAX_WIDTHS[$this->maxWidth] ?? 'lg';
     }
 
     public function render(): View
