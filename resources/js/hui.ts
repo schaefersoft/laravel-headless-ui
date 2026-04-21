@@ -1,6 +1,7 @@
 import './avatar/avatar'
 import './dialog/dialog'
 import './disclosure/disclosure'
+import './dropdown/dropdown'
 import './range-slider/range-slider'
 import './tabs/tabs'
 import './toggle/toggle'
