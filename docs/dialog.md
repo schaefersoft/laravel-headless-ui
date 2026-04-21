@@ -2,6 +2,8 @@
 
 An accessible modal dialog built on the native `<dialog>` element. Includes focus trapping, scroll locking, backdrop click, and Escape to close.
 
+![Dialog example](./assets/dialog/dialog_01.png)
+
 ## Usage
 
 Blade components: `x-hui::dialog`, `x-hui::dialog.background`, `x-hui::dialog.overlay`, `x-hui::dialog.panel`, `x-hui::dialog.title`, `x-hui::dialog.description`
@@ -156,9 +158,10 @@ The dialog renders as a native `<dialog>` with all default styles reset (no padd
 
 ### Panel
 
-| Prop    | Type     | Default | Description                    |
-|---------|----------|---------|--------------------------------|
-| `class` | `string` | `""`    | Custom classes for the panel.  |
+| Prop        | Type     | Default | Description                                                                 |
+|-------------|----------|---------|-----------------------------------------------------------------------------|
+| `class`     | `string` | `""`    | Custom classes for the panel.                                               |
+| `max-width` | `string` | `""`    | Panel max-width. One of: `sm`, `md`, `lg`, `xl`, `2xl`–`7xl`, or `full`.   |
 
 > [!NOTE]
 > Allows all valid HTML `<div/>` attributes (class, style, data-*, etc.).
