@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.0](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.1.3...v1.2.0) (2026-04-21)
+
+
+### Features
+
+* **ui:** add maxWith ([d15d559](https://github.com/schaefersoft/laravel-headless-ui/commit/d15d55957850ec6db70af1495e3d27cefd1446d7))
+* **ui:** add modal backdrop as own component ([ba73d37](https://github.com/schaefersoft/laravel-headless-ui/commit/ba73d374dfeff15f68988cccc74bb943bd759a7c))
+* **ui:** dialog transitions ([ad60462](https://github.com/schaefersoft/laravel-headless-ui/commit/ad60462d12c096d22255d4e776038cb7701006c8))
+* **ui:** modal closeOnClick/closeOnBgClick/overFlow props ([b0b9c9c](https://github.com/schaefersoft/laravel-headless-ui/commit/b0b9c9c92d861d8c664c5ffb37dfa2be7054b80b))
+
 ## [1.1.3](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.1.2...v1.1.3) (2026-04-20)
 
 
