@@ -2,6 +2,7 @@
 @import "./dialog/index.css";
 @import "./disclosure/index.css";
 @import "./dropdown/index.css";
+@import "./flyout/index.css";
 @import "./range-slider/index.css";
 @import "./toggle/index.css";
 @import "./tooltip/index.css";

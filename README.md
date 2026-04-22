@@ -71,6 +71,7 @@ classes.
 | [Dropdown](./docs/dropdown.md)         | <img src="./docs/assets/dropdown/dropdown_01.png" style="max-height: 180px; max-width: 400px;">         |
 | [Dialog](./docs/dialog.md)             | <img src="./docs/assets/dialog/dialog_01.png" style="max-height: 180px; max-width: 400px;">             |
 | [Disclosure](./docs/disclosure.md)     | <img src="./docs/assets/disclosure/disclosure_01.png" style="max-height: 180px; max-width: 400px;">     |
+| [Flyout](./docs/flyout.md)             | <img src="./docs/assets/flyout/flyout_01.png" style="max-height: 180px; max-width: 400px;">             |
 | [Range slider](./docs/range-slider.md) | <img src="./docs/assets/range-slider/range-slider_01.png" style="max-height: 180px; max-width: 400px;"> |
 | [Tabs](./docs/tabs.md)                 | <img src="./docs/assets/tabs/tabs_01.png" style="max-height: 180px; max-width: 400px;">                 |
 | [Toggle](./docs/toggle.md)             | <img src="./docs/assets/toggle/toggle_01.png" style="max-height: 180px; max-width: 400px;">             |

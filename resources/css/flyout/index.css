@@ -1,0 +1,60 @@
+/* Base: reset dialog defaults */
+.hui-flyout {
+    padding: 0;
+    border: none;
+    background: transparent;
+    max-width: none;
+    max-height: none;
+}
+
+.hui-flyout::backdrop {
+    background: transparent;
+}
+
+.hui-flyout-background {
+    position: fixed;
+    inset: 0;
+}
+
+/* Panel: positioned fixed within the dialog's top layer */
+.hui-flyout-panel {
+    position: fixed;
+    overflow-y: auto;
+}
+
+/* Position variants */
+.hui-flyout-left .hui-flyout-panel {
+    inset: 0 auto 0 0; /* top right bottom left */
+}
+
+.hui-flyout-right .hui-flyout-panel {
+    inset: 0 0 0 auto;
+}
+
+.hui-flyout-top .hui-flyout-panel {
+    inset: 0 0 auto 0;
+}
+
+.hui-flyout-bottom .hui-flyout-panel {
+    inset: auto 0 0 0;
+}
+
+/* Inline mode: static sidebar, no dialog behavior */
+.hui-flyout[data-hui-flyout-mode="inline"] {
+    display: block;
+    position: static;
+    overflow: visible;
+}
+
+.hui-flyout[data-hui-flyout-mode="inline"]::backdrop {
+    display: none;
+}
+
+.hui-flyout[data-hui-flyout-mode="inline"] .hui-flyout-background {
+    display: none;
+}
+
+.hui-flyout[data-hui-flyout-mode="inline"] .hui-flyout-panel {
+    position: static;
+    overflow-y: visible;
+}
