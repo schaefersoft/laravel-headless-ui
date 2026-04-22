@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.3.0...v1.4.0) (2026-04-22)
+
+
+### Features
+
+* flyout component ([6f61142](https://github.com/schaefersoft/laravel-headless-ui/commit/6f611423d9663a4e3fad99733fc546151c5e7665))
+
 ## [1.3.0](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.2.1...v1.3.0) (2026-04-21)
 
 
