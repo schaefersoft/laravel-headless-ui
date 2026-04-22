@@ -83,16 +83,16 @@ function afterTransition(el: HTMLElement): Promise<void> {
     });
 }
 
-function runTransition(el: HTMLElement, prefix: string): Promise<void> {
-    const { base, from, to } = getTransitionClasses(el, prefix);
-    if (base.length === 0 && from.length === 0 && to.length === 0) {
-        return Promise.resolve();
+function prepareEnterTransition(el: HTMLElement, prefix: string): void {
+    const { base, from } = getTransitionClasses(el, prefix);
+    if (base.length > 0 || from.length > 0) {
+        el.classList.add(...base, ...from);
     }
+}
 
-    // Step 1: apply base + from
-    el.classList.add(...base, ...from);
-
-    // Step 2: next frame, swap from → to, wait for transition
+function startEnterTransition(el: HTMLElement, prefix: string): Promise<void> {
+    const { base, from, to } = getTransitionClasses(el, prefix);
+    if (base.length === 0 && from.length === 0 && to.length === 0) return Promise.resolve();
     return nextFrame().then(() => {
         el.classList.remove(...from);
         el.classList.add(...to);
@@ -100,6 +100,23 @@ function runTransition(el: HTMLElement, prefix: string): Promise<void> {
     }).then(() => {
         el.classList.remove(...base, ...to);
     });
+}
+
+function runLeaveTransition(el: HTMLElement, prefix: string): Promise<void> {
+    const { base, from, to } = getTransitionClasses(el, prefix);
+    if (base.length === 0 && from.length === 0 && to.length === 0) return Promise.resolve();
+    el.classList.add(...base, ...from);
+    return nextFrame().then(() => {
+        el.classList.remove(...from);
+        el.classList.add(...to);
+        return afterTransition(el);
+    });
+    // Do NOT remove classes here — element will be hidden by dialog.close()
+}
+
+function cleanupLeaveTransition(el: HTMLElement, prefix: string): void {
+    const { base, to } = getTransitionClasses(el, prefix);
+    el.classList.remove(...base, ...to);
 }
 
 function getTransitionTargets(dialog: HTMLDialogElement): HTMLElement[] {
@@ -130,6 +147,12 @@ function setupDialog(dialog: HTMLDialogElement) {
         if (dialog.open || isTransitioning) return;
 
         previouslyFocused = document.activeElement as HTMLElement | null;
+
+        // Apply enter-from classes BEFORE showModal to prevent flicker
+        const targets = getTransitionTargets(dialog);
+        const enterTargets = targets.filter((t) => hasTransition(t, 'data-hui-dialog-enter'));
+        enterTargets.forEach((t) => prepareEnterTransition(t, 'data-hui-dialog-enter'));
+
         dialog.showModal();
         dialog.setAttribute('data-hui-dialog-open', '');
 
@@ -142,13 +165,9 @@ function setupDialog(dialog: HTMLDialogElement) {
             focusable[0].focus();
         }
 
-        // Run enter transitions on all targets
-        const targets = getTransitionTargets(dialog);
-        if (targets.length > 0) {
-            const transitions = targets
-                .filter((t) => hasTransition(t, 'data-hui-dialog-enter'))
-                .map((t) => runTransition(t, 'data-hui-dialog-enter'));
-            Promise.all(transitions);
+        // Run the enter transitions (from → to)
+        if (enterTargets.length > 0) {
+            Promise.all(enterTargets.map((t) => startEnterTransition(t, 'data-hui-dialog-enter')));
         }
 
         dialog.dispatchEvent(new CustomEvent('hui:dialog:open', { bubbles: true }));
@@ -185,8 +204,12 @@ function setupDialog(dialog: HTMLDialogElement) {
 
         if (leaveTargets.length > 0) {
             isTransitioning = true;
-            const transitions = leaveTargets.map((t) => runTransition(t, 'data-hui-dialog-leave'));
-            Promise.all(transitions).then(finishClose);
+            const transitions = leaveTargets.map((t) => runLeaveTransition(t, 'data-hui-dialog-leave'));
+            Promise.all(transitions).then(() => {
+                finishClose();
+                // Clean up leave classes after dialog is hidden
+                leaveTargets.forEach((t) => cleanupLeaveTransition(t, 'data-hui-dialog-leave'));
+            });
         } else {
             finishClose();
         }
@@ -205,9 +228,11 @@ function setupDialog(dialog: HTMLDialogElement) {
         }
     });
 
-    // Close on backdrop click (click on <dialog> itself, not on panel)
+    // Close on backdrop / background click
     dialog.addEventListener('click', (e) => {
-        if (e.target === dialog && !noBackdropClose) {
+        if (noBackdropClose) return;
+        const target = e.target as HTMLElement;
+        if (target === dialog || target.hasAttribute('data-hui-dialog-background')) {
             close();
         }
     });
