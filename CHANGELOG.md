@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.4.0...v1.4.1) (2026-04-29)
+
+
+### Miscellaneous Chores
+
+* logo in readme ([eb1e8bf](https://github.com/schaefersoft/laravel-headless-ui/commit/eb1e8bf02becf219ae3e5299d5190bcc1c12e960))
+
 ## [1.4.0](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.3.0...v1.4.0) (2026-04-22)
 
 
