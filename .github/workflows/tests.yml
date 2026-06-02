@@ -46,6 +46,6 @@ jobs:
           php-version: ${{ matrix.php-version }}
           coverage: none
 
-      - run: composer install --no-interaction --prefer-dist
+      - run: composer update --no-interaction --prefer-dist --prefer-stable
 
       - run: vendor/bin/pest
