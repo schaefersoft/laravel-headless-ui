@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.4.1...v1.4.2) (2026-06-02)
+
+
+### Miscellaneous Chores
+
+* **deps:** bump vitest and @vitest/coverage-v8 to ^4.1.8 ([fb29d25](https://github.com/schaefersoft/laravel-headless-ui/commit/fb29d25362b91c7cee61d1bfa4345de36ca95a5b))
+
 ## [1.4.1](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.4.0...v1.4.1) (2026-04-29)
 
 
