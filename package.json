@@ -13,9 +13,9 @@
   "devDependencies": {
     "vite": "^6.3.4",
     "@types/node": "^24.7.2",
-    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/coverage-v8": "^4.1.8",
     "happy-dom": "^20.0.0",
     "typescript": "^5.9.3",
-    "vitest": "^3.2.4"
+    "vitest": "^4.1.8"
   }
 }
