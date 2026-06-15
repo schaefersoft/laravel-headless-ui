@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.3](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.4.2...v1.4.3) (2026-06-15)
+
+
+### Miscellaneous Chores
+
+* bump to vite v8 ([c0091ab](https://github.com/schaefersoft/laravel-headless-ui/commit/c0091ab43d80e05ee726ed8dd127758eaab67364))
+* vite 8 asset build ([3ab853b](https://github.com/schaefersoft/laravel-headless-ui/commit/3ab853bf452ff2c3842925f6637b68b60e4dfd3a))
+
 ## [1.4.2](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.4.1...v1.4.2) (2026-06-02)
 
 
