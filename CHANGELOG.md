@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.5.1](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.5.0...v1.5.1) (2026-06-23)
+
+
+### Bug Fixes
+
+* pin composer platform to php 8.2 so lock installs across CI matrix ([ff6893d](https://github.com/schaefersoft/laravel-headless-ui/commit/ff6893da190f5e1163b6549cf5ef5629d4092c3a))
+* use composer update in release workflow instead of install ([0e0763b](https://github.com/schaefersoft/laravel-headless-ui/commit/0e0763b8634552f725732d2aa146f5068a1abe5d))
+
+
+### Miscellaneous Chores
+
+* commit composer.lock to enable dependency vulnerability scanning ([752e64f](https://github.com/schaefersoft/laravel-headless-ui/commit/752e64fa4d70f7dc8eb02031983a9ffe897c8a79))
+
 ## [1.5.0](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.4.3...v1.5.0) (2026-06-23)
 
 
