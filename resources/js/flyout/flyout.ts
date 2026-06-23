@@ -120,6 +120,54 @@ function isInlineMode(flyout: HTMLDialogElement): boolean {
     return window.innerWidth >= bp;
 }
 
+// --- Swipe gestures ---
+
+type FlyoutPosition = 'left' | 'right' | 'top' | 'bottom';
+type SwipeMode = 'open' | 'close' | 'both';
+
+const SWIPE_AXIS: Record<FlyoutPosition, 'x' | 'y'> = {
+    left: 'x', right: 'x', top: 'y', bottom: 'y',
+};
+
+// Direction the panel exits in: right/bottom = positive, left/top = negative.
+const SWIPE_CLOSE_SIGN: Record<FlyoutPosition, 1 | -1> = {
+    left: -1, right: 1, top: -1, bottom: 1,
+};
+
+function getFlyoutPosition(flyout: HTMLElement): FlyoutPosition {
+    const p = flyout.getAttribute('data-hui-flyout-position');
+    return (p === 'left' || p === 'top' || p === 'bottom') ? p : 'right';
+}
+
+function getSwipeMode(flyout: HTMLElement): SwipeMode | null {
+    const v = flyout.getAttribute('data-hui-flyout-swipe');
+    return (v === 'open' || v === 'close' || v === 'both') ? v : null;
+}
+
+function atCloseScrollBoundary(panel: HTMLElement, position: FlyoutPosition): boolean {
+    if (position === 'left' || position === 'right') return true;
+    if (position === 'bottom') return panel.scrollTop <= 0;
+    return panel.scrollTop + panel.clientHeight >= panel.scrollHeight - 1;
+}
+
+function projectOpenSwipe(position: FlyoutPosition, dx: number, dy: number): { inward: number; cross: number } {
+    switch (position) {
+        case 'left': return { inward: dx, cross: dy };
+        case 'right': return { inward: -dx, cross: dy };
+        case 'top': return { inward: dy, cross: dx };
+        case 'bottom': return { inward: -dy, cross: dx };
+    }
+}
+
+function inOpenEdgeZone(x: number, y: number, position: FlyoutPosition, edge: number): boolean {
+    switch (position) {
+        case 'left': return x <= edge;
+        case 'right': return x >= window.innerWidth - edge;
+        case 'top': return y <= edge;
+        case 'bottom': return y >= window.innerHeight - edge;
+    }
+}
+
 // --- Flyout setup ---
 
 function setupFlyout(flyout: HTMLDialogElement) {
@@ -180,12 +228,14 @@ function setupFlyout(flyout: HTMLDialogElement) {
         flyout.dispatchEvent(new CustomEvent('hui:flyout:open', { bubbles: true }));
     }
 
-    function close() {
+    function close(opts: { immediate?: boolean } = {}) {
         if (isInlineMode(flyout)) return;
         if (!flyout.open || isTransitioning) return;
 
         const targets = getTransitionTargets(flyout);
-        const leaveTargets = targets.filter((t) => hasTransition(t, 'data-hui-flyout-leave'));
+        const leaveTargets = opts.immediate
+            ? []
+            : targets.filter((t) => hasTransition(t, 'data-hui-flyout-leave'));
 
         function finishClose() {
             flyout.close();
@@ -263,6 +313,127 @@ function setupFlyout(flyout: HTMLDialogElement) {
         const mq = window.matchMedia(`(min-width: ${bp}px)`);
         mq.addEventListener('change', updateInlineState);
         updateInlineState();
+    }
+
+    // Swipe gestures
+    function setupSwipeClose(position: FlyoutPosition) {
+        const axis = SWIPE_AXIS[position];
+        const sign = SWIPE_CLOSE_SIGN[position];
+        const panels = Array.from(flyout.querySelectorAll<HTMLElement>('[data-hui-flyout-panel]'));
+
+        panels.forEach((panel) => {
+            let startX = 0, startY = 0, lastTime = 0;
+            let progress = 0;
+            let velocity = 0;
+            let size = 0;
+            let decided = false;
+            let active = false;
+
+            function reset() {
+                decided = false; active = false; progress = 0; velocity = 0;
+            }
+
+            function settle(transform: string, then?: () => void) {
+                panel.style.transition = 'transform 0.2s cubic-bezier(0.3, 0, 0.2, 1)';
+                panel.style.transform = transform;
+                afterTransition(panel).then(() => {
+                    if (then) then();
+                    panel.style.transition = '';
+                    panel.style.transform = '';
+                });
+            }
+
+            panel.addEventListener('touchstart', (e: TouchEvent) => {
+                if (e.touches.length !== 1) return;
+                if (!flyout.open || isInlineMode(flyout) || isTransitioning) return;
+                const t = e.touches[0];
+                startX = t.clientX; startY = t.clientY; lastTime = e.timeStamp;
+                size = axis === 'x'
+                    ? panel.getBoundingClientRect().width
+                    : panel.getBoundingClientRect().height;
+                reset();
+            }, { passive: true });
+
+            panel.addEventListener('touchmove', (e: TouchEvent) => {
+                if (e.touches.length !== 1) return;
+                if (!flyout.open || isInlineMode(flyout)) return;
+                const t = e.touches[0];
+                const along = axis === 'x' ? t.clientX - startX : t.clientY - startY;
+                const cross = axis === 'x' ? t.clientY - startY : t.clientX - startX;
+                const closeDelta = along * sign;
+
+                if (!decided) {
+                    if (Math.abs(along) < 8 && Math.abs(cross) < 8) return;
+                    decided = true;
+                    active = Math.abs(along) > Math.abs(cross)
+                        && closeDelta > 0
+                        && atCloseScrollBoundary(panel, position);
+                    if (active) panel.style.transition = 'none';
+                }
+                if (!active) return;
+
+                e.preventDefault();
+                const moved = Math.max(0, closeDelta);
+                const dt = e.timeStamp - lastTime;
+                if (dt > 0) velocity = (moved - progress) / dt;
+                progress = moved; lastTime = e.timeStamp;
+                panel.style.transform = axis === 'x'
+                    ? `translateX(${sign * moved}px)`
+                    : `translateY(${sign * moved}px)`;
+            }, { passive: false });
+
+            function end() {
+                if (!active) { reset(); return; }
+                const shouldClose = (size > 0 && progress > size * 0.4) || velocity > 0.5;
+                reset();
+                isTransitioning = true;
+                if (shouldClose) {
+                    const off = axis === 'x' ? `translateX(${sign * 100}%)` : `translateY(${sign * 100}%)`;
+                    settle(off, () => { isTransitioning = false; close({ immediate: true }); });
+                } else {
+                    settle(axis === 'x' ? 'translateX(0)' : 'translateY(0)', () => { isTransitioning = false; });
+                }
+            }
+
+            panel.addEventListener('touchend', end, { passive: true });
+            panel.addEventListener('touchcancel', end, { passive: true });
+        });
+    }
+
+    function setupSwipeOpen(position: FlyoutPosition) {
+        const EDGE = 24;
+        const THRESHOLD = 48;
+        let tracking = false;
+        let startX = 0, startY = 0;
+
+        document.addEventListener('touchstart', (e: TouchEvent) => {
+            if (!flyout.isConnected || e.touches.length !== 1) return;
+            if (flyout.open || isInlineMode(flyout) || isTransitioning) return;
+            const t = e.touches[0];
+            if (!inOpenEdgeZone(t.clientX, t.clientY, position, EDGE)) return;
+            tracking = true; startX = t.clientX; startY = t.clientY;
+        }, { passive: true });
+
+        document.addEventListener('touchmove', (e: TouchEvent) => {
+            if (!tracking || e.touches.length !== 1) return;
+            const t = e.touches[0];
+            const { inward, cross } = projectOpenSwipe(position, t.clientX - startX, t.clientY - startY);
+            if (inward > THRESHOLD && inward > Math.abs(cross)) {
+                tracking = false;
+                open();
+            }
+        }, { passive: true });
+
+        const stop = () => { tracking = false; };
+        document.addEventListener('touchend', stop, { passive: true });
+        document.addEventListener('touchcancel', stop, { passive: true });
+    }
+
+    const swipeMode = getSwipeMode(flyout);
+    if (swipeMode) {
+        const position = getFlyoutPosition(flyout);
+        if (swipeMode === 'close' || swipeMode === 'both') setupSwipeClose(position);
+        if (swipeMode === 'open' || swipeMode === 'both') setupSwipeOpen(position);
     }
 
     // Store API

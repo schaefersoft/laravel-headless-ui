@@ -8,6 +8,7 @@ interface FlyoutOpts {
     noBackdropClose?: boolean;
     scrollLock?: boolean;
     inline?: number;
+    swipe?: 'open' | 'close' | 'both';
 }
 
 function createFlyout(id: string, opts: FlyoutOpts = {}): HTMLDialogElement {
@@ -18,6 +19,7 @@ function createFlyout(id: string, opts: FlyoutOpts = {}): HTMLDialogElement {
         opts.noBackdropClose ? 'data-hui-flyout-no-backdrop-close' : '',
         opts.scrollLock ? 'data-hui-flyout-scroll-lock' : '',
         opts.inline ? `data-hui-flyout-inline="${opts.inline}"` : '',
+        opts.swipe ? `data-hui-flyout-swipe="${opts.swipe}"` : '',
     ].filter(Boolean).join(' ');
 
     document.body.innerHTML = `
@@ -34,6 +36,31 @@ function createFlyout(id: string, opts: FlyoutOpts = {}): HTMLDialogElement {
     `;
     registerFlyouts();
     return document.getElementById(id) as HTMLDialogElement;
+}
+
+function dispatchTouch(el: EventTarget, type: string, x: number, y: number, ts = 0) {
+    const e = new Event(type, { bubbles: true, cancelable: true });
+    const point = { clientX: x, clientY: y };
+    Object.defineProperty(e, 'timeStamp', { value: ts, configurable: true });
+    (e as any).touches = (type === 'touchend' || type === 'touchcancel') ? [] : [point];
+    (e as any).changedTouches = [point];
+    el.dispatchEvent(e);
+    return e;
+}
+
+function stubPanelSize(panel: HTMLElement, width: number, height: number) {
+    panel.getBoundingClientRect = () => ({
+        width, height, top: 0, left: 0, right: width, bottom: height, x: 0, y: 0,
+        toJSON() {},
+    }) as DOMRect;
+}
+
+async function waitFor(cond: () => boolean, timeout = 800): Promise<void> {
+    const start = Date.now();
+    while (!cond()) {
+        if (Date.now() - start > timeout) throw new Error('waitFor: condition not met in time');
+        await new Promise((r) => setTimeout(r, 10));
+    }
 }
 
 describe('Flyout', () => {
@@ -201,5 +228,128 @@ describe('Flyout', () => {
         createFlyout('test-flyout');
         openFlyout('non-existent');
         closeFlyout('non-existent');
+    });
+
+    // --- Swipe gestures ---
+
+    it('closes when swiped past the threshold toward its edge', async () => {
+        const flyout = createFlyout('test-flyout', { swipe: 'close' });
+        openFlyout('test-flyout');
+        const panel = flyout.querySelector<HTMLElement>('[data-hui-flyout-panel]')!;
+        stubPanelSize(panel, 300, 600);
+
+        dispatchTouch(panel, 'touchstart', 250, 300, 0);
+        dispatchTouch(panel, 'touchmove', 430, 300, 1000);
+        dispatchTouch(panel, 'touchend', 430, 300, 1000);
+
+        await waitFor(() => flyout.open === false);
+        expect(flyout.open).toBe(false);
+    });
+
+    it('snaps back and stays open when the swipe is too small', () => {
+        const flyout = createFlyout('test-flyout', { swipe: 'close' });
+        openFlyout('test-flyout');
+        const panel = flyout.querySelector<HTMLElement>('[data-hui-flyout-panel]')!;
+        stubPanelSize(panel, 300, 600);
+
+        dispatchTouch(panel, 'touchstart', 250, 300, 0);
+        dispatchTouch(panel, 'touchmove', 280, 300, 200);
+        dispatchTouch(panel, 'touchend', 280, 300, 200);
+
+        expect(flyout.open).toBe(true);
+    });
+
+    it('closes on a fast flick even below the distance threshold', async () => {
+        const flyout = createFlyout('test-flyout', { swipe: 'close' });
+        openFlyout('test-flyout');
+        const panel = flyout.querySelector<HTMLElement>('[data-hui-flyout-panel]')!;
+        stubPanelSize(panel, 300, 600);
+
+        dispatchTouch(panel, 'touchstart', 250, 300, 0);
+        dispatchTouch(panel, 'touchmove', 310, 300, 10);
+        dispatchTouch(panel, 'touchend', 310, 300, 10);
+
+        await waitFor(() => flyout.open === false);
+        expect(flyout.open).toBe(false);
+    });
+
+    it('closes a left flyout when swiped left', async () => {
+        const flyout = createFlyout('test-flyout', { position: 'left', swipe: 'close' });
+        openFlyout('test-flyout');
+        const panel = flyout.querySelector<HTMLElement>('[data-hui-flyout-panel]')!;
+        stubPanelSize(panel, 300, 600);
+
+        dispatchTouch(panel, 'touchstart', 250, 300, 0);
+        dispatchTouch(panel, 'touchmove', 70, 300, 1000);
+        dispatchTouch(panel, 'touchend', 70, 300, 1000);
+
+        await waitFor(() => flyout.open === false);
+        expect(flyout.open).toBe(false);
+    });
+
+    it('does not close on a cross-axis (scrolling) swipe', () => {
+        const flyout = createFlyout('test-flyout', { swipe: 'close' });
+        openFlyout('test-flyout');
+        const panel = flyout.querySelector<HTMLElement>('[data-hui-flyout-panel]')!;
+        stubPanelSize(panel, 300, 600);
+
+        dispatchTouch(panel, 'touchstart', 250, 300, 0);
+        dispatchTouch(panel, 'touchmove', 256, 500, 200);
+        dispatchTouch(panel, 'touchend', 256, 500, 200);
+
+        expect(flyout.open).toBe(true);
+    });
+
+    it('bottom sheet closes on swipe-down only when scrolled to the top', async () => {
+        const flyout = createFlyout('test-flyout', { position: 'bottom', swipe: 'close' });
+        openFlyout('test-flyout');
+        const panel = flyout.querySelector<HTMLElement>('[data-hui-flyout-panel]')!;
+        stubPanelSize(panel, 600, 400);
+
+        Object.defineProperty(panel, 'scrollTop', { value: 50, configurable: true });
+        dispatchTouch(panel, 'touchstart', 300, 100, 0);
+        dispatchTouch(panel, 'touchmove', 300, 300, 1000);
+        dispatchTouch(panel, 'touchend', 300, 300, 1000);
+        expect(flyout.open).toBe(true);
+
+        Object.defineProperty(panel, 'scrollTop', { value: 0, configurable: true });
+        dispatchTouch(panel, 'touchstart', 300, 100, 2000);
+        dispatchTouch(panel, 'touchmove', 300, 300, 3000);
+        dispatchTouch(panel, 'touchend', 300, 300, 3000);
+        await waitFor(() => flyout.open === false);
+        expect(flyout.open).toBe(false);
+    });
+
+    it('opens on an edge swipe when swipe="open"', () => {
+        const flyout = createFlyout('test-flyout', { swipe: 'open' });
+        const w = window.innerWidth;
+
+        dispatchTouch(document, 'touchstart', w - 5, 300, 0);
+        dispatchTouch(document, 'touchmove', w - 80, 300, 100);
+
+        expect(flyout.open).toBe(true);
+    });
+
+    it('does not open from an edge swipe when swipe="close"', () => {
+        const flyout = createFlyout('test-flyout', { swipe: 'close' });
+        const w = window.innerWidth;
+
+        dispatchTouch(document, 'touchstart', w - 5, 300, 0);
+        dispatchTouch(document, 'touchmove', w - 80, 300, 100);
+
+        expect(flyout.open).toBe(false);
+    });
+
+    it('ignores swipes entirely when the swipe prop is absent', () => {
+        const flyout = createFlyout('test-flyout');
+        openFlyout('test-flyout');
+        const panel = flyout.querySelector<HTMLElement>('[data-hui-flyout-panel]')!;
+        stubPanelSize(panel, 300, 600);
+
+        dispatchTouch(panel, 'touchstart', 250, 300, 0);
+        dispatchTouch(panel, 'touchmove', 430, 300, 1000);
+        dispatchTouch(panel, 'touchend', 430, 300, 1000);
+
+        expect(flyout.open).toBe(true);
     });
 });

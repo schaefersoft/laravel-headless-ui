@@ -47,6 +47,7 @@ The flyout can be closed by:
 - Clicking a `data-hui-flyout-close` element inside the flyout
 - Pressing `Escape`
 - Clicking the backdrop (outside the panel)
+- Swiping the panel toward its edge (when [`swipe`](#swipe-gestures-mobile) is enabled)
 - Calling `closeFlyout('id')` from JavaScript
 
 ### Preventing close
@@ -97,6 +98,52 @@ In inline mode:
 - The panel becomes `position: static`
 - The trigger button can be hidden with responsive utilities (e.g. `lg:hidden`)
 - Opening via trigger/JS API is ignored
+
+### Swipe gestures (mobile)
+
+The `swipe` prop enables touch swipe gestures. The direction is derived from `position` — you drag the panel toward
+its own edge to close it, and swipe inward from that edge to open it.
+
+```bladehtml
+
+{{-- Both directions (swipe to open from the edge, swipe the panel away to close) --}}
+<x-hui::flyout id="menu" position="left" swipe>...</x-hui::flyout>
+
+{{-- Close only — the safe default for most drawers and bottom sheets --}}
+<x-hui::flyout id="cart" position="right" swipe="close">...</x-hui::flyout>
+
+{{-- Open only --}}
+<x-hui::flyout id="nav" position="left" swipe="open">...</x-hui::flyout>
+```
+
+| `swipe` value      | Gestures enabled          |
+|--------------------|---------------------------|
+| `false` (default)  | None                      |
+| `true`             | Swipe to open **and** close |
+| `"close"`          | Swipe to close only       |
+| `"open"`           | Swipe to open only        |
+| `"both"`           | Same as `true`            |
+
+**Swipe to close.** While open, dragging the panel toward its edge makes it follow your finger. Releasing past ~40% of
+the panel's size (or with a quick flick) animates it the rest of the way out and closes; otherwise it snaps back. For
+`top`/`bottom` panels the gesture only engages when the panel's content is scrolled to the relevant edge, so it never
+hijacks normal scrolling.
+
+| Position | Swipe to close | Swipe to open (from edge) |
+|----------|----------------|---------------------------|
+| `right`  | swipe right    | swipe left from right edge |
+| `left`   | swipe left     | swipe right from left edge |
+| `top`    | swipe up       | swipe down from top edge   |
+| `bottom` | swipe down     | swipe up from bottom edge  |
+
+> [!NOTE]
+> Swipe is touch-only and has no effect in [inline mode](#responsive-inline-mode-sidebar). Swipe-to-close works with or
+> without [transitions](#transitions) — it runs its own panel animation.
+
+> [!WARNING]
+> Edge **swipe-to-open** can conflict with native browser/OS edge gestures (e.g. iOS Safari's left-edge back swipe, or
+> the bottom home indicator). For these positions, prefer `swipe="close"` and open via a trigger button. Register at most
+> one swipe-to-open flyout per screen edge.
 
 ### Nested flyouts
 
@@ -183,6 +230,7 @@ Add transition attributes to the background and/or panel for animated open/close
 | `close-on-backdrop-click` | `boolean` | `true`    | Whether backdrop click closes the flyout.            |
 | `scroll-lock`             | `boolean` | `false`   | Locks body scroll while open.                        |
 | `inline`                  | `int`     | `null`    | Breakpoint (px) above which the flyout is a sidebar. |
+| `swipe`                   | `bool\|string` | `false` | Touch swipe gestures: `true`/`"both"`, `"open"`, or `"close"`. |
 
 ### Panel
 
