@@ -346,7 +346,7 @@ function E(e = document) {
 typeof window < "u" && typeof document < "u" && (document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", () => E()) : E());
 //#endregion
 //#region resources/js/flyout/flyout.ts
-var D = [
+var re = [
 	"a[href]",
 	"button:not([disabled])",
 	"input:not([disabled]):not([type=\"hidden\"])",
@@ -354,12 +354,12 @@ var D = [
 	"textarea:not([disabled])",
 	"[tabindex]:not([tabindex=\"-1\"])"
 ].join(",");
-function O(e) {
-	return Array.from(e.querySelectorAll(D));
+function D(e) {
+	return Array.from(e.querySelectorAll(re));
 }
-function re(e, t) {
+function ie(e, t) {
 	if (t.key !== "Tab") return;
-	let n = O(e);
+	let n = D(e);
 	if (n.length === 0) {
 		t.preventDefault();
 		return;
@@ -367,20 +367,20 @@ function re(e, t) {
 	let r = n[0], i = n[n.length - 1];
 	t.shiftKey ? document.activeElement === r && (t.preventDefault(), i.focus()) : document.activeElement === i && (t.preventDefault(), r.focus());
 }
-function k(e, t) {
+function O(e, t) {
 	return {
 		base: (e.getAttribute(t) || "").split(/\s+/).filter(Boolean),
 		from: (e.getAttribute(`${t}-from`) || "").split(/\s+/).filter(Boolean),
 		to: (e.getAttribute(`${t}-to`) || "").split(/\s+/).filter(Boolean)
 	};
 }
-function A(e, t) {
+function k(e, t) {
 	return e.hasAttribute(t) || e.hasAttribute(`${t}-from`) || e.hasAttribute(`${t}-to`);
 }
-function j() {
+function A() {
 	return new Promise((e) => requestAnimationFrame(() => requestAnimationFrame(() => e())));
 }
-function M(e) {
+function j(e) {
 	return new Promise((t) => {
 		let n = getComputedStyle(e), r = (parseFloat(n.transitionDuration || "0") + parseFloat(n.transitionDelay || "0")) * 1e3;
 		if (r <= 0) {
@@ -393,69 +393,119 @@ function M(e) {
 		e.addEventListener("transitionend", a, { once: !0 }), setTimeout(a, r + 50);
 	});
 }
-function N(e, t) {
-	let { base: n, from: r } = k(e, t);
+function M(e, t) {
+	let { base: n, from: r } = O(e, t);
 	(n.length > 0 || r.length > 0) && e.classList.add(...n, ...r);
 }
-function P(e, t) {
-	let { base: n, from: r, to: i } = k(e, t);
-	return n.length === 0 && r.length === 0 && i.length === 0 ? Promise.resolve() : j().then(() => (e.classList.remove(...r), e.classList.add(...i), M(e))).then(() => {
+function ae(e, t) {
+	let { base: n, from: r, to: i } = O(e, t);
+	return n.length === 0 && r.length === 0 && i.length === 0 ? Promise.resolve() : A().then(() => (e.classList.remove(...r), e.classList.add(...i), j(e))).then(() => {
 		e.classList.remove(...n, ...i);
 	});
 }
-function F(e, t) {
-	let { base: n, from: r, to: i } = k(e, t);
-	return n.length === 0 && r.length === 0 && i.length === 0 ? Promise.resolve() : (e.classList.add(...n, ...r), j().then(() => (e.classList.remove(...r), e.classList.add(...i), M(e))));
+function oe(e, t) {
+	let { base: n, from: r, to: i } = O(e, t);
+	return n.length === 0 && r.length === 0 && i.length === 0 ? Promise.resolve() : (e.classList.add(...n, ...r), A().then(() => (e.classList.remove(...r), e.classList.add(...i), j(e))));
 }
-function I(e, t) {
-	let { base: n, to: r } = k(e, t);
+function se(e, t) {
+	let { base: n, to: r } = O(e, t);
 	e.classList.remove(...n, ...r);
 }
-function L(e) {
+function N(e) {
 	let t = [];
-	return (A(e, "data-hui-flyout-enter") || A(e, "data-hui-flyout-leave")) && t.push(e), t.push(...Array.from(e.querySelectorAll("[data-hui-flyout-enter], [data-hui-flyout-leave]"))), t;
+	return (k(e, "data-hui-flyout-enter") || k(e, "data-hui-flyout-leave")) && t.push(e), t.push(...Array.from(e.querySelectorAll("[data-hui-flyout-enter], [data-hui-flyout-leave]"))), t;
 }
-function R(e) {
+function P(e) {
 	let t = e.getAttribute("data-hui-flyout-inline");
 	if (!t) return null;
 	let n = parseInt(t, 10);
 	return Number.isFinite(n) && n > 0 ? n : null;
 }
-function z(e) {
-	let t = R(e);
+function F(e) {
+	let t = P(e);
 	return t === null ? !1 : window.innerWidth >= t;
 }
-function B(e) {
+var ce = {
+	left: "x",
+	right: "x",
+	top: "y",
+	bottom: "y"
+}, le = {
+	left: -1,
+	right: 1,
+	top: -1,
+	bottom: 1
+};
+function I(e) {
+	let t = e.getAttribute("data-hui-flyout-position");
+	return t === "left" || t === "top" || t === "bottom" ? t : "right";
+}
+function L(e) {
+	let t = e.getAttribute("data-hui-flyout-swipe");
+	return t === "open" || t === "close" || t === "both" ? t : null;
+}
+function R(e, t) {
+	return t === "left" || t === "right" ? !0 : t === "bottom" ? e.scrollTop <= 0 : e.scrollTop + e.clientHeight >= e.scrollHeight - 1;
+}
+function z(e, t, n) {
+	switch (e) {
+		case "left": return {
+			inward: t,
+			cross: n
+		};
+		case "right": return {
+			inward: -t,
+			cross: n
+		};
+		case "top": return {
+			inward: n,
+			cross: t
+		};
+		case "bottom": return {
+			inward: -n,
+			cross: t
+		};
+	}
+}
+function B(e, t, n, r) {
+	switch (n) {
+		case "left": return e <= r;
+		case "right": return e >= window.innerWidth - r;
+		case "top": return t <= r;
+		case "bottom": return t >= window.innerHeight - r;
+	}
+}
+function V(e) {
 	if (e.hasAttribute("data-hui-flyout-initialized")) return;
 	e.setAttribute("data-hui-flyout-initialized", "");
 	let t = null, n = !1, r = e.hasAttribute("data-hui-flyout-no-escape"), i = e.hasAttribute("data-hui-flyout-no-backdrop-close"), a = e.hasAttribute("data-hui-flyout-scroll-lock");
 	function o() {
-		R(e) !== null && (z(e) ? (e.setAttribute("data-hui-flyout-mode", "inline"), e.open && e.hasAttribute("data-hui-flyout-open") && e.close(), e.removeAttribute("data-hui-flyout-open")) : e.setAttribute("data-hui-flyout-mode", "flyout"));
+		P(e) !== null && (F(e) ? (e.setAttribute("data-hui-flyout-mode", "inline"), e.open && e.hasAttribute("data-hui-flyout-open") && e.close(), e.removeAttribute("data-hui-flyout-open")) : e.setAttribute("data-hui-flyout-mode", "flyout"));
 	}
 	function s() {
-		if (z(e) || e.open || n) return;
+		if (F(e) || e.open || n) return;
 		t = document.activeElement;
-		let r = L(e).filter((e) => A(e, "data-hui-flyout-enter"));
-		r.forEach((e) => N(e, "data-hui-flyout-enter")), e.showModal(), e.setAttribute("data-hui-flyout-open", ""), a && (document.body.style.overflow = "hidden");
-		let i = O(e);
-		i.length > 0 && i[0].focus(), r.length > 0 && Promise.all(r.map((e) => P(e, "data-hui-flyout-enter"))), e.dispatchEvent(new CustomEvent("hui:flyout:open", { bubbles: !0 }));
+		let r = N(e).filter((e) => k(e, "data-hui-flyout-enter"));
+		r.forEach((e) => M(e, "data-hui-flyout-enter")), e.showModal(), e.setAttribute("data-hui-flyout-open", ""), a && (document.body.style.overflow = "hidden");
+		let i = D(e);
+		i.length > 0 && i[0].focus(), r.length > 0 && Promise.all(r.map((e) => ae(e, "data-hui-flyout-enter"))), e.dispatchEvent(new CustomEvent("hui:flyout:open", { bubbles: !0 }));
 	}
-	function c() {
-		if (z(e) || !e.open || n) return;
-		let r = L(e).filter((e) => A(e, "data-hui-flyout-leave"));
-		function i() {
+	function c(r = {}) {
+		if (F(e) || !e.open || n) return;
+		let i = N(e), o = r.immediate ? [] : i.filter((e) => k(e, "data-hui-flyout-leave"));
+		function s() {
 			e.close(), e.removeAttribute("data-hui-flyout-open"), a && (document.querySelector("dialog[data-hui-flyout][data-hui-flyout-scroll-lock][open]") || (document.body.style.overflow = "")), t && t.focus && t.focus(), t = null, n = !1, e.dispatchEvent(new CustomEvent("hui:flyout:close", { bubbles: !0 }));
 		}
-		if (r.length > 0) {
+		if (o.length > 0) {
 			n = !0;
-			let e = r.map((e) => F(e, "data-hui-flyout-leave"));
+			let e = o.map((e) => oe(e, "data-hui-flyout-leave"));
 			Promise.all(e).then(() => {
-				i(), r.forEach((e) => I(e, "data-hui-flyout-leave"));
+				s(), o.forEach((e) => se(e, "data-hui-flyout-leave"));
 			});
-		} else i();
+		} else s();
 	}
 	e.addEventListener("keydown", (t) => {
-		re(e, t);
+		ie(e, t);
 	}), e.addEventListener("cancel", (e) => {
 		e.preventDefault(), r || c();
 	}), e.addEventListener("click", (t) => {
@@ -466,18 +516,83 @@ function B(e) {
 		e.target.closest("[data-hui-flyout-close]") && c();
 	});
 	let l = e.querySelector("[data-hui-flyout-title]"), u = e.querySelector("[data-hui-flyout-description]");
-	l && (l.id ||= `hui-flyout-title-${H()}`, e.setAttribute("aria-labelledby", l.id)), u && (u.id ||= `hui-flyout-desc-${H()}`, e.setAttribute("aria-describedby", u.id));
-	let d = R(e);
-	d !== null && (window.matchMedia(`(min-width: ${d}px)`).addEventListener("change", o), o()), e._hui = {
+	l && (l.id ||= `hui-flyout-title-${U()}`, e.setAttribute("aria-labelledby", l.id)), u && (u.id ||= `hui-flyout-desc-${U()}`, e.setAttribute("aria-describedby", u.id));
+	let d = P(e);
+	d !== null && (window.matchMedia(`(min-width: ${d}px)`).addEventListener("change", o), o());
+	function f(t) {
+		let r = ce[t], i = le[t];
+		Array.from(e.querySelectorAll("[data-hui-flyout-panel]")).forEach((a) => {
+			let o = 0, s = 0, l = 0, u = 0, d = 0, f = 0, p = !1, m = !1;
+			function h() {
+				p = !1, m = !1, u = 0, d = 0;
+			}
+			function g(e, t) {
+				a.style.transition = "transform 0.2s cubic-bezier(0.3, 0, 0.2, 1)", a.style.transform = e, j(a).then(() => {
+					t && t(), a.style.transition = "", a.style.transform = "";
+				});
+			}
+			a.addEventListener("touchstart", (t) => {
+				if (t.touches.length !== 1 || !e.open || F(e) || n) return;
+				let i = t.touches[0];
+				o = i.clientX, s = i.clientY, l = t.timeStamp, f = r === "x" ? a.getBoundingClientRect().width : a.getBoundingClientRect().height, h();
+			}, { passive: !0 }), a.addEventListener("touchmove", (n) => {
+				if (n.touches.length !== 1 || !e.open || F(e)) return;
+				let c = n.touches[0], f = r === "x" ? c.clientX - o : c.clientY - s, h = r === "x" ? c.clientY - s : c.clientX - o, g = f * i;
+				if (!p) {
+					if (Math.abs(f) < 8 && Math.abs(h) < 8) return;
+					p = !0, m = Math.abs(f) > Math.abs(h) && g > 0 && R(a, t), m && (a.style.transition = "none");
+				}
+				if (!m) return;
+				n.preventDefault();
+				let _ = Math.max(0, g), v = n.timeStamp - l;
+				v > 0 && (d = (_ - u) / v), u = _, l = n.timeStamp, a.style.transform = r === "x" ? `translateX(${i * _}px)` : `translateY(${i * _}px)`;
+			}, { passive: !1 });
+			function _() {
+				if (!m) {
+					h();
+					return;
+				}
+				let e = f > 0 && u > f * .4 || d > .5;
+				h(), n = !0, e ? g(r === "x" ? `translateX(${i * 100}%)` : `translateY(${i * 100}%)`, () => {
+					n = !1, c({ immediate: !0 });
+				}) : g(r === "x" ? "translateX(0)" : "translateY(0)", () => {
+					n = !1;
+				});
+			}
+			a.addEventListener("touchend", _, { passive: !0 }), a.addEventListener("touchcancel", _, { passive: !0 });
+		});
+	}
+	function p(t) {
+		let r = !1, i = 0, a = 0;
+		document.addEventListener("touchstart", (o) => {
+			if (!e.isConnected || o.touches.length !== 1 || e.open || F(e) || n) return;
+			let s = o.touches[0];
+			B(s.clientX, s.clientY, t, 24) && (r = !0, i = s.clientX, a = s.clientY);
+		}, { passive: !0 }), document.addEventListener("touchmove", (e) => {
+			if (!r || e.touches.length !== 1) return;
+			let n = e.touches[0], { inward: o, cross: c } = z(t, n.clientX - i, n.clientY - a);
+			o > 48 && o > Math.abs(c) && (r = !1, s());
+		}, { passive: !0 });
+		let o = () => {
+			r = !1;
+		};
+		document.addEventListener("touchend", o, { passive: !0 }), document.addEventListener("touchcancel", o, { passive: !0 });
+	}
+	let m = L(e);
+	if (m) {
+		let t = I(e);
+		(m === "close" || m === "both") && f(t), (m === "open" || m === "both") && p(t);
+	}
+	e._hui = {
 		open: s,
 		close: c
 	}, e.hasAttribute("data-hui-flyout-open") && (e.removeAttribute("data-hui-flyout-open"), s());
 }
-var V = 0;
-function H() {
-	return `hui-${++V}-${Date.now()}`;
+var H = 0;
+function U() {
+	return `hui-${++H}-${Date.now()}`;
 }
-function U(e) {
+function ue(e) {
 	Array.from(e.querySelectorAll("[data-hui-flyout-trigger]")).forEach((e) => {
 		e.hasAttribute("data-hui-flyout-trigger-bound") || (e.setAttribute("data-hui-flyout-trigger-bound", ""), e.addEventListener("click", () => {
 			let t = e.getAttribute("data-hui-flyout-trigger");
@@ -488,7 +603,7 @@ function U(e) {
 	});
 }
 function W(e = document) {
-	Array.from(e.querySelectorAll("[data-hui-flyout]")).forEach(B), U(e);
+	Array.from(e.querySelectorAll("[data-hui-flyout]")).forEach(V), ue(e);
 }
 typeof window < "u" && typeof document < "u" && (document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", () => W()) : W());
 //#endregion
@@ -865,8 +980,8 @@ function $(e = document) {
 typeof window < "u" && typeof document < "u" && (document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", () => $()) : $());
 //#endregion
 //#region resources/js/hui.ts
-function ie(...e) {
+function de(...e) {
 	return e.filter(Boolean).join(" ");
 }
 //#endregion
-export { ie as cn };
+export { de as cn };

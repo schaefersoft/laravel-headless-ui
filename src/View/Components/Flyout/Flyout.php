@@ -15,7 +15,21 @@ class Flyout extends Component
         public bool $closeOnBackdropClick = true,
         public bool $scrollLock = false,
         public ?int $inline = null,
+        public bool|string $swipe = false,
     ) {}
+
+    public function swipeMode(): ?string
+    {
+        if ($this->swipe === false) {
+            return null;
+        }
+
+        if (is_string($this->swipe) && in_array($this->swipe, ['open', 'close', 'both'], true)) {
+            return $this->swipe;
+        }
+
+        return 'both';
+    }
 
     public function render(): View
     {
