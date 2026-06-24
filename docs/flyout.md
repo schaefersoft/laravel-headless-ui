@@ -99,6 +99,12 @@ In inline mode:
 - The trigger button can be hidden with responsive utilities (e.g. `lg:hidden`)
 - Opening via trigger/JS API is ignored
 
+> [!NOTE]
+> Inline visibility is CSS-driven: the component emits a small scoped `<style>` with a `min-width` media query at your
+> breakpoint. The sidebar is laid out at first paint and stays visible even before — or entirely without — JavaScript,
+> so there is no flash or layout shift on load and the content remains reachable on no-JS/SSR pages. JavaScript only
+> takes over below the breakpoint, where the flyout is a slide-out drawer.
+
 ### Swipe gestures (mobile)
 
 The `swipe` prop enables touch swipe gestures. The direction is derived from `position` — you drag the panel toward

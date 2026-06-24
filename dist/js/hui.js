@@ -480,7 +480,7 @@ function V(e) {
 	e.setAttribute("data-hui-flyout-initialized", "");
 	let t = null, n = !1, r = e.hasAttribute("data-hui-flyout-no-escape"), i = e.hasAttribute("data-hui-flyout-no-backdrop-close"), a = e.hasAttribute("data-hui-flyout-scroll-lock");
 	function o() {
-		P(e) !== null && (F(e) ? (e.setAttribute("data-hui-flyout-mode", "inline"), e.open && e.hasAttribute("data-hui-flyout-open") && e.close(), e.removeAttribute("data-hui-flyout-open")) : e.setAttribute("data-hui-flyout-mode", "flyout"));
+		F(e) && (e.open && e.close(), e.removeAttribute("data-hui-flyout-open"));
 	}
 	function s() {
 		if (F(e) || e.open || n) return;
