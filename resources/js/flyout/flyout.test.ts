@@ -55,6 +55,12 @@ function stubPanelSize(panel: HTMLElement, width: number, height: number) {
     }) as DOMRect;
 }
 
+const DEFAULT_INNER_WIDTH = window.innerWidth;
+
+function setViewportWidth(width: number) {
+    Object.defineProperty(window, 'innerWidth', { value: width, configurable: true, writable: true });
+}
+
 async function waitFor(cond: () => boolean, timeout = 800): Promise<void> {
     const start = Date.now();
     while (!cond()) {
@@ -67,6 +73,7 @@ describe('Flyout', () => {
     beforeEach(() => {
         document.body.innerHTML = '';
         document.body.style.overflow = '';
+        setViewportWidth(DEFAULT_INNER_WIDTH);
     });
 
     // --- Open / Close ---
@@ -351,5 +358,40 @@ describe('Flyout', () => {
         dispatchTouch(panel, 'touchend', 430, 300, 1000);
 
         expect(flyout.open).toBe(true);
+    });
+
+    // --- Inline (sidebar) mode ---
+
+    it('does not auto-open above the inline breakpoint (sidebar is shown via CSS)', () => {
+        setViewportWidth(1280);
+        const flyout = createFlyout('test-flyout', { open: true, inline: 1024 });
+        expect(flyout.open).toBe(false);
+        expect(flyout.hasAttribute('data-hui-flyout-open')).toBe(false);
+    });
+
+    it('ignores open() while above the inline breakpoint', () => {
+        setViewportWidth(1280);
+        const flyout = createFlyout('test-flyout', { inline: 1024 });
+        openFlyout('test-flyout');
+        expect(flyout.open).toBe(false);
+    });
+
+    it('behaves as a normal drawer below the inline breakpoint', () => {
+        setViewportWidth(800);
+        const flyout = createFlyout('test-flyout', { inline: 1024 });
+        openFlyout('test-flyout');
+        expect(flyout.open).toBe(true);
+        closeFlyout('test-flyout');
+        expect(flyout.open).toBe(false);
+    });
+
+    it('never sets a presentation mode attribute (inline styling is CSS-driven)', () => {
+        setViewportWidth(1280);
+        const inline = createFlyout('test-flyout', { inline: 1024 });
+        expect(inline.hasAttribute('data-hui-flyout-mode')).toBe(false);
+
+        setViewportWidth(800);
+        const drawer = createFlyout('drawer-flyout', { inline: 1024 });
+        expect(drawer.hasAttribute('data-hui-flyout-mode')).toBe(false);
     });
 });

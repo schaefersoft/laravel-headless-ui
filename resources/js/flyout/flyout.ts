@@ -182,19 +182,9 @@ function setupFlyout(flyout: HTMLDialogElement) {
     const scrollLock = flyout.hasAttribute('data-hui-flyout-scroll-lock');
 
     function updateInlineState() {
-        const bp = getBreakpoint(flyout);
-        if (bp === null) return;
-
-        if (isInlineMode(flyout)) {
-            flyout.setAttribute('data-hui-flyout-mode', 'inline');
-            // If open as modal, close it — inline mode shows it statically
-            if (flyout.open && flyout.hasAttribute('data-hui-flyout-open')) {
-                flyout.close();
-            }
-            flyout.removeAttribute('data-hui-flyout-open');
-        } else {
-            flyout.setAttribute('data-hui-flyout-mode', 'flyout');
-        }
+        if (!isInlineMode(flyout)) return;
+        if (flyout.open) flyout.close();
+        flyout.removeAttribute('data-hui-flyout-open');
     }
 
     function open() {
