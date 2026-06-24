@@ -28,6 +28,8 @@
                 display: block;
                 position: static;
                 overflow: visible;
+                width: auto;
+                margin: 0;
             }
 
             #{{ $flyoutId }} .hui-flyout-panel {
