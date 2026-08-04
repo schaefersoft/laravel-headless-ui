@@ -15,7 +15,9 @@
 [![License](https://img.shields.io/packagist/l/schaefersoft/laravel-headless-ui)](LICENSE)
 
 A collection of completely unstyled, accessible Laravel Blade UI components. Built with performance, customization and
-accessibility in mind. **No additional JavaScript dependencies required.**
+accessibility in mind. **No additional JavaScript dependencies required.** The best way to build data-driven UIs using traditional Blade.
+
+<img src="./docs/assets/ui_01.png" style="max-height: 600px; max-width: 1200px;">
 
 ## Requirements
 
