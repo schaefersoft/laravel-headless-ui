@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.4](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.5.3...v1.5.4) (2026-08-13)
+
+
+### Bug Fixes
+
+* remove invalid ARIA roles from disclosure components ([ab9c692](https://github.com/schaefersoft/laravel-headless-ui/commit/ab9c692e4497f6d5628db17724736df485fb337b))
+* remove invalid ARIA roles from disclosure components ([8e838ac](https://github.com/schaefersoft/laravel-headless-ui/commit/8e838acfd24039ceed8d3a9475118f00ef89acb2))
+
 ## [1.5.3](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.5.2...v1.5.3) (2026-08-04)
 
 
