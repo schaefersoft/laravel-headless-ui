@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.5](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.5.4...v1.5.5) (2026-09-02)
+
+
+### Bug Fixes
+
+* bump vulnerable dependencies ([67dfea5](https://github.com/schaefersoft/laravel-headless-ui/commit/67dfea511a1dfccc051432cb726a4bef51486a95))
+* bump vulnerable dependencies ([22be600](https://github.com/schaefersoft/laravel-headless-ui/commit/22be600f04d5471d68a888383b9f9dd1538c2b6a))
+
 ## [1.5.4](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.5.3...v1.5.4) (2026-08-13)
 
 
