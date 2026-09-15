@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.6](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.5.5...v1.5.6) (2026-09-15)
+
+
+### Miscellaneous Chores
+
+* update dependencies to fix security vulnerabilities ([176584f](https://github.com/schaefersoft/laravel-headless-ui/commit/176584ff31fde71ab6b8bbc2422f3c992a0ee277))
+
 ## [1.5.5](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.5.4...v1.5.5) (2026-09-02)
 
 
