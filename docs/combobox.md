@@ -7,7 +7,7 @@ automatic, viewport-aware positioning. Not a native `<select>` — the options a
 
 ## Usage
 
-Blade components: `x-hui::combobox`, `x-hui::combobox.input`, `x-hui::combobox.button`,
+Blade components: `x-hui::combobox`, `x-hui::combobox.input`, `x-hui::combobox.button`, `x-hui::combobox.clear`,
 `x-hui::combobox.options`, `x-hui::combobox.option`, `x-hui::combobox.group`, `x-hui::combobox.no-results`,
 `x-hui::combobox.chips`
 
@@ -75,6 +75,18 @@ call to action.
 
 In multiple mode clicking an option toggles it, the list stays open and the search query is cleared after each
 selection. `Backspace` in an empty input removes the last selected value. Values are submitted as `stack[]`.
+
+### Clear button
+
+```bladehtml
+<div data-hui-combobox-reference class="flex items-center rounded-xl border bg-white">
+    <x-hui::combobox.input class="w-full px-3.5 py-2.5" />
+    <x-hui::combobox.clear>×</x-hui::combobox.clear>
+    <x-hui::combobox.button aria-label="Show team members">▾</x-hui::combobox.button>
+</div>
+```
+
+Clears the selection and the search query. The button is hidden while nothing is selected and the input is empty.
 
 ### Groups
 
@@ -337,6 +349,16 @@ The combobox is completely unstyled. Use these attributes for state-based stylin
 > [!NOTE]
 > Renders a `<button type="button" tabindex="-1"/>` that toggles the options. Add an `aria-label` if it only contains
 > an icon.
+
+### Clear
+
+| Prop    | Type     | Default | Description                      |
+|---------|----------|---------|----------------------------------|
+| `class` | `string` | `""`    | Custom classes for the button.   |
+
+> [!NOTE]
+> Renders a `<button type="button" tabindex="-1" aria-label="Clear selection"/>`. Pass `aria-label` to override the
+> label.
 
 ### Options
 

@@ -146,6 +146,27 @@ it('throws on invalid anchor', function (string $anchor) {
     new Options(anchor: $anchor);
 })->with(['left', 'bottom middle', 'top start end'])->throws(Exception::class);
 
+it('renders a hidden clear button with default label', function () {
+    $view = $this->blade('
+        <x-hui::combobox>
+            <x-hui::combobox.input />
+            <x-hui::combobox.clear class="clear-class">×</x-hui::combobox.clear>
+            <x-hui::combobox.options />
+        </x-hui::combobox>
+    ');
+
+    $view->assertSee('data-hui-combobox-clear', false);
+    $view->assertSee('aria-label="Clear selection"', false);
+    $view->assertSee('clear-class');
+});
+
+it('allows overriding the clear button label', function () {
+    $view = $this->blade('<x-hui::combobox.clear aria-label="Auswahl entfernen" />');
+
+    $view->assertSee('aria-label="Auswahl entfernen"', false);
+    $view->assertDontSee('Clear selection');
+});
+
 it('renders groups', function () {
     $view = $this->blade('
         <x-hui::combobox>

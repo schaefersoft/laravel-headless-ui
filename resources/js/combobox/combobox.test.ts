@@ -33,6 +33,7 @@ function createCombobox(opts: Opts = {}): HTMLElement {
             <div data-hui-combobox id="cb" ${flags} data-hui-combobox-value='${JSON.stringify(opts.value ?? [])}'>
                 ${opts.chips ?? ''}
                 <input type="text" data-hui-combobox-input>
+                <button data-hui-combobox-clear hidden>x</button>
                 <button data-hui-combobox-button>v</button>
                 <div data-hui-combobox-options hidden>
                     <div data-hui-combobox-option data-value="1">Wade Cooper</div>
@@ -447,6 +448,56 @@ describe('Combobox', () => {
 
         chip.querySelector<HTMLElement>('i')!.click();
         expect(getComboboxValue('cb')).toEqual([]);
+    });
+
+    // --- Clear ---
+
+    const clearButton = () => document.querySelector<HTMLButtonElement>('[data-hui-combobox-clear]')!;
+
+    it('shows clear button only with a value or query', () => {
+        createCombobox();
+        expect(clearButton().hidden).toBe(true);
+        expect(clearButton().getAttribute('aria-label')).toBe('Clear selection');
+
+        type('wa');
+        expect(clearButton().hidden).toBe(false);
+
+        type('');
+        expect(clearButton().hidden).toBe(true);
+
+        setComboboxValue('cb', '1');
+        expect(clearButton().hidden).toBe(false);
+    });
+
+    it('clears single selection', () => {
+        const root = createCombobox({ value: ['1'], name: 'person' });
+        const onChange = vi.fn();
+        root.addEventListener('hui:combobox:change', onChange);
+
+        clearButton().click();
+
+        expect(getComboboxValue('cb')).toBeNull();
+        expect(input().value).toBe('');
+        expect(hiddenInputs().map((i) => i.value)).toEqual(['']);
+        expect(clearButton().hidden).toBe(true);
+        expect(onChange.mock.calls[0][0].detail).toEqual({ value: null, label: null });
+    });
+
+    it('clears all values and query in multiple mode', () => {
+        createCombobox({ multiple: true, value: ['1', '2'] });
+        type('to');
+        clearButton().click();
+
+        expect(getComboboxValue('cb')).toEqual([]);
+        expect(input().value).toBe('');
+        expect(visible()).toEqual(['1', '2', '3', '4', '5']);
+    });
+
+    it('disables clear button when disabled', () => {
+        createCombobox({ disabled: true, value: ['1'] });
+        expect(clearButton().disabled).toBe(true);
+        clearButton().click();
+        expect(getComboboxValue('cb')).toBe('1');
     });
 
     // --- Groups ---

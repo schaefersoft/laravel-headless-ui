@@ -186,6 +186,7 @@ function setupCombobox(root: HTMLElement) {
     root.setAttribute('data-hui-combobox-initialized', '');
 
     const button = root.querySelector<HTMLButtonElement>('[data-hui-combobox-button]');
+    const clearButton = root.querySelector<HTMLButtonElement>('[data-hui-combobox-clear]');
     const noResults = root.querySelector<HTMLElement>('[data-hui-combobox-no-results]');
     const chips = root.querySelector<HTMLElement>('[data-hui-combobox-chips]');
     const chipTemplate = chips?.querySelector<HTMLTemplateElement>('template[data-hui-combobox-chip-template]') ?? null;
@@ -398,6 +399,23 @@ function setupCombobox(root: HTMLElement) {
         } else {
             input!.value = selected.length ? labelFor(selected[0]) : '';
         }
+        syncClear();
+    }
+
+    function syncClear() {
+        if (clearButton) clearButton.hidden = selected.length === 0 && input!.value === '';
+    }
+
+    function clear() {
+        if (isDisabled()) return;
+
+        query = '';
+        input!.value = '';
+        if (selected.length) setSelected([]);
+        applyFilter();
+        syncClear();
+        schedulePosition();
+        input!.focus({ preventScroll: true });
     }
 
     function setSelected(values: string[], emit = true) {
@@ -409,6 +427,7 @@ function setupCombobox(root: HTMLElement) {
         renderChips();
         root.toggleAttribute('data-has-value', selected.length > 0);
         root.toggleAttribute('data-max-reached', isMaxReached());
+        syncClear();
 
         if (emit) {
             root.dispatchEvent(new CustomEvent('hui:combobox:change', {
@@ -676,6 +695,7 @@ function setupCombobox(root: HTMLElement) {
     function onInput() {
         if (!searchable || isDisabled()) return;
         query = input!.value;
+        syncClear();
 
         if (!isOpen) open();
         applyFilter();
@@ -697,6 +717,7 @@ function setupCombobox(root: HTMLElement) {
         root.toggleAttribute('data-disabled', disabled);
         input!.disabled = disabled;
         if (button) button.disabled = disabled;
+        if (clearButton) clearButton.disabled = disabled;
         root.querySelectorAll<HTMLInputElement>('input[data-hui-combobox-hidden-input]').forEach((el) => {
             el.disabled = disabled;
         });
@@ -732,6 +753,12 @@ function setupCombobox(root: HTMLElement) {
         button.setAttribute('aria-controls', options.id);
     }
 
+    if (clearButton) {
+        clearButton.type = 'button';
+        clearButton.tabIndex = -1;
+        if (!clearButton.hasAttribute('aria-label')) clearButton.setAttribute('aria-label', 'Clear selection');
+    }
+
     syncOptions();
     setSelected(initialValue, false);
     syncInputText();
@@ -750,6 +777,12 @@ function setupCombobox(root: HTMLElement) {
 
     input.addEventListener('focus', () => {
         if (immediate) open();
+    });
+
+    clearButton?.addEventListener('pointerdown', (e) => e.preventDefault());
+    clearButton?.addEventListener('click', (e) => {
+        e.preventDefault();
+        clear();
     });
 
     button?.addEventListener('pointerdown', (e) => e.preventDefault());
