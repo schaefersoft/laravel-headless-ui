@@ -449,6 +449,42 @@ describe('Combobox', () => {
         expect(getComboboxValue('cb')).toEqual([]);
     });
 
+    // --- Groups ---
+
+    it('labels groups and hides groups without matches', () => {
+        document.body.innerHTML = `
+            <div data-hui-combobox id="cb" data-hui-combobox-searchable data-hui-combobox-filter>
+                <input type="text" data-hui-combobox-input>
+                <div data-hui-combobox-options hidden>
+                    <div data-hui-combobox-group id="dev">
+                        <div data-hui-combobox-group-label>Development</div>
+                        <div data-hui-combobox-option data-value="1">Luca Schäfer</div>
+                        <div data-hui-combobox-option data-value="2">Jonas Huber</div>
+                    </div>
+                    <div data-hui-combobox-group id="sales">
+                        <div data-hui-combobox-group-label>Sales</div>
+                        <div data-hui-combobox-option data-value="3">Lea Widmer</div>
+                    </div>
+                </div>
+            </div>
+        `;
+        registerComboboxes();
+
+        const dev = document.getElementById('dev')!;
+        const sales = document.getElementById('sales')!;
+        const heading = dev.querySelector<HTMLElement>('[data-hui-combobox-group-label]')!;
+        expect(dev.getAttribute('aria-labelledby')).toBe(heading.id);
+
+        type('lea');
+        expect(dev.hidden).toBe(true);
+        expect(sales.hidden).toBe(false);
+
+        key('ArrowDown');
+        key('Enter');
+        expect(getComboboxValue('cb')).toBe('3');
+        expect(dev.hidden).toBe(false);
+    });
+
     // --- Max ---
 
     it('limits the number of selected values', () => {

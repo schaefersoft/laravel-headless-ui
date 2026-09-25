@@ -13,6 +13,7 @@
 
 .hui-combobox-options[hidden],
 .hui-combobox-option[hidden],
+.hui-combobox-group[hidden],
 .hui-combobox-no-results[hidden] {
     display: none !important;
 }

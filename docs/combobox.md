@@ -8,7 +8,8 @@ automatic, viewport-aware positioning. Not a native `<select>` — the options a
 ## Usage
 
 Blade components: `x-hui::combobox`, `x-hui::combobox.input`, `x-hui::combobox.button`,
-`x-hui::combobox.options`, `x-hui::combobox.option`, `x-hui::combobox.no-results`, `x-hui::combobox.chips`
+`x-hui::combobox.options`, `x-hui::combobox.option`, `x-hui::combobox.group`, `x-hui::combobox.no-results`,
+`x-hui::combobox.chips`
 
 ### Single selection
 
@@ -74,6 +75,23 @@ call to action.
 
 In multiple mode clicking an option toggles it, the list stays open and the search query is cleared after each
 selection. `Backspace` in an empty input removes the last selected value. Values are submitted as `stack[]`.
+
+### Groups
+
+```bladehtml
+<x-hui::combobox.options>
+    @foreach($teamMembers->groupBy('department') as $department => $members)
+        <x-hui::combobox.group :label="$department" label-class="px-2.5 pt-2 text-xs font-semibold text-zinc-500">
+            @foreach($members as $member)
+                <x-hui::combobox.option :value="$member->id">{{ $member->name }}</x-hui::combobox.option>
+            @endforeach
+        </x-hui::combobox.group>
+    @endforeach
+</x-hui::combobox.options>
+```
+
+Groups are hidden while none of their options match the query. The heading is linked to the group via
+`aria-labelledby`.
 
 ### Maximum selections
 
@@ -342,6 +360,17 @@ The combobox is completely unstyled. Use these attributes for state-based stylin
 
 > [!NOTE]
 > Renders a `<div role="option"/>`.
+
+### Group
+
+| Prop         | Type          | Default | Description                        |
+|--------------|---------------|---------|------------------------------------|
+| `class`      | `string`      | `""`    | Custom classes for the group.      |
+| `label`      | `string\|null`| `null`  | Heading of the group.              |
+| `labelClass` | `string`      | `""`    | Custom classes for the heading.    |
+
+> [!NOTE]
+> Renders a `<div role="group"/>` with an optional heading `<div/>`.
 
 ### No results
 

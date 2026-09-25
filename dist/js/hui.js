@@ -146,13 +146,22 @@ function _(e) {
 			e.id ||= i("option"), e.setAttribute("role", "option"), S.set(I(e), F(e));
 			let t = w.includes(I(e));
 			e.setAttribute("aria-selected", t ? "true" : "false"), e.toggleAttribute("data-selected", t), e.hasAttribute("data-disabled") || !t && ee() ? e.setAttribute("aria-disabled", "true") : e.removeAttribute("aria-disabled");
+		}), ne().forEach((e) => {
+			let t = e.querySelector(":scope > [data-hui-combobox-group-label]");
+			t && (t.id ||= i("group-label"), e.setAttribute("aria-labelledby", t.id));
 		});
+	}
+	function ne() {
+		return Array.from(r.querySelectorAll("[data-hui-combobox-group]"));
 	}
 	function R() {
 		let e = m && y ? o(O.trim()) : "";
 		N().forEach((t) => {
 			let n = e === "" || o(F(t)).includes(e);
 			t.toggleAttribute("data-hui-combobox-filtered", !n), t.hidden = !n;
+		}), ne().forEach((e) => {
+			let t = Array.from(e.querySelectorAll(n));
+			e.hidden = t.length > 0 && t.every((e) => e.hasAttribute("data-hui-combobox-filtered"));
 		});
 		let t = N().some((e) => !e.hasAttribute("data-hui-combobox-filtered"));
 		r.toggleAttribute("data-empty", !t), s && (s.hidden = t), D && !P().includes(D) && z(null);
@@ -160,27 +169,27 @@ function _(e) {
 	function z(e, n = !0) {
 		N().forEach((t) => t.toggleAttribute("data-active", t === e)), D = e, e ? (t.setAttribute("aria-activedescendant", e.id), n && typeof e.scrollIntoView == "function" && e.scrollIntoView({ block: "nearest" })) : t.removeAttribute("aria-activedescendant");
 	}
-	function B(e) {
+	function re(e) {
 		let t = P();
 		if (t.length === 0) return;
 		let n = D ? t.indexOf(D) : -1;
 		z(t[n === -1 ? e > 0 ? 0 : t.length - 1 : (n + e + t.length) % t.length]);
 	}
-	function V(e) {
+	function B(e) {
 		let t = P();
 		z(t.length ? t[e === "first" ? 0 : t.length - 1] : null);
 	}
-	function ne(e) {
+	function ie(e) {
 		let t = P().find((e) => w.includes(I(e)));
-		t ? z(t) : e && V(e);
+		t ? z(t) : e && B(e);
 	}
-	function re() {
+	function ae() {
 		e.querySelectorAll("input[data-hui-combobox-hidden-input]").forEach((e) => e.remove()), b && (p ? w : [w[0] ?? ""]).forEach((t) => {
 			let n = document.createElement("input");
 			n.type = "hidden", n.name = b, n.value = t, n.disabled = M(), n.setAttribute("data-hui-combobox-hidden-input", ""), e.appendChild(n);
 		});
 	}
-	function ie(e) {
+	function oe(e) {
 		let t = L(e), n, r = l?.content.firstElementChild;
 		if (r) n = r.cloneNode(!0);
 		else {
@@ -196,15 +205,15 @@ function _(e) {
 		let a = n.querySelector("[data-hui-combobox-chip-remove]");
 		return a && (a instanceof HTMLButtonElement && (a.type = "button", a.disabled = M()), a.hasAttribute("aria-label") || a.setAttribute("aria-label", `Remove ${t}`)), n;
 	}
-	function ae() {
-		c && (c.querySelectorAll("[data-hui-combobox-chip]").forEach((e) => e.remove()), w.forEach((e) => c.appendChild(ie(e))));
+	function se() {
+		c && (c.querySelectorAll("[data-hui-combobox-chip]").forEach((e) => e.remove()), w.forEach((e) => c.appendChild(oe(e))));
 	}
-	function H() {
+	function V() {
 		p ? t.value = O : t.value = w.length ? L(w[0]) : "";
 	}
-	function U(t, n = !0) {
+	function H(t, n = !0) {
 		let r = Array.from(new Set(t.map(String)));
-		w = r.slice(0, p ? x ?? r.length : 1), te(), re(), ae(), e.toggleAttribute("data-has-value", w.length > 0), e.toggleAttribute("data-max-reached", ee()), n && e.dispatchEvent(new CustomEvent("hui:combobox:change", {
+		w = r.slice(0, p ? x ?? r.length : 1), te(), ae(), se(), e.toggleAttribute("data-has-value", w.length > 0), e.toggleAttribute("data-max-reached", ee()), n && e.dispatchEvent(new CustomEvent("hui:combobox:change", {
 			bubbles: !0,
 			detail: {
 				value: p ? [...w] : w[0] ?? null,
@@ -212,155 +221,155 @@ function _(e) {
 			}
 		}));
 	}
-	function oe(e) {
+	function U(e) {
 		if (e.hasAttribute("data-disabled") || M()) return;
 		let n = I(e);
 		if (S.set(n, F(e)), !p) {
-			w[0] !== n && U([n]), O = "", H(), J();
+			w[0] !== n && H([n]), O = "", V(), Y();
 			return;
 		}
-		if (w.includes(n)) U(w.filter((e) => e !== n));
-		else if (!ee()) U([...w, n]);
+		if (w.includes(n)) H(w.filter((e) => e !== n));
+		else if (!ee()) H([...w, n]);
 		else return;
 		O !== "" && (O = "", t.value = "", R(), W()), P().includes(e) && z(e, !1);
 	}
-	function se(e) {
-		M() || !w.includes(e) || U(w.filter((t) => t !== e));
+	function ce(e) {
+		M() || !w.includes(e) || H(w.filter((t) => t !== e));
 	}
-	function ce() {
+	function le() {
 		T && u(d, r);
 	}
 	function W() {
 		!T || j !== null || (j = requestAnimationFrame(() => {
-			j = null, ce();
+			j = null, le();
 		}));
 	}
 	let G = null;
-	function le() {
-		document.addEventListener("pointerdown", ue, !0), window.addEventListener("scroll", W, !0), window.addEventListener("resize", W), window.visualViewport?.addEventListener("resize", W), window.visualViewport?.addEventListener("scroll", W), typeof ResizeObserver < "u" && (G = new ResizeObserver(W), G.observe(d), G.observe(r));
-	}
 	function K() {
-		document.removeEventListener("pointerdown", ue, !0), window.removeEventListener("scroll", W, !0), window.removeEventListener("resize", W), window.visualViewport?.removeEventListener("resize", W), window.visualViewport?.removeEventListener("scroll", W), G?.disconnect(), G = null, j !== null && (cancelAnimationFrame(j), j = null);
+		document.addEventListener("pointerdown", de, !0), window.addEventListener("scroll", W, !0), window.addEventListener("resize", W), window.visualViewport?.addEventListener("resize", W), window.visualViewport?.addEventListener("scroll", W), typeof ResizeObserver < "u" && (G = new ResizeObserver(W), G.observe(d), G.observe(r));
 	}
 	function q() {
-		T || E || M() || (T = !0, R(), r.hidden = !1, r.style.removeProperty("display"), ce(), t.setAttribute("aria-expanded", "true"), a?.setAttribute("aria-expanded", "true"), e.setAttribute("data-open", ""), ne(null), le(), h(r, "data-hui-combobox-enter"), e.dispatchEvent(new CustomEvent("hui:combobox:open", { bubbles: !0 })));
+		document.removeEventListener("pointerdown", de, !0), window.removeEventListener("scroll", W, !0), window.removeEventListener("resize", W), window.visualViewport?.removeEventListener("resize", W), window.visualViewport?.removeEventListener("scroll", W), G?.disconnect(), G = null, j !== null && (cancelAnimationFrame(j), j = null);
 	}
 	function J() {
+		T || E || M() || (T = !0, R(), r.hidden = !1, r.style.removeProperty("display"), le(), t.setAttribute("aria-expanded", "true"), a?.setAttribute("aria-expanded", "true"), e.setAttribute("data-open", ""), ie(null), K(), h(r, "data-hui-combobox-enter"), e.dispatchEvent(new CustomEvent("hui:combobox:open", { bubbles: !0 })));
+	}
+	function Y() {
 		if (!T || E) return;
 		let n = () => {
-			T = !1, E = !1, r.hidden = !0, r.style.display = "none", t.setAttribute("aria-expanded", "false"), a?.setAttribute("aria-expanded", "false"), e.removeAttribute("data-open"), K(), z(null), !p && _ && m && t.value.trim() === "" && w.length && U([]), O = "", H(), R(), e.dispatchEvent(new CustomEvent("hui:combobox:close", { bubbles: !0 }));
+			T = !1, E = !1, r.hidden = !0, r.style.display = "none", t.setAttribute("aria-expanded", "false"), a?.setAttribute("aria-expanded", "false"), e.removeAttribute("data-open"), q(), z(null), !p && _ && m && t.value.trim() === "" && w.length && H([]), O = "", V(), R(), e.dispatchEvent(new CustomEvent("hui:combobox:close", { bubbles: !0 }));
 		};
 		f(r, "data-hui-combobox-leave") ? (E = !0, h(r, "data-hui-combobox-leave").then(n)) : n();
 	}
-	function Y() {
-		T ? J() : q();
+	function ue() {
+		T ? Y() : J();
 	}
-	function ue(t) {
-		e.contains(t.target) || J();
+	function de(t) {
+		e.contains(t.target) || Y();
 	}
-	function de(e) {
+	function fe(e) {
 		k += o(e), A && clearTimeout(A), A = setTimeout(() => {
 			k = "";
 		}, 350);
 		let t = P().find((e) => o(F(e)).startsWith(k));
 		t && z(t);
 	}
-	function fe(e) {
+	function pe(e) {
 		if (!(e.isComposing || M())) switch (e.key) {
 			case "ArrowDown":
-				e.preventDefault(), T ? B(1) : (q(), !e.altKey && !D && V("first"));
+				e.preventDefault(), T ? re(1) : (J(), !e.altKey && !D && B("first"));
 				break;
 			case "ArrowUp":
-				e.preventDefault(), e.altKey ? J() : T ? B(-1) : (q(), D || V("last"));
+				e.preventDefault(), e.altKey ? Y() : T ? re(-1) : (J(), D || B("last"));
 				break;
 			case "Home":
 			case "End":
-				T && !m && (e.preventDefault(), V(e.key === "Home" ? "first" : "last"));
+				T && !m && (e.preventDefault(), B(e.key === "Home" ? "first" : "last"));
 				break;
 			case "PageUp":
 			case "PageDown":
-				T && (e.preventDefault(), V(e.key === "PageUp" ? "first" : "last"));
+				T && (e.preventDefault(), B(e.key === "PageUp" ? "first" : "last"));
 				break;
 			case "Enter":
-				T ? (e.preventDefault(), D ? oe(D) : J()) : m || (e.preventDefault(), q());
+				T ? (e.preventDefault(), D ? U(D) : Y()) : m || (e.preventDefault(), J());
 				break;
 			case " ":
-				m || (e.preventDefault(), T && D ? oe(D) : T || q());
+				m || (e.preventDefault(), T && D ? U(D) : T || J());
 				break;
 			case "Escape":
-				T ? (e.preventDefault(), e.stopPropagation(), J()) : m && p && t.value !== "" && (e.preventDefault(), O = "", t.value = "", R());
+				T ? (e.preventDefault(), e.stopPropagation(), Y()) : m && p && t.value !== "" && (e.preventDefault(), O = "", t.value = "", R());
 				break;
 			case "Tab":
-				T && J();
+				T && Y();
 				break;
 			case "Backspace":
-				p && t.value === "" && w.length > 0 && se(w[w.length - 1]);
+				p && t.value === "" && w.length > 0 && ce(w[w.length - 1]);
 				break;
 			default:
-				!m && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), T || q(), de(e.key));
+				!m && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), T || J(), fe(e.key));
 				break;
 		}
 	}
-	function pe() {
+	function me() {
 		if (!m || M()) return;
-		O = t.value, T || q(), R();
+		O = t.value, T || J(), R();
 		let n = P();
 		z(O.trim() !== "" && n.length ? n[0] : null), W(), e.dispatchEvent(new CustomEvent("hui:combobox:search", {
 			bubbles: !0,
 			detail: { query: O }
 		}));
 	}
-	function me() {
+	function he() {
 		let n = M();
 		e.toggleAttribute("data-disabled", n), t.disabled = n, a && (a.disabled = n), e.querySelectorAll("input[data-hui-combobox-hidden-input]").forEach((e) => {
 			e.disabled = n;
 		}), c?.querySelectorAll("button[data-hui-combobox-chip-remove]").forEach((e) => {
 			e.disabled = n;
-		}), n && J();
+		}), n && Y();
 	}
-	t.id ||= i("input"), r.id ||= i("options"), t.setAttribute("role", "combobox"), t.setAttribute("aria-haspopup", "listbox"), t.setAttribute("aria-expanded", "false"), t.setAttribute("aria-controls", r.id), t.setAttribute("aria-autocomplete", m ? "list" : "none"), t.setAttribute("autocomplete", "off"), t.readOnly = !m, r.setAttribute("role", "listbox"), r.hidden = !0, r.style.display = "none", p && r.setAttribute("aria-multiselectable", "true"), a && (a.type = "button", a.tabIndex = -1, a.setAttribute("aria-haspopup", "listbox"), a.setAttribute("aria-expanded", "false"), a.setAttribute("aria-controls", r.id)), te(), U(C, !1), H(), R(), me(), t.addEventListener("keydown", fe), t.addEventListener("input", pe), t.addEventListener("click", () => {
-		m ? q() : Y();
+	t.id ||= i("input"), r.id ||= i("options"), t.setAttribute("role", "combobox"), t.setAttribute("aria-haspopup", "listbox"), t.setAttribute("aria-expanded", "false"), t.setAttribute("aria-controls", r.id), t.setAttribute("aria-autocomplete", m ? "list" : "none"), t.setAttribute("autocomplete", "off"), t.readOnly = !m, r.setAttribute("role", "listbox"), r.hidden = !0, r.style.display = "none", p && r.setAttribute("aria-multiselectable", "true"), a && (a.type = "button", a.tabIndex = -1, a.setAttribute("aria-haspopup", "listbox"), a.setAttribute("aria-expanded", "false"), a.setAttribute("aria-controls", r.id)), te(), H(C, !1), V(), R(), he(), t.addEventListener("keydown", pe), t.addEventListener("input", me), t.addEventListener("click", () => {
+		m ? J() : ue();
 	}), t.addEventListener("focus", () => {
-		v && q();
+		v && J();
 	}), a?.addEventListener("pointerdown", (e) => e.preventDefault()), a?.addEventListener("click", (e) => {
-		e.preventDefault(), !M() && (Y(), t.focus({ preventScroll: !0 }));
+		e.preventDefault(), !M() && (ue(), t.focus({ preventScroll: !0 }));
 	}), e.addEventListener("focusout", () => {
 		setTimeout(() => {
 			let t = document.activeElement;
-			t && e.contains(t) || J();
+			t && e.contains(t) || Y();
 		}, 0);
 	}), r.addEventListener("pointerdown", (e) => e.preventDefault()), r.addEventListener("click", (e) => {
 		let t = e.target.closest(n);
-		t && r.contains(t) && oe(t);
+		t && r.contains(t) && U(t);
 	}), r.addEventListener("pointermove", (e) => {
 		let t = e.target.closest(n);
 		t && t !== D && !t.hasAttribute("data-disabled") && z(t, !1);
 	}), r.addEventListener("pointerleave", () => z(null)), c?.addEventListener("click", (e) => {
 		let n = e.target.closest("[data-hui-combobox-chip-remove]")?.closest("[data-hui-combobox-chip]");
-		n && (e.preventDefault(), se(n.getAttribute("data-value") || ""), t.focus({ preventScroll: !0 }));
+		n && (e.preventDefault(), ce(n.getAttribute("data-value") || ""), t.focus({ preventScroll: !0 }));
 	}), e.closest("form")?.addEventListener("reset", () => {
 		setTimeout(() => {
-			O = "", U(C), H(), R();
+			O = "", H(C), V(), R();
 		}, 0);
 	});
 	try {
 		new MutationObserver(() => {
-			te(), R(), T && (!D && O.trim() !== "" && V("first"), W());
+			te(), R(), T && (!D && O.trim() !== "" && B("first"), W());
 		}).observe(r, {
 			childList: !0,
 			subtree: !0
-		}), new MutationObserver(me).observe(e, {
+		}), new MutationObserver(he).observe(e, {
 			attributes: !0,
 			attributeFilter: ["data-hui-combobox-disabled"]
 		});
 	} catch {}
-	e.hasAttribute("data-hui-combobox-open") && q(), e._hui = {
-		open: q,
-		close: J,
-		toggle: Y,
+	e.hasAttribute("data-hui-combobox-open") && J(), e._hui = {
+		open: J,
+		close: Y,
+		toggle: ue,
 		getValue: () => p ? [...w] : w[0] ?? null,
 		setValue: (e) => {
-			U(e === null ? [] : Array.isArray(e) ? e : [e]), H();
+			H(e === null ? [] : Array.isArray(e) ? e : [e]), V();
 		}
 	};
 }
@@ -513,13 +522,13 @@ function te(e) {
 		}));
 	});
 }
-function R(e = document) {
+function ne(e = document) {
 	Array.from(e.querySelectorAll("[data-hui-dialog]")).forEach(F), te(e);
 }
-typeof window < "u" && typeof document < "u" && (document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", () => R()) : R());
+typeof window < "u" && typeof document < "u" && (document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", () => ne()) : ne());
 //#endregion
 //#region resources/js/disclosure/disclosure.ts
-function z(e = document) {
+function R(e = document) {
 	let t = Array.from(e.querySelectorAll("[data-hui-disclosure]")), n = (e, t) => {
 		let n = e.hasAttribute("open");
 		if (t === "close" || t === void 0 && n) {
@@ -550,11 +559,11 @@ function z(e = document) {
 		});
 	});
 }
-typeof window < "u" && typeof document < "u" && (document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", () => z()) : z());
+typeof window < "u" && typeof document < "u" && (document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", () => R()) : R());
 //#endregion
 //#region resources/js/dropdown/dropdown.ts
-var B = "[data-hui-dropdown-item]:not([data-disabled])";
-function V(e, t) {
+var z = "[data-hui-dropdown-item]:not([data-disabled])";
+function re(e, t) {
 	let n = e.getBoundingClientRect(), { innerHeight: r } = window;
 	t.style.maxHeight = "";
 	let i = t.hasAttribute("hidden");
@@ -566,22 +575,22 @@ function V(e, t) {
 	let c = r - n.bottom - 4 - 8, l = n.top - 4 - 8, u;
 	u = c >= s ? "bottom" : l >= s ? "top" : c >= l ? "bottom" : "top", u === "bottom" ? (t.style.top = "calc(100% + 4px)", t.style.bottom = "", c < s && (t.style.maxHeight = `${Math.floor(c)}px`)) : (t.style.bottom = "calc(100% + 4px)", t.style.top = "", l < s && (t.style.maxHeight = `${Math.floor(l)}px`)), t.setAttribute("data-placement", u);
 }
-function ne(e, t) {
+function B(e, t) {
 	return {
 		base: (e.getAttribute(t) || "").split(/\s+/).filter(Boolean),
 		from: (e.getAttribute(`${t}-from`) || "").split(/\s+/).filter(Boolean),
 		to: (e.getAttribute(`${t}-to`) || "").split(/\s+/).filter(Boolean)
 	};
 }
-function re(e, t) {
+function ie(e, t) {
 	return e.hasAttribute(t) || e.hasAttribute(`${t}-from`) || e.hasAttribute(`${t}-to`);
 }
-function ie() {
+function ae() {
 	return new Promise((e) => {
 		requestAnimationFrame(() => requestAnimationFrame(() => e()));
 	});
 }
-function ae(e) {
+function oe(e) {
 	return new Promise((t) => {
 		let n = getComputedStyle(e), r = (parseFloat(n.transitionDuration || "0") + parseFloat(n.transitionDelay || "0")) * 1e3;
 		if (r <= 0) {
@@ -594,28 +603,28 @@ function ae(e) {
 		e.addEventListener("transitionend", a, { once: !0 }), setTimeout(a, r + 50);
 	});
 }
+function se(e) {
+	if (!ie(e, "data-hui-dropdown-enter")) return Promise.resolve();
+	let { base: t, from: n, to: r } = B(e, "data-hui-dropdown-enter");
+	return t.length === 0 && n.length === 0 && r.length === 0 ? Promise.resolve() : (e.classList.add(...t, ...n), ae().then(() => (e.classList.remove(...n), e.classList.add(...r), oe(e))).then(() => {
+		e.classList.remove(...t, ...r);
+	}));
+}
+function V(e) {
+	if (!ie(e, "data-hui-dropdown-leave")) return Promise.resolve();
+	let { base: t, from: n, to: r } = B(e, "data-hui-dropdown-leave");
+	return t.length === 0 && n.length === 0 && r.length === 0 ? Promise.resolve() : (e.classList.add(...t, ...n), ae().then(() => (e.classList.remove(...n), e.classList.add(...r), oe(e))).then(() => {
+		e.classList.remove(...t, ...r);
+	}));
+}
 function H(e) {
-	if (!re(e, "data-hui-dropdown-enter")) return Promise.resolve();
-	let { base: t, from: n, to: r } = ne(e, "data-hui-dropdown-enter");
-	return t.length === 0 && n.length === 0 && r.length === 0 ? Promise.resolve() : (e.classList.add(...t, ...n), ie().then(() => (e.classList.remove(...n), e.classList.add(...r), ae(e))).then(() => {
-		e.classList.remove(...t, ...r);
-	}));
-}
-function U(e) {
-	if (!re(e, "data-hui-dropdown-leave")) return Promise.resolve();
-	let { base: t, from: n, to: r } = ne(e, "data-hui-dropdown-leave");
-	return t.length === 0 && n.length === 0 && r.length === 0 ? Promise.resolve() : (e.classList.add(...t, ...n), ie().then(() => (e.classList.remove(...n), e.classList.add(...r), ae(e))).then(() => {
-		e.classList.remove(...t, ...r);
-	}));
-}
-function oe(e) {
 	if (e.hasAttribute("data-hui-dropdown-initialized")) return;
 	e.setAttribute("data-hui-dropdown-initialized", "");
 	let t = e.querySelector("[data-hui-dropdown-trigger]"), n = e.querySelector("[data-hui-dropdown-items]");
 	if (!t || !n) return;
 	let r = !1, i = !1, a = -1, o = "", s = null;
 	function c() {
-		return Array.from(n.querySelectorAll(B));
+		return Array.from(n.querySelectorAll(z));
 	}
 	function l(e) {
 		c().forEach((t, n) => {
@@ -628,7 +637,7 @@ function oe(e) {
 		}), a = -1;
 	}
 	function d(a = !1) {
-		r || i || (r = !0, V(t, n), n.style.display = "block", n.removeAttribute("hidden"), t.setAttribute("aria-expanded", "true"), e.setAttribute("data-open", ""), a && c().length > 0 && l(0), H(n), requestAnimationFrame(() => {
+		r || i || (r = !0, re(t, n), n.style.display = "block", n.removeAttribute("hidden"), t.setAttribute("aria-expanded", "true"), e.setAttribute("data-open", ""), a && c().length > 0 && l(0), se(n), requestAnimationFrame(() => {
 			document.addEventListener("pointerdown", m, !0);
 		}), e.dispatchEvent(new CustomEvent("hui:dropdown:open", { bubbles: !0 })));
 	}
@@ -637,7 +646,7 @@ function oe(e) {
 		function o() {
 			r = !1, i = !1, n.style.display = "none", n.setAttribute("hidden", ""), t.setAttribute("aria-expanded", "false"), e.removeAttribute("data-open"), u(), document.removeEventListener("pointerdown", m, !0), a && t.focus(), e.dispatchEvent(new CustomEvent("hui:dropdown:close", { bubbles: !0 }));
 		}
-		re(n, "data-hui-dropdown-leave") ? (i = !0, U(n).then(o)) : o();
+		ie(n, "data-hui-dropdown-leave") ? (i = !0, V(n).then(o)) : o();
 	}
 	function p() {
 		r ? f() : d();
@@ -683,40 +692,40 @@ function oe(e) {
 		}
 	}
 	let _ = n.id;
-	_ || (_ = `hui-dropdown-items-${++se}-${Date.now()}`, n.id = _), t.setAttribute("aria-haspopup", "true"), t.setAttribute("aria-expanded", "false"), t.setAttribute("aria-controls", _), n.setAttribute("role", "menu"), n.style.display = "none", n.setAttribute("hidden", ""), c().forEach((e) => {
+	_ || (_ = `hui-dropdown-items-${++U}-${Date.now()}`, n.id = _), t.setAttribute("aria-haspopup", "true"), t.setAttribute("aria-expanded", "false"), t.setAttribute("aria-controls", _), n.setAttribute("role", "menu"), n.style.display = "none", n.setAttribute("hidden", ""), c().forEach((e) => {
 		e.getAttribute("role") || e.setAttribute("role", "menuitem"), e.setAttribute("tabindex", "-1");
 	}), Array.from(n.querySelectorAll("[data-hui-dropdown-item]")).forEach((e) => {
 		e.getAttribute("role") || e.setAttribute("role", "menuitem"), e.hasAttribute("data-disabled") && e.setAttribute("aria-disabled", "true");
 	}), t.addEventListener("click", (e) => {
 		e.preventDefault(), p();
 	}), t.addEventListener("keydown", g), n.addEventListener("keydown", g), n.addEventListener("click", (e) => {
-		let t = e.target.closest(B);
+		let t = e.target.closest(z);
 		t && (t.dispatchEvent(new CustomEvent("hui:dropdown:select", {
 			bubbles: !0,
 			detail: { value: t.getAttribute("data-value") || t.textContent?.trim() }
 		})), f());
 	}), n.addEventListener("pointerenter", (e) => {
-		let t = e.target.closest(B);
+		let t = e.target.closest(z);
 		if (t) {
 			let e = c().indexOf(t);
 			e !== -1 && l(e);
 		}
 	}, !0), n.addEventListener("pointerleave", (e) => {
-		e.target.closest(B) && u();
+		e.target.closest(z) && u();
 	}, !0), e._hui = {
 		open: d,
 		close: f,
 		toggle: p
 	};
 }
-var se = 0;
+var U = 0;
 function ce(e = document) {
-	Array.from(e.querySelectorAll("[data-hui-dropdown]")).forEach(oe);
+	Array.from(e.querySelectorAll("[data-hui-dropdown]")).forEach(H);
 }
 typeof window < "u" && typeof document < "u" && (document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", () => ce()) : ce());
 //#endregion
 //#region resources/js/flyout/flyout.ts
-var W = [
+var le = [
 	"a[href]",
 	"button:not([disabled])",
 	"input:not([disabled]):not([type=\"hidden\"])",
@@ -724,12 +733,12 @@ var W = [
 	"textarea:not([disabled])",
 	"[tabindex]:not([tabindex=\"-1\"])"
 ].join(",");
-function G(e) {
-	return Array.from(e.querySelectorAll(W));
+function W(e) {
+	return Array.from(e.querySelectorAll(le));
 }
-function le(e, t) {
+function G(e, t) {
 	if (t.key !== "Tab") return;
-	let n = G(e);
+	let n = W(e);
 	if (n.length === 0) {
 		t.preventDefault();
 		return;
@@ -857,7 +866,7 @@ function Ce(e) {
 		t = document.activeElement;
 		let r = me(e).filter((e) => q(e, "data-hui-flyout-enter"));
 		r.forEach((e) => ue(e, "data-hui-flyout-enter")), e.showModal(), e.setAttribute("data-hui-flyout-open", ""), a && (document.body.style.overflow = "hidden");
-		let i = G(e);
+		let i = W(e);
 		i.length > 0 && i[0].focus(), r.length > 0 && Promise.all(r.map((e) => de(e, "data-hui-flyout-enter"))), e.dispatchEvent(new CustomEvent("hui:flyout:open", { bubbles: !0 }));
 	}
 	function c(r = {}) {
@@ -875,7 +884,7 @@ function Ce(e) {
 		} else s();
 	}
 	e.addEventListener("keydown", (t) => {
-		le(e, t);
+		G(e, t);
 	}), e.addEventListener("cancel", (e) => {
 		e.preventDefault(), r || c();
 	}), e.addEventListener("click", (t) => {

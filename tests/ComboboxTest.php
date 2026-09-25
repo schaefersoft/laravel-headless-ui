@@ -146,6 +146,29 @@ it('throws on invalid anchor', function (string $anchor) {
     new Options(anchor: $anchor);
 })->with(['left', 'bottom middle', 'top start end'])->throws(Exception::class);
 
+it('renders groups', function () {
+    $view = $this->blade('
+        <x-hui::combobox>
+            <x-hui::combobox.input />
+            <x-hui::combobox.options>
+                <x-hui::combobox.group label="Development" class="group-class" label-class="heading-class">
+                    <x-hui::combobox.option value="1">Luca Schäfer</x-hui::combobox.option>
+                </x-hui::combobox.group>
+                <x-hui::combobox.group>
+                    <x-hui::combobox.option value="2">Lea Widmer</x-hui::combobox.option>
+                </x-hui::combobox.group>
+            </x-hui::combobox.options>
+        </x-hui::combobox>
+    ');
+
+    $view->assertSee('data-hui-combobox-group', false);
+    $view->assertSee('role="group"', false);
+    $view->assertSee('group-class');
+    $view->assertSee('heading-class');
+    $view->assertSee('Development');
+    expect(substr_count((string) $view, 'data-hui-combobox-group-label'))->toBe(1);
+});
+
 it('renders disabled options and labels', function () {
     $view = $this->blade('
         <x-hui::combobox>

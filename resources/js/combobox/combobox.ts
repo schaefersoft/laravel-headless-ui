@@ -256,6 +256,17 @@ function setupCombobox(root: HTMLElement) {
                 option.removeAttribute('aria-disabled');
             }
         });
+
+        groups().forEach((group) => {
+            const heading = group.querySelector<HTMLElement>(':scope > [data-hui-combobox-group-label]');
+            if (!heading) return;
+            if (!heading.id) heading.id = uid('group-label');
+            group.setAttribute('aria-labelledby', heading.id);
+        });
+    }
+
+    function groups(): HTMLElement[] {
+        return Array.from(options!.querySelectorAll<HTMLElement>('[data-hui-combobox-group]'));
     }
 
     function applyFilter() {
@@ -265,6 +276,11 @@ function setupCombobox(root: HTMLElement) {
             const match = q === '' || normalize(optionLabel(option)).includes(q);
             option.toggleAttribute('data-hui-combobox-filtered', !match);
             option.hidden = !match;
+        });
+
+        groups().forEach((group) => {
+            const groupOptions = Array.from(group.querySelectorAll<HTMLElement>(OPTION));
+            group.hidden = groupOptions.length > 0 && groupOptions.every((o) => o.hasAttribute('data-hui-combobox-filtered'));
         });
 
         const hasResults = allOptions().some((o) => !o.hasAttribute('data-hui-combobox-filtered'));
