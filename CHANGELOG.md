@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.0](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.5.6...v1.6.0) (2026-09-25)
+
+
+### Features
+
+* **combobox:** add allowCustomOptions to create values from the query ([2643d89](https://github.com/schaefersoft/laravel-headless-ui/commit/2643d8955fa9552789a9925c3bad5492e00f4a8d))
+* **combobox:** add clear button ([89ca414](https://github.com/schaefersoft/laravel-headless-ui/commit/89ca414d549116b815603a585851d66007f54586))
+* **combobox:** add combobox component ([7f8d3fc](https://github.com/schaefersoft/laravel-headless-ui/commit/7f8d3fcd0e8dcf3964f958df7a7c4fc570434391))
+* **combobox:** add max prop to limit multiple selections ([74d5d41](https://github.com/schaefersoft/laravel-headless-ui/commit/74d5d41cb2c25dea4e0b752fdc6fab93618acb4c))
+* **combobox:** add open prop to show options on load ([2bd8a98](https://github.com/schaefersoft/laravel-headless-ui/commit/2bd8a98da67569a5b691c2310796ad0eb81fda3f))
+* **combobox:** add option groups ([a2f9b06](https://github.com/schaefersoft/laravel-headless-ui/commit/a2f9b063217c5849d5d71b1c92da563b9eb2f611))
+
 ## [1.5.6](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.5.5...v1.5.6) (2026-09-15)
 
 
