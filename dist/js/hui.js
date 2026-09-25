@@ -62,7 +62,7 @@ function u(e) {
 }
 function d(e, n) {
 	let { side: r, align: i } = c(n.getAttribute("data-hui-combobox-anchor")), a = parseFloat(n.getAttribute("data-hui-combobox-gap") || "4") || 0, s = l(), d = e.getBoundingClientRect();
-	n.style.setProperty("--hui-combobox-anchor-width", `${d.width}px`), n.style.maxWidth = `${Math.max(0, s.right - s.left - t * 2)}px`, n.style.maxHeight = "";
+	n.style.setProperty("--hui-combobox-anchor-width", `${d.width}px`), n.style.maxWidth = `${Math.max(0, s.right - s.left - 16)}px`, n.style.maxHeight = "";
 	let { width: f, height: p } = n.getBoundingClientRect(), m = s.bottom - d.bottom - a - t, h = d.top - s.top - a - t, g = r === "bottom" ? m : h, _ = g < p && (r === "bottom" ? h : m) > g ? r === "bottom" ? "top" : "bottom" : r, v = Math.max(0, _ === "bottom" ? m : h);
 	p > v && (n.style.maxHeight = `${Math.floor(v)}px`);
 	let y = Math.min(p, v), b = getComputedStyle(e).direction === "rtl", x;
@@ -278,13 +278,13 @@ function v(e) {
 		A !== "" && (A = "", t.value = "", B(), K()), F().includes(e) && V(e, !1);
 	}
 	function _e(e) {
-		M() || !E.includes(e) || G(E.filter((t) => t !== e));
+		!M() && E.includes(e) && G(E.filter((t) => t !== e));
 	}
 	function ve() {
 		D && d(m, i);
 	}
 	function K() {
-		!D || j !== null || (j = requestAnimationFrame(() => {
+		D && j === null && (j = requestAnimationFrame(() => {
 			j = null, ve();
 		}));
 	}
@@ -349,9 +349,7 @@ function v(e) {
 			case "Backspace":
 				h && t.value === "" && E.length > 0 && _e(E[E.length - 1]);
 				break;
-			default:
-				!v && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), D || Y(), Se(e.key));
-				break;
+			default: !v && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), D || Y(), Se(e.key));
 		}
 	}
 	function we() {
@@ -564,7 +562,7 @@ function ie(e) {
 			let t = e.getAttribute("data-hui-dialog-trigger");
 			if (!t) return;
 			let n = document.getElementById(t);
-			!n || !n._hui || n._hui.open();
+			n && n._hui && n._hui.open();
 		}));
 	});
 }
@@ -732,9 +730,7 @@ function V(e) {
 			case "Tab":
 				r && f();
 				break;
-			default:
-				r && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), h(e.key));
-				break;
+			default: r && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), h(e.key));
 		}
 	}
 	let _ = n.id;
@@ -848,7 +844,7 @@ function q(e) {
 }
 function J(e) {
 	let t = q(e);
-	return t === null ? !1 : window.innerWidth >= t;
+	return t !== null && window.innerWidth >= t;
 }
 var ye = {
 	left: "x",
@@ -1023,7 +1019,7 @@ function De(e) {
 			let t = e.getAttribute("data-hui-flyout-trigger");
 			if (!t) return;
 			let n = document.getElementById(t);
-			!n || !n._hui || n._hui.open();
+			n && n._hui && n._hui.open();
 		}));
 	});
 }
@@ -1066,12 +1062,14 @@ function Ae(e = document) {
 			}), f.forEach((e) => {
 				let t = String(o);
 				e.textContent !== t && (e.textContent = t);
-			}), n) if (a) {
-				let e = ke(t, p, m), r = ke(o, p, m);
-				n.style.left = `${e}%`, n.style.width = `${Math.max(0, r - e)}%`;
-			} else {
-				let e = ke(t, p, m);
-				n.style.left = `${e}%`, n.style.width = `${Math.max(0, 100 - e)}%`;
+			}), n) {
+				if (a) {
+					let e = ke(t, p, m), r = ke(o, p, m);
+					n.style.left = `${e}%`, n.style.width = `${Math.max(0, r - e)}%`;
+				} else {
+					let e = ke(t, p, m);
+					n.style.left = `${e}%`, n.style.width = `${Math.max(0, 100 - e)}%`;
+				}
 			}
 		}
 		r && (r.addEventListener("input", () => _("min")), r.addEventListener("change", () => _("min"))), i && (i.addEventListener("input", () => _("max")), i.addEventListener("change", () => _("max")));
@@ -1083,8 +1081,8 @@ function Ae(e = document) {
 			let e = () => {
 				let e = Number(l[l.length - 1].value);
 				if (Number.isNaN(e)) return;
-				let t = Z(v(e), p, a ? Number(i.value) : m);
-				String(t) === r.value ? _("min") : (r.value = String(t), r.dispatchEvent(new Event("input", { bubbles: !0 })), r.dispatchEvent(new Event("change", { bubbles: !0 })));
+				let t = v(e), n = a ? Number(i.value) : m, o = Z(t, p, n);
+				String(o) === r.value ? _("min") : (r.value = String(o), r.dispatchEvent(new Event("input", { bubbles: !0 })), r.dispatchEvent(new Event("change", { bubbles: !0 })));
 			};
 			l.forEach((t) => {
 				t.addEventListener("input", e), t.addEventListener("change", e);
@@ -1103,20 +1101,20 @@ function Ae(e = document) {
 		}
 		function y(e) {
 			if ((!r || r.disabled) && (!i || i.disabled)) return;
-			let n = t.getBoundingClientRect(), o = p + Z((e - n.left) / n.width, 0, 1) * (m - p), s = Math.round((o - p) / (h || 1)) * (h || 1) + p, c = Number(r?.value ?? p), l = a ? Number(i.value) : m, u = Math.abs(s - c), d = a ? Math.abs(s - l) : Infinity, f = "min";
-			if (a && !i.disabled && (f = r && !r.disabled ? d === u ? s > (c + l) / 2 ? "max" : "min" : d < u ? "max" : "min" : "max"), f === "min" && r) {
-				let e = Z(s, p, a ? Number(i.value) : m);
+			let n = t.getBoundingClientRect(), o = Z((e - n.left) / n.width, 0, 1), s = p + o * (m - p), c = Math.round((s - p) / (h || 1)) * (h || 1) + p, l = Number(r?.value ?? p), u = a ? Number(i.value) : m, d = Math.abs(c - l), f = a ? Math.abs(c - u) : Infinity, g = "min";
+			if (a && !i.disabled && (g = r && !r.disabled ? f === d ? c > (l + u) / 2 ? "max" : "min" : f < d ? "max" : "min" : "max"), g === "min" && r) {
+				let e = Z(c, p, a ? Number(i.value) : m);
 				String(e) === r.value ? _("min") : (r.value = String(e), r.dispatchEvent(new Event("input", { bubbles: !0 })), r.dispatchEvent(new Event("change", { bubbles: !0 })));
-			} else if (f === "max" && i) {
-				let e = Z(s, r ? Number(r.value) : p, m);
+			} else if (g === "max" && i) {
+				let e = Z(c, r ? Number(r.value) : p, m);
 				String(e) === i.value ? _("max") : (i.value = String(e), i.dispatchEvent(new Event("input", { bubbles: !0 })), i.dispatchEvent(new Event("change", { bubbles: !0 })));
 			}
 		}
 		function b(e) {
 			let t = 0, n = !1, r = null, i = (e) => {
-				r !== null && e.pointerId !== r || Math.abs(e.clientX - t) > 4 && (n = !0);
+				(r === null || e.pointerId === r) && Math.abs(e.clientX - t) > 4 && (n = !0);
 			}, a = (e) => {
-				r !== null && e.pointerId !== r || (window.removeEventListener("pointermove", i, !0), window.removeEventListener("pointerup", a, !0), window.removeEventListener("pointercancel", a, !0), n || (y(e.clientX), e.preventDefault(), e.stopPropagation()), n = !1, r = null);
+				(r === null || e.pointerId === r) && (window.removeEventListener("pointermove", i, !0), window.removeEventListener("pointerup", a, !0), window.removeEventListener("pointercancel", a, !0), n || (y(e.clientX), e.preventDefault(), e.stopPropagation()), n = !1, r = null);
 			};
 			e.addEventListener("pointerdown", (e) => {
 				t = e.clientX, n = !1, r = e.pointerId, window.addEventListener("pointermove", i, !0), window.addEventListener("pointerup", a, !0), window.addEventListener("pointercancel", a, !0);
@@ -1353,11 +1351,11 @@ function Pe(e = document) {
 			}
 			try {
 				let e = getComputedStyle(t).backgroundColor;
-				!e || e === "transparent" || /rgba\([^\)]*,\s*0\s*\)/.test(e) ? t.style.removeProperty("--hui-tooltip-bg") : t.style.setProperty("--hui-tooltip-bg", e);
+				e && e !== "transparent" && !/rgba\([^\)]*,\s*0\s*\)/.test(e) ? t.style.setProperty("--hui-tooltip-bg", e) : t.style.removeProperty("--hui-tooltip-bg");
 			} catch {}
 		}
 		function d() {
-			t !== null && (o() && !s() || n || (n = !0, t.style.display = "block", t.setAttribute("aria-hidden", "false"), t.setAttribute("data-open", "true"), u(), window.addEventListener("scroll", m, !0), window.addEventListener("resize", h, !0), document.addEventListener("pointerdown", p, !0), document.addEventListener("keydown", c, !0)));
+			t !== null && (!o() || s()) && (n || (n = !0, t.style.display = "block", t.setAttribute("aria-hidden", "false"), t.setAttribute("data-open", "true"), u(), window.addEventListener("scroll", m, !0), window.addEventListener("resize", h, !0), document.addEventListener("pointerdown", p, !0), document.addEventListener("keydown", c, !0)));
 		}
 		function f() {
 			t !== null && n && (o() && s() || (n = !1, t.style.display = "none", t.setAttribute("aria-hidden", "true"), t.setAttribute("data-open", "false"), window.removeEventListener("scroll", m, !0), window.removeEventListener("resize", h, !0), document.removeEventListener("pointerdown", p, !0), document.removeEventListener("keydown", c, !0)));
