@@ -1,0 +1,18 @@
+.hui-combobox {
+    position: relative;
+}
+
+.hui-combobox-options {
+    position: fixed;
+    z-index: 50;
+    box-sizing: border-box;
+    min-width: var(--hui-combobox-anchor-width, auto);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.hui-combobox-options[hidden],
+.hui-combobox-option[hidden],
+.hui-combobox-no-results[hidden] {
+    display: none !important;
+}
