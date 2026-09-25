@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.6.1](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.6.0...v1.6.1) (2026-09-25)
+
+
+### Miscellaneous Chores
+
+* **deps:** bump composer dependencies and allow Pest 5 ([9ca624c](https://github.com/schaefersoft/laravel-headless-ui/commit/9ca624c114ee3e463315e9aa38f12e22e362dccb))
+* **deps:** bump npm dependencies ([9e02808](https://github.com/schaefersoft/laravel-headless-ui/commit/9e028082dbe1bfda015902304861ba4003300b26))
+* **deps:** drop redundant laravel/framework dev dependency ([91ec431](https://github.com/schaefersoft/laravel-headless-ui/commit/91ec431162fbc896c2ccf46a898bb3ba641b302b))
+* **deps:** remove unused npm dependencies ([d5cde1b](https://github.com/schaefersoft/laravel-headless-ui/commit/d5cde1bc2949439642c00d7d56da36e3e59af1d6))
+* prevent TypeScript from emitting JS files ([bf6e1e0](https://github.com/schaefersoft/laravel-headless-ui/commit/bf6e1e07ea36d027371c8465f6b81c6608d51fd9))
+* stop tracking composer.lock ([9ae488b](https://github.com/schaefersoft/laravel-headless-ui/commit/9ae488bafd5d0ebd52961534ecaf6b1519301ed7))
+* support Node 26 and bump dependencies ([88dcb99](https://github.com/schaefersoft/laravel-headless-ui/commit/88dcb99c21e548d977b3d59fe99d39db6d95d3dd))
+
 ## [1.6.0](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.5.6...v1.6.0) (2026-09-25)
 
 
