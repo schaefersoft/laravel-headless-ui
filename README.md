@@ -72,6 +72,7 @@ classes.
 | Component                              | Preview                                                                                                 |
 |----------------------------------------|---------------------------------------------------------------------------------------------------------|
 | [Avatar](./docs/avatar.md)             | <img src="./docs/assets/avatar/avatar_01.png" style="max-height: 180px; max-width: 400px;">             |
+| [Combobox](./docs/combobox.md)         | <img src="./docs/assets/combobox/combobox_01.png" style="max-height: 180px; max-width: 400px;">         |
 | [Dropdown](./docs/dropdown.md)         | <img src="./docs/assets/dropdown/dropdown_01.png" style="max-height: 180px; max-width: 400px;">         |
 | [Dialog](./docs/dialog.md)             | <img src="./docs/assets/dialog/dialog_01.png" style="max-height: 180px; max-width: 400px;">             |
 | [Disclosure](./docs/disclosure.md)     | <img src="./docs/assets/disclosure/disclosure_01.png" style="max-height: 180px; max-width: 400px;">     |
