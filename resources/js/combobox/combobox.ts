@@ -789,6 +789,8 @@ function setupCombobox(root: HTMLElement) {
         // ignore MutationObserver issues
     }
 
+    if (root.hasAttribute('data-hui-combobox-open')) open();
+
     (root as any)._hui = {
         open,
         close,

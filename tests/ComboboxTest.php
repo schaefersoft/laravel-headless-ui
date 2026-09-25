@@ -18,6 +18,7 @@ it('renders a searchable single combobox by default', function () {
     $view->assertSee('data-hui-combobox-searchable', false);
     $view->assertSee('data-hui-combobox-filter', false);
     $view->assertDontSee('data-hui-combobox-multiple', false);
+    $view->assertDontSee('data-hui-combobox-open', false);
     $view->assertSee('data-hui-combobox-input', false);
     $view->assertSee('placeholder="Search"', false);
     $view->assertSee('data-hui-combobox-button', false);
@@ -29,7 +30,7 @@ it('renders a searchable single combobox by default', function () {
 
 it('renders flags as data attributes', function () {
     $view = $this->blade('
-        <x-hui::combobox multiple disabled nullable immediate :searchable="false" :filter="false">
+        <x-hui::combobox multiple disabled nullable immediate open :searchable="false" :filter="false">
             <x-hui::combobox.input />
             <x-hui::combobox.options />
         </x-hui::combobox>
@@ -40,6 +41,7 @@ it('renders flags as data attributes', function () {
     $view->assertSee('data-disabled', false);
     $view->assertSee('data-hui-combobox-nullable', false);
     $view->assertSee('data-hui-combobox-immediate', false);
+    $view->assertSee('data-hui-combobox-open', false);
     $view->assertDontSee('data-hui-combobox-searchable', false);
     $view->assertDontSee('data-hui-combobox-filter', false);
 });

@@ -348,7 +348,7 @@ function _(e) {
 			attributeFilter: ["data-hui-combobox-disabled"]
 		});
 	} catch {}
-	e._hui = {
+	e.hasAttribute("data-hui-combobox-open") && q(), e._hui = {
 		open: q,
 		close: J,
 		toggle: Y,

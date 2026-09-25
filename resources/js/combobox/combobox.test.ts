@@ -7,6 +7,7 @@ type Opts = {
     nullable?: boolean;
     disabled?: boolean;
     immediate?: boolean;
+    open?: boolean;
     filter?: boolean;
     name?: string;
     value?: string[];
@@ -20,6 +21,7 @@ function createCombobox(opts: Opts = {}): HTMLElement {
         opts.nullable ? 'data-hui-combobox-nullable' : '',
         opts.disabled ? 'data-hui-combobox-disabled' : '',
         opts.immediate ? 'data-hui-combobox-immediate' : '',
+        opts.open ? 'data-hui-combobox-open' : '',
         opts.filter === false ? '' : 'data-hui-combobox-filter',
         opts.name ? `data-hui-combobox-name="${opts.name}"` : '',
     ].join(' ');
@@ -150,6 +152,21 @@ describe('Combobox', () => {
         createCombobox({ immediate: true });
         input().dispatchEvent(new FocusEvent('focus'));
         expect(options().hidden).toBe(false);
+    });
+
+    it('opens on init when open is set', () => {
+        const root = createCombobox({ open: true, value: ['4'] });
+        expect(options().hidden).toBe(false);
+        expect(root.hasAttribute('data-open')).toBe(true);
+        expect(option('4').hasAttribute('data-active')).toBe(true);
+
+        key('Escape');
+        expect(options().hidden).toBe(true);
+    });
+
+    it('does not open on init when open and disabled', () => {
+        createCombobox({ open: true, disabled: true });
+        expect(options().hidden).toBe(true);
     });
 
     it('opens and closes via JS API', () => {

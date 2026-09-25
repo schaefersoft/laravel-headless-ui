@@ -21,6 +21,7 @@ class Combobox extends Component
         public bool $searchable = true,
         public bool $nullable = false,
         public bool $immediate = false,
+        public bool $open = false,
         public bool $filter = true,
     )
     {

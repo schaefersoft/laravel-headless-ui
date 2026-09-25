@@ -6,6 +6,7 @@
     @if($searchable) data-hui-combobox-searchable @endif
     @if($nullable) data-hui-combobox-nullable @endif
     @if($immediate) data-hui-combobox-immediate @endif
+    @if($open) data-hui-combobox-open @endif
     @if($filter) data-hui-combobox-filter @endif
     @if($inputName) data-hui-combobox-name="{{ $inputName }}" @endif
     data-hui-combobox-value="{{ json_encode($values) }}"

@@ -141,6 +141,15 @@ keyboard.
 <x-hui::combobox immediate>...</x-hui::combobox>
 ```
 
+### Open by default
+
+```bladehtml
+<x-hui::combobox open>...</x-hui::combobox>
+```
+
+The options are shown on page load and close as usual (outside click, `Escape`, selection). Has no effect when the
+combobox is disabled.
+
 ### Server-side search
 
 Disable client-side filtering and replace the options when the `hui:combobox:search` event fires. Added or removed
@@ -275,6 +284,7 @@ The combobox is completely unstyled. Use these attributes for state-based stylin
 | `searchable` | `boolean`               | `true`  | Allows typing to search. `false` makes the input read-only.      |
 | `nullable`   | `boolean`               | `false` | Clearing the input removes the selection (single mode).          |
 | `immediate`  | `boolean`               | `false` | Also opens the options on keyboard focus (click always opens).   |
+| `open`       | `boolean`               | `false` | Shows the options on page load.                                  |
 | `filter`     | `boolean`               | `true`  | Filters options client-side. Disable for server-side search.     |
 
 > [!NOTE]
