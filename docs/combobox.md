@@ -8,7 +8,8 @@ automatic, viewport-aware positioning. Not a native `<select>` — the options a
 ## Usage
 
 Blade components: `x-hui::combobox`, `x-hui::combobox.input`, `x-hui::combobox.button`, `x-hui::combobox.clear`,
-`x-hui::combobox.options`, `x-hui::combobox.option`, `x-hui::combobox.group`, `x-hui::combobox.no-results`,
+`x-hui::combobox.options`, `x-hui::combobox.option`, `x-hui::combobox.group`, `x-hui::combobox.custom-option`,
+`x-hui::combobox.no-results`,
 `x-hui::combobox.chips`
 
 ### Single selection
@@ -75,6 +76,30 @@ call to action.
 
 In multiple mode clicking an option toggles it, the list stays open and the search query is cleared after each
 selection. `Backspace` in an empty input removes the last selected value. Values are submitted as `stack[]`.
+
+### Custom options
+
+```bladehtml
+<x-hui::combobox name="stack" multiple allow-custom-options>
+    ...
+    <x-hui::combobox.options>
+        <x-hui::combobox.option value="laravel">Laravel</x-hui::combobox.option>
+        <x-hui::combobox.custom-option class="px-2.5 py-2 data-[active]:bg-zinc-100">
+            Add "<span data-hui-combobox-custom-query></span>"
+        </x-hui::combobox.custom-option>
+    </x-hui::combobox.options>
+</x-hui::combobox>
+```
+
+When the query does not exactly match an option or a selected value, an extra option is appended to the list. Selecting
+it uses the query as value and label and dispatches `hui:combobox:create`. Existing matches stay first, so `Enter`
+still picks a partial match; the custom option is highlighted automatically only when nothing else matches.
+
+`x-hui::combobox.custom-option` is optional and defines the markup of that option. Elements with
+`data-hui-combobox-custom-query` receive the query. Without it, `Create "<query>"` is rendered.
+
+> [!IMPORTANT]
+> Custom values are submitted as typed. Validate them on the server.
 
 ### Clear button
 
@@ -309,6 +334,7 @@ The combobox is completely unstyled. Use these attributes for state-based stylin
 | `hui:combobox:close`   | Options closed             | —                                                                        |
 | `hui:combobox:change`  | Selection changed          | `{ value: string \| null \| string[], label: string \| null \| string[] }` |
 | `hui:combobox:search`  | The search query changed   | `{ query: string }`                                                      |
+| `hui:combobox:create`  | A custom value was added   | `{ value: string }`                                                      |
 
 ## Props
 
@@ -326,6 +352,7 @@ The combobox is completely unstyled. Use these attributes for state-based stylin
 | `immediate`  | `boolean`               | `false` | Also opens the options on keyboard focus (click always opens).   |
 | `open`       | `boolean`               | `false` | Shows the options on page load.                                  |
 | `max`        | `int\|null`             | `null`  | Maximum number of selected values (multiple only).               |
+| `allowCustomOptions` | `boolean`       | `false` | Allows selecting the typed query as a new value (searchable only). |
 | `filter`     | `boolean`               | `true`  | Filters options client-side. Disable for server-side search.     |
 
 > [!NOTE]
@@ -382,6 +409,15 @@ The combobox is completely unstyled. Use these attributes for state-based stylin
 
 > [!NOTE]
 > Renders a `<div role="option"/>`.
+
+### Custom option
+
+| Prop    | Type     | Default | Description                      |
+|---------|----------|---------|----------------------------------|
+| `class` | `string` | `""`    | Custom classes for the option.   |
+
+> [!NOTE]
+> Renders a `<template/>` used for the custom option. Receives `data-active` like regular options.
 
 ### Group
 

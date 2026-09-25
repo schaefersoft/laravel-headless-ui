@@ -24,6 +24,7 @@ class Combobox extends Component
         public bool $open = false,
         public bool $filter = true,
         public ?int $max = null,
+        public bool $allowCustomOptions = false,
     )
     {
         if ($max !== null && $max < 1) {

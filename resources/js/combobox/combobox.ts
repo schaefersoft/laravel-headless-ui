@@ -5,6 +5,7 @@ type Align = 'start' | 'end' | 'center';
 
 const VIEWPORT_PADDING = 8;
 const OPTION = '[data-hui-combobox-option]';
+const SELECTABLE = `${OPTION}, [data-hui-combobox-custom-option]`;
 
 let _id = 0;
 
@@ -199,6 +200,8 @@ function setupCombobox(root: HTMLElement) {
     const filterEnabled = root.hasAttribute('data-hui-combobox-filter');
     const name = root.getAttribute('data-hui-combobox-name');
     const max = multiple ? (parseInt(root.getAttribute('data-hui-combobox-max') || '', 10) || null) : null;
+    const allowCustom = searchable && root.hasAttribute('data-hui-combobox-allow-custom-options');
+    let customOption: HTMLElement | null = null;
 
     const labels = new Map<string, string>();
     const initialValue = parseValue(root.getAttribute('data-hui-combobox-value'));
@@ -226,7 +229,94 @@ function setupCombobox(root: HTMLElement) {
     }
 
     function navigableOptions(): HTMLElement[] {
-        return allOptions().filter((o) => !o.hasAttribute('data-disabled') && !o.hasAttribute('data-hui-combobox-filtered'));
+        const list = allOptions().filter((o) => !o.hasAttribute('data-disabled') && !o.hasAttribute('data-hui-combobox-filtered'));
+        if (isCustomVisible() && !isMaxReached()) list.push(customOption!);
+        return list;
+    }
+
+    // --- Custom option ---
+
+    function ensureCustomOption(): HTMLElement | null {
+        if (!allowCustom) return null;
+        if (customOption && options!.contains(customOption)) return customOption;
+
+        const template = options!.querySelector<HTMLTemplateElement>('template[data-hui-combobox-custom-option-template]');
+        const templateChild = template?.content.firstElementChild;
+        let el: HTMLElement;
+
+        if (templateChild) {
+            el = templateChild.cloneNode(true) as HTMLElement;
+        } else {
+            el = document.createElement('div');
+            const queryEl = document.createElement('span');
+            queryEl.setAttribute('data-hui-combobox-custom-query', '');
+            el.append('Create "', queryEl, '"');
+        }
+
+        el.setAttribute('data-hui-combobox-custom-option', '');
+        el.setAttribute('role', 'option');
+        el.setAttribute('aria-selected', 'false');
+        el.id = el.id || uid('custom-option');
+        el.hidden = true;
+        options!.appendChild(el);
+        customOption = el;
+        return el;
+    }
+
+    function isCustomVisible(): boolean {
+        return customOption !== null && !customOption.hidden && options!.contains(customOption);
+    }
+
+    function customQuery(): string {
+        return query.trim();
+    }
+
+    function updateCustomOption() {
+        const el = ensureCustomOption();
+        if (!el) return;
+
+        const q = customQuery();
+        const nq = normalize(q);
+        const exists = allOptions().some((o) => normalize(optionLabel(o)) === nq || optionValue(o) === q)
+            || selected.some((v) => v === q || normalize(labelFor(v)) === nq);
+
+        el.hidden = q === '' || exists;
+        if (el.hidden) return;
+
+        el.setAttribute('data-value', q);
+        el.querySelectorAll('[data-hui-combobox-custom-query]').forEach((queryEl) => {
+            if (queryEl.textContent !== q) queryEl.textContent = q;
+        });
+
+        if (isMaxReached()) {
+            el.setAttribute('aria-disabled', 'true');
+        } else {
+            el.removeAttribute('aria-disabled');
+        }
+    }
+
+    function selectCustom() {
+        const value = customQuery();
+        if (value === '' || isDisabled() || isMaxReached()) return;
+
+        labels.set(value, value);
+        root.dispatchEvent(new CustomEvent('hui:combobox:create', {
+            bubbles: true,
+            detail: { value },
+        }));
+
+        query = '';
+        if (multiple) {
+            setSelected([...selected, value]);
+            input!.value = '';
+            applyFilter();
+            setActive(null);
+            schedulePosition();
+        } else {
+            setSelected([value]);
+            syncInputText();
+            close();
+        }
     }
 
     function optionLabel(option: HTMLElement): string {
@@ -284,7 +374,9 @@ function setupCombobox(root: HTMLElement) {
             group.hidden = groupOptions.length > 0 && groupOptions.every((o) => o.hasAttribute('data-hui-combobox-filtered'));
         });
 
-        const hasResults = allOptions().some((o) => !o.hasAttribute('data-hui-combobox-filtered'));
+        updateCustomOption();
+
+        const hasResults = allOptions().some((o) => !o.hasAttribute('data-hui-combobox-filtered')) || isCustomVisible();
         options!.toggleAttribute('data-empty', !hasResults);
         if (noResults) noResults.hidden = hasResults;
 
@@ -295,6 +387,7 @@ function setupCombobox(root: HTMLElement) {
 
     function setActive(option: HTMLElement | null, scroll = true) {
         allOptions().forEach((o) => o.toggleAttribute('data-active', o === option));
+        customOption?.toggleAttribute('data-active', customOption === option);
         activeOption = option;
 
         if (option) {
@@ -441,6 +534,10 @@ function setupCombobox(root: HTMLElement) {
     }
 
     function selectOption(option: HTMLElement) {
+        if (option === customOption) {
+            selectCustom();
+            return;
+        }
         if (option.hasAttribute('data-disabled') || isDisabled()) return;
 
         const value = optionValue(option);
@@ -804,12 +901,12 @@ function setupCombobox(root: HTMLElement) {
     options.addEventListener('pointerdown', (e) => e.preventDefault());
 
     options.addEventListener('click', (e) => {
-        const option = (e.target as HTMLElement).closest<HTMLElement>(OPTION);
+        const option = (e.target as HTMLElement).closest<HTMLElement>(SELECTABLE);
         if (option && options.contains(option)) selectOption(option);
     });
 
     options.addEventListener('pointermove', (e) => {
-        const option = (e.target as HTMLElement).closest<HTMLElement>(OPTION);
+        const option = (e.target as HTMLElement).closest<HTMLElement>(SELECTABLE);
         if (option && option !== activeOption && !option.hasAttribute('data-disabled')) {
             setActive(option, false);
         }

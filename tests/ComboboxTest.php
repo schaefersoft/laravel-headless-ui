@@ -146,6 +146,25 @@ it('throws on invalid anchor', function (string $anchor) {
     new Options(anchor: $anchor);
 })->with(['left', 'bottom middle', 'top start end'])->throws(Exception::class);
 
+it('renders allow custom options flag', function () {
+    $view = $this->blade('<x-hui::combobox allow-custom-options><x-hui::combobox.input /><x-hui::combobox.options /></x-hui::combobox>');
+    $view->assertSee('data-hui-combobox-allow-custom-options', false);
+
+    $default = $this->blade('<x-hui::combobox><x-hui::combobox.input /><x-hui::combobox.options /></x-hui::combobox>');
+    $default->assertDontSee('data-hui-combobox-allow-custom-options', false);
+});
+
+it('renders a custom option template', function () {
+    $default = $this->blade('<x-hui::combobox.custom-option class="create-class" />');
+    $default->assertSee('data-hui-combobox-custom-option-template', false);
+    $default->assertSee('create-class');
+    $default->assertSee('Create "<span data-hui-combobox-custom-query></span>"', false);
+
+    $custom = $this->blade('<x-hui::combobox.custom-option>Add <b data-hui-combobox-custom-query></b></x-hui::combobox.custom-option>');
+    $custom->assertSee('Add <b data-hui-combobox-custom-query></b>', false);
+    $custom->assertDontSee('Create');
+});
+
 it('renders a hidden clear button with default label', function () {
     $view = $this->blade('
         <x-hui::combobox>

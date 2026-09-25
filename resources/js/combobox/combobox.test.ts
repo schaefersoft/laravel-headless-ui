@@ -9,6 +9,8 @@ type Opts = {
     immediate?: boolean;
     open?: boolean;
     max?: number;
+    allowCustom?: boolean;
+    customTemplate?: string;
     filter?: boolean;
     name?: string;
     value?: string[];
@@ -24,6 +26,7 @@ function createCombobox(opts: Opts = {}): HTMLElement {
         opts.immediate ? 'data-hui-combobox-immediate' : '',
         opts.open ? 'data-hui-combobox-open' : '',
         opts.max ? `data-hui-combobox-max="${opts.max}"` : '',
+        opts.allowCustom ? 'data-hui-combobox-allow-custom-options' : '',
         opts.filter === false ? '' : 'data-hui-combobox-filter',
         opts.name ? `data-hui-combobox-name="${opts.name}"` : '',
     ].join(' ');
@@ -42,6 +45,7 @@ function createCombobox(opts: Opts = {}): HTMLElement {
                     <div data-hui-combobox-option data-value="4">Tom Cook</div>
                     <div data-hui-combobox-option data-value="5">Élodie Durand</div>
                     <div data-hui-combobox-no-results hidden>Nothing found</div>
+                    ${opts.customTemplate ?? ''}
                 </div>
             </div>
         </form>
@@ -498,6 +502,87 @@ describe('Combobox', () => {
         expect(clearButton().disabled).toBe(true);
         clearButton().click();
         expect(getComboboxValue('cb')).toBe('1');
+    });
+
+    // --- Custom options ---
+
+    const custom = () => document.querySelector<HTMLElement>('[data-hui-combobox-custom-option]')!;
+
+    it('offers a custom option for unknown queries', () => {
+        const root = createCombobox({ allowCustom: true, name: 'person' });
+        const onCreate = vi.fn();
+        root.addEventListener('hui:combobox:create', onCreate);
+
+        type('Mia Frei');
+
+        expect(custom().hidden).toBe(false);
+        expect(custom().textContent).toBe('Create "Mia Frei"');
+        expect(custom().getAttribute('role')).toBe('option');
+        expect(custom().hasAttribute('data-active')).toBe(true);
+        expect(document.querySelector<HTMLElement>('[data-hui-combobox-no-results]')!.hidden).toBe(true);
+
+        key('Enter');
+
+        expect(getComboboxValue('cb')).toBe('Mia Frei');
+        expect(input().value).toBe('Mia Frei');
+        expect(hiddenInputs().map((i) => i.value)).toEqual(['Mia Frei']);
+        expect(onCreate.mock.calls[0][0].detail).toEqual({ value: 'Mia Frei' });
+        expect(options().hidden).toBe(true);
+    });
+
+    it('prefers existing matches over the custom option', () => {
+        createCombobox({ allowCustom: true });
+        type('wa');
+
+        expect(custom().hidden).toBe(false);
+        expect(option('1').hasAttribute('data-active')).toBe(true);
+    });
+
+    it('hides the custom option on exact matches', () => {
+        createCombobox({ allowCustom: true });
+        type('tom cook');
+        expect(custom().hidden).toBe(true);
+    });
+
+    it('does not offer custom options without the flag', () => {
+        createCombobox();
+        type('Mia Frei');
+        expect(document.querySelector('[data-hui-combobox-custom-option]')).toBeNull();
+    });
+
+    it('adds custom values in multiple mode', () => {
+        createCombobox({ multiple: true, allowCustom: true, value: ['1'], chips: '<div data-hui-combobox-chips></div>' });
+        type('Mia Frei');
+        custom().click();
+
+        expect(getComboboxValue('cb')).toEqual(['1', 'Mia Frei']);
+        expect(input().value).toBe('');
+        expect(custom().hidden).toBe(true);
+        expect(options().hidden).toBe(false);
+        expect(Array.from(document.querySelectorAll('[data-hui-combobox-chip-label]')).map((c) => c.textContent)).toEqual(['Wade Cooper', 'Mia Frei']);
+
+        type('mia frei');
+        expect(custom().hidden).toBe(true);
+    });
+
+    it('respects max for custom values', () => {
+        createCombobox({ multiple: true, allowCustom: true, max: 1, value: ['1'] });
+        type('Mia Frei');
+
+        expect(custom().getAttribute('aria-disabled')).toBe('true');
+        custom().click();
+        expect(getComboboxValue('cb')).toEqual(['1']);
+    });
+
+    it('renders the custom option from a template', () => {
+        createCombobox({
+            allowCustom: true,
+            customTemplate: '<template data-hui-combobox-custom-option-template><div class="create">Add <b data-hui-combobox-custom-query></b> as contact</div></template>',
+        });
+        type('Mia');
+
+        expect(custom().className).toBe('create');
+        expect(custom().textContent).toBe('Add Mia as contact');
     });
 
     // --- Groups ---
