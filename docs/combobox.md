@@ -75,6 +75,15 @@ call to action.
 In multiple mode clicking an option toggles it, the list stays open and the search query is cleared after each
 selection. `Backspace` in an empty input removes the last selected value. Values are submitted as `stack[]`.
 
+### Maximum selections
+
+```bladehtml
+<x-hui::combobox name="stack" multiple :max="3">...</x-hui::combobox>
+```
+
+Once the limit is reached, unselected options receive `aria-disabled="true"` and cannot be selected until a value is
+removed. The combobox receives `data-max-reached` for styling. Only applies to multiple mode.
+
 ### Custom chips
 
 `x-hui::combobox.chips` renders one chip per selected value. Pass markup as slot to use it as template — mark the
@@ -247,6 +256,7 @@ The combobox is completely unstyled. Use these attributes for state-based stylin
 | Combobox | `data-open`      | The options are visible.                     |
 | Combobox | `data-disabled`  | The combobox is disabled.                    |
 | Combobox | `data-has-value` | At least one value is selected.              |
+| Combobox | `data-max-reached` | The `max` limit is reached.                |
 | Options  | `data-placement` | Resolved side: `top` or `bottom`.            |
 | Options  | `data-empty`     | No option matches the query.                 |
 | Option   | `data-active`    | Highlighted via keyboard or pointer.         |
@@ -285,6 +295,7 @@ The combobox is completely unstyled. Use these attributes for state-based stylin
 | `nullable`   | `boolean`               | `false` | Clearing the input removes the selection (single mode).          |
 | `immediate`  | `boolean`               | `false` | Also opens the options on keyboard focus (click always opens).   |
 | `open`       | `boolean`               | `false` | Shows the options on page load.                                  |
+| `max`        | `int\|null`             | `null`  | Maximum number of selected values (multiple only).               |
 | `filter`     | `boolean`               | `true`  | Filters options client-side. Disable for server-side search.     |
 
 > [!NOTE]

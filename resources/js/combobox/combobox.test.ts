@@ -8,6 +8,7 @@ type Opts = {
     disabled?: boolean;
     immediate?: boolean;
     open?: boolean;
+    max?: number;
     filter?: boolean;
     name?: string;
     value?: string[];
@@ -22,6 +23,7 @@ function createCombobox(opts: Opts = {}): HTMLElement {
         opts.disabled ? 'data-hui-combobox-disabled' : '',
         opts.immediate ? 'data-hui-combobox-immediate' : '',
         opts.open ? 'data-hui-combobox-open' : '',
+        opts.max ? `data-hui-combobox-max="${opts.max}"` : '',
         opts.filter === false ? '' : 'data-hui-combobox-filter',
         opts.name ? `data-hui-combobox-name="${opts.name}"` : '',
     ].join(' ');
@@ -445,6 +447,33 @@ describe('Combobox', () => {
 
         chip.querySelector<HTMLElement>('i')!.click();
         expect(getComboboxValue('cb')).toEqual([]);
+    });
+
+    // --- Max ---
+
+    it('limits the number of selected values', () => {
+        const root = createCombobox({ multiple: true, max: 2, value: ['1'] });
+
+        button().click();
+        option('2').click();
+        expect(root.hasAttribute('data-max-reached')).toBe(true);
+        expect(option('4').getAttribute('aria-disabled')).toBe('true');
+        expect(option('1').hasAttribute('aria-disabled')).toBe(false);
+
+        option('4').click();
+        expect(getComboboxValue('cb')).toEqual(['1', '2']);
+
+        option('1').click();
+        expect(root.hasAttribute('data-max-reached')).toBe(false);
+        expect(option('4').hasAttribute('aria-disabled')).toBe(false);
+
+        option('4').click();
+        expect(getComboboxValue('cb')).toEqual(['2', '4']);
+    });
+
+    it('truncates initial values to max', () => {
+        createCombobox({ multiple: true, max: 1, value: ['1', '2'] });
+        expect(getComboboxValue('cb')).toEqual(['1']);
     });
 
     // --- Disabled ---

@@ -104,6 +104,23 @@ it('normalizes values', function () {
     expect($collection->values)->toBe(['3', '4']);
 });
 
+it('renders max for multiple comboboxes only', function () {
+    $multiple = $this->blade('<x-hui::combobox multiple :max="3"><x-hui::combobox.input /><x-hui::combobox.options /></x-hui::combobox>');
+    $multiple->assertSee('data-hui-combobox-max="3"', false);
+
+    $single = $this->blade('<x-hui::combobox :max="3"><x-hui::combobox.input /><x-hui::combobox.options /></x-hui::combobox>');
+    $single->assertDontSee('data-hui-combobox-max', false);
+});
+
+it('truncates values to max', function () {
+    $combobox = new Combobox(value: ['a', 'b', 'c'], multiple: true, max: 2);
+    expect($combobox->values)->toBe(['a', 'b']);
+});
+
+it('throws on invalid max', function () {
+    new Combobox(multiple: true, max: 0);
+})->throws(Exception::class);
+
 it('does not double the array suffix', function () {
     $combobox = new Combobox(name: 'tags[]', multiple: true);
     expect($combobox->inputName)->toBe('tags[]');

@@ -197,6 +197,7 @@ function setupCombobox(root: HTMLElement) {
     const immediate = root.hasAttribute('data-hui-combobox-immediate');
     const filterEnabled = root.hasAttribute('data-hui-combobox-filter');
     const name = root.getAttribute('data-hui-combobox-name');
+    const max = multiple ? (parseInt(root.getAttribute('data-hui-combobox-max') || '', 10) || null) : null;
 
     const labels = new Map<string, string>();
     const initialValue = parseValue(root.getAttribute('data-hui-combobox-value'));
@@ -211,6 +212,10 @@ function setupCombobox(root: HTMLElement) {
 
     function isDisabled(): boolean {
         return root.hasAttribute('data-hui-combobox-disabled');
+    }
+
+    function isMaxReached(): boolean {
+        return max !== null && selected.length >= max;
     }
 
     // --- Options ---
@@ -245,7 +250,7 @@ function setupCombobox(root: HTMLElement) {
             option.setAttribute('aria-selected', isSelected ? 'true' : 'false');
             option.toggleAttribute('data-selected', isSelected);
 
-            if (option.hasAttribute('data-disabled')) {
+            if (option.hasAttribute('data-disabled') || (!isSelected && isMaxReached())) {
                 option.setAttribute('aria-disabled', 'true');
             } else {
                 option.removeAttribute('aria-disabled');
@@ -381,12 +386,13 @@ function setupCombobox(root: HTMLElement) {
 
     function setSelected(values: string[], emit = true) {
         const unique = Array.from(new Set(values.map(String)));
-        selected = multiple ? unique : unique.slice(0, 1);
+        selected = unique.slice(0, multiple ? (max ?? unique.length) : 1);
 
         syncOptions();
         renderHiddenInputs();
         renderChips();
         root.toggleAttribute('data-has-value', selected.length > 0);
+        root.toggleAttribute('data-max-reached', isMaxReached());
 
         if (emit) {
             root.dispatchEvent(new CustomEvent('hui:combobox:change', {
@@ -413,7 +419,13 @@ function setupCombobox(root: HTMLElement) {
             return;
         }
 
-        setSelected(selected.includes(value) ? selected.filter((v) => v !== value) : [...selected, value]);
+        if (selected.includes(value)) {
+            setSelected(selected.filter((v) => v !== value));
+        } else if (!isMaxReached()) {
+            setSelected([...selected, value]);
+        } else {
+            return;
+        }
 
         if (query !== '') {
             query = '';

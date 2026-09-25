@@ -8,6 +8,7 @@
     @if($immediate) data-hui-combobox-immediate @endif
     @if($open) data-hui-combobox-open @endif
     @if($filter) data-hui-combobox-filter @endif
+    @if($multiple && $max) data-hui-combobox-max="{{ $max }}" @endif
     @if($inputName) data-hui-combobox-name="{{ $inputName }}" @endif
     data-hui-combobox-value="{{ json_encode($values) }}"
     {{ $attributes->except(['class']) }}
