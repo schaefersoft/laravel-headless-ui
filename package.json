@@ -7,7 +7,7 @@
     "build": "vite build",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc"
   },
   "private": true,
   "devDependencies": {
