@@ -80,16 +80,20 @@ selection. `Backspace` in an empty input removes the last selected value. Values
 ### Custom options
 
 ```bladehtml
-<x-hui::combobox name="stack" multiple allow-custom-options>
+<x-hui::combobox name="labels" multiple allow-custom-options :value="['billing', 'customer-portal']">
     ...
     <x-hui::combobox.options>
-        <x-hui::combobox.option value="laravel">Laravel</x-hui::combobox.option>
+        @foreach($labels as $label)
+            <x-hui::combobox.option :value="$label->slug">{{ $label->name }}</x-hui::combobox.option>
+        @endforeach
         <x-hui::combobox.custom-option class="px-2.5 py-2 data-[active]:bg-zinc-100">
-            Add "<span data-hui-combobox-custom-query></span>"
+            Create label “<span data-hui-combobox-custom-query></span>”
         </x-hui::combobox.custom-option>
     </x-hui::combobox.options>
 </x-hui::combobox>
 ```
+
+![Custom options example](./assets/combobox/combobox_07.png)
 
 When the query does not exactly match an option or a selected value, an extra option is appended to the list. Selecting
 it uses the query as value and label and dispatches `hui:combobox:create`. Existing matches stay first, so `Enter`
@@ -112,6 +116,7 @@ still picks a partial match; the custom option is highlighted automatically only
 ```
 
 Clears the selection and the search query. The button is hidden while nothing is selected and the input is empty.
+See the `×` next to the toggle button in the [groups example](#groups).
 
 ### Groups
 
@@ -127,6 +132,8 @@ Clears the selection and the search query. The button is hidden while nothing is
 </x-hui::combobox.options>
 ```
 
+![Groups example](./assets/combobox/combobox_06.png)
+
 Groups are hidden while none of their options match the query. The heading is linked to the group via
 `aria-labelledby`.
 
@@ -135,6 +142,8 @@ Groups are hidden while none of their options match the query. The heading is li
 ```bladehtml
 <x-hui::combobox name="stack" multiple :max="3">...</x-hui::combobox>
 ```
+
+![Maximum selections example](./assets/combobox/combobox_08.png)
 
 Once the limit is reached, unselected options receive `aria-disabled="true"` and cannot be selected until a value is
 removed. The combobox receives `data-max-reached` for styling. Only applies to multiple mode.
