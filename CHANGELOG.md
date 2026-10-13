@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.2](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.7.1...v1.7.2) (2026-10-13)
+
+
+### Bug Fixes
+
+* **range-slider:** make class optional on the range slider input ([e897ad0](https://github.com/schaefersoft/laravel-headless-ui/commit/e897ad0a89a30c69493749ada7b3fb2427950f18))
+
 ## [1.7.1](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.7.0...v1.7.1) (2026-10-13)
 
 
