@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.3](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.7.2...v1.7.3) (2026-10-13)
+
+
+### Bug Fixes
+
+* **deps:** bump source-map-js to 1.2.2 ([1956d1c](https://github.com/schaefersoft/laravel-headless-ui/commit/1956d1c5ec97d66815b460a39f6914b62c93605f))
+* **deps:** bump source-map-js to 1.2.2 ([c49394b](https://github.com/schaefersoft/laravel-headless-ui/commit/c49394bd6a69f68aa4377a7b06e70d3d07956698))
+
 ## [1.7.2](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.7.1...v1.7.2) (2026-10-13)
 
 
