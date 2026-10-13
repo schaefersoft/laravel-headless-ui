@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.2](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.6.1...v1.6.2) (2026-10-13)
+
+
+### Bug Fixes
+
+* **toggle:** toggle the switch with Space and Enter keys ([285a97b](https://github.com/schaefersoft/laravel-headless-ui/commit/285a97b68742f6969cbe79e8849deba0a3762472))
+* **toggle:** toggle the switch with Space and Enter keys ([c047df4](https://github.com/schaefersoft/laravel-headless-ui/commit/c047df4624c902d044b41a5b216008d2a6ec4c18))
+
 ## [1.6.1](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.6.0...v1.6.1) (2026-09-25)
 
 
