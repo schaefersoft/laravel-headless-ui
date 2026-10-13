@@ -64,6 +64,14 @@ Import the TS source directly if your project already has a TypeScript build pip
 import '../../vendor/schaefersoft/laravel-headless-ui/resources/js/hui.ts'
 ```
 
+**Option 3: Minified, without a bundler**
+
+Copy `dist/js/hui.min.js` to your `public` directory and load it directly in the browser.
+
+```html
+<script type="module" src="/js/hui.min.js"></script>
+```
+
 ## Components
 
 All components use the `x-hui::` Blade prefix and are completely unstyled. Style them with your own CSS or utility
