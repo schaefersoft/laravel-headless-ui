@@ -47,25 +47,17 @@ export function registerToggles(root: Root = document) {
         container.addEventListener('keydown', (e: KeyboardEvent) => {
             if (getDisabled()) return;
             const key = e.key;
-            if (key === 'Spacebar') {
-                e.preventDefault();
-                toggle();
-            }
-            /*
-            else if (key === 'ArrowRight' || key === 'End') {
-                e.preventDefault();
-                setChecked(true);
-            } else if (key === 'ArrowLeft' || key === 'Home') {
-                e.preventDefault();
-                setChecked(false);
-            }
-            */
+            if (key !== ' ' && key !== 'Spacebar' && key !== 'Enter') return;
+            e.preventDefault();
+            if (e.repeat) return;
+            toggle();
         });
 
         if (input) {
             input.addEventListener('change', () => setChecked(!!input.checked));
             const mo = new MutationObserver(() => {
                 container.setAttribute('aria-disabled', input.disabled ? 'true' : 'false');
+                container.tabIndex = input.disabled ? -1 : 0;
                 if (thumb) thumb.setAttribute('aria-disabled', input.disabled ? 'true' : 'false');
                 setChecked(!!input.checked);
             });

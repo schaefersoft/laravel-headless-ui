@@ -101,6 +101,7 @@ Use ARIA attributes (`aria-checked`, `aria-disabled`) to style the toggle.
 | Key        | Action                          |
 |------------|---------------------------------|
 | `Space`    | Toggle the switch when focused  |
+| `Enter`    | Toggle the switch when focused  |
 
 ### ARIA
 

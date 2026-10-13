@@ -1266,9 +1266,11 @@ function Ne(e = document) {
 		e.addEventListener("click", (e) => {
 			r() || c();
 		}), e.addEventListener("keydown", (e) => {
-			r() || e.key === "Spacebar" && (e.preventDefault(), c());
+			if (r()) return;
+			let t = e.key;
+			(t === " " || t === "Spacebar" || t === "Enter") && (e.preventDefault(), !e.repeat && c());
 		}), t && (t.addEventListener("change", () => s(!!t.checked)), new MutationObserver(() => {
-			e.setAttribute("aria-disabled", t.disabled ? "true" : "false"), n && n.setAttribute("aria-disabled", t.disabled ? "true" : "false"), s(!!t.checked);
+			e.setAttribute("aria-disabled", t.disabled ? "true" : "false"), e.tabIndex = t.disabled ? -1 : 0, n && n.setAttribute("aria-disabled", t.disabled ? "true" : "false"), s(!!t.checked);
 		}).observe(t, {
 			attributes: !0,
 			attributeFilter: ["disabled", "checked"]
