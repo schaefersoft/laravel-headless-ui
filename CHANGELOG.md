@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.0](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.6.2...v1.7.0) (2026-10-13)
+
+
+### Features
+
+* **build:** add minified hui.min.js bundle ([938837a](https://github.com/schaefersoft/laravel-headless-ui/commit/938837adff29ac72cfff9ba2738dc85f207a4e5a))
+* **build:** add minified hui.min.js bundle ([5aef689](https://github.com/schaefersoft/laravel-headless-ui/commit/5aef6899285384047d76148f3b54ccd48a431fc3))
+
 ## [1.6.2](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.6.1...v1.6.2) (2026-10-13)
 
 
