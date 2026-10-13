@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.7.1](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.7.0...v1.7.1) (2026-10-13)
+
+
+### Miscellaneous Chores
+
+* add Pint and Prettier with format scripts ([01eacd5](https://github.com/schaefersoft/laravel-headless-ui/commit/01eacd5ea13135598a39ef990f46bd08aefbd76a))
+* enforce formatting with Pint and Prettier ([7429923](https://github.com/schaefersoft/laravel-headless-ui/commit/74299235112612650b9d55f82eb02cd6fbde7a08))
+* enforce LF line endings and add editorconfig ([cc5cb62](https://github.com/schaefersoft/laravel-headless-ui/commit/cc5cb62d266ed22df7a2801389e22ae3f0aeb9ad))
+* ignore formatting commit in git blame ([7379d86](https://github.com/schaefersoft/laravel-headless-ui/commit/7379d860dd77c630c10a8e949f9b77f370e533e0))
+
 ## [1.7.0](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.6.2...v1.7.0) (2026-10-13)
 
 
