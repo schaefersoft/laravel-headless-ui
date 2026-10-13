@@ -22,7 +22,9 @@ export function registerTabs(root: Root = document) {
         if (!tabs.length || !panels.length) return;
 
         // orientation
-        const vertical = container.getAttribute('data-hui-tabs-orientation') === 'vertical' || container.hasAttribute('data-hui-tabs-vertical');
+        const vertical =
+            container.getAttribute('data-hui-tabs-orientation') === 'vertical' ||
+            container.hasAttribute('data-hui-tabs-vertical');
         tablist.setAttribute('role', 'tablist');
         tablist.setAttribute('aria-orientation', vertical ? 'vertical' : 'horizontal');
 
@@ -132,15 +134,44 @@ export function registerTabs(root: Root = document) {
             const key = e.key;
             let handled = false;
             if (vertical) {
-                if (key === 'ArrowUp') { setActive(findNextEnabled(active, -1), true); handled = true; }
-                if (key === 'ArrowDown') { setActive(findNextEnabled(active, +1), true); handled = true; }
+                if (key === 'ArrowUp') {
+                    setActive(findNextEnabled(active, -1), true);
+                    handled = true;
+                }
+                if (key === 'ArrowDown') {
+                    setActive(findNextEnabled(active, +1), true);
+                    handled = true;
+                }
             } else {
-                if (key === 'ArrowLeft') { setActive(findNextEnabled(active, -1), true); handled = true; }
-                if (key === 'ArrowRight') { setActive(findNextEnabled(active, +1), true); handled = true; }
+                if (key === 'ArrowLeft') {
+                    setActive(findNextEnabled(active, -1), true);
+                    handled = true;
+                }
+                if (key === 'ArrowRight') {
+                    setActive(findNextEnabled(active, +1), true);
+                    handled = true;
+                }
             }
-            if (key === 'Home') { setActive(firstEnabledIndex(tabs), true); handled = true; }
-            if (key === 'End') { setActive((() => { for (let i = count - 1; i >= 0; i--) { if (!isTrueAttr(tabs[i], 'data-disabled')) return i; } return active; })(), true); handled = true; }
-            if (key === 'Enter' || key === ' ') { setActive(active, true); handled = true; }
+            if (key === 'Home') {
+                setActive(firstEnabledIndex(tabs), true);
+                handled = true;
+            }
+            if (key === 'End') {
+                setActive(
+                    (() => {
+                        for (let i = count - 1; i >= 0; i--) {
+                            if (!isTrueAttr(tabs[i], 'data-disabled')) return i;
+                        }
+                        return active;
+                    })(),
+                    true,
+                );
+                handled = true;
+            }
+            if (key === 'Enter' || key === ' ') {
+                setActive(active, true);
+                handled = true;
+            }
             if (handled) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -175,8 +206,8 @@ export function registerTabs(root: Root = document) {
                     applyState(false);
                 }
             });
-            tabs.forEach(t => mo.observe(t, { attributes: true, attributeFilter: ['data-disabled', 'data-active'] }));
-        } catch (_) { }
+            tabs.forEach((t) => mo.observe(t, { attributes: true, attributeFilter: ['data-disabled', 'data-active'] }));
+        } catch (_) {}
 
         applyState(false);
     });

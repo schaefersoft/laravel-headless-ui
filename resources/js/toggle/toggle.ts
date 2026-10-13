@@ -23,8 +23,8 @@ export function registerToggles(root: Root = document) {
             if (!input) return;
             if (input.checked !== checked) {
                 input.checked = checked;
-                input.dispatchEvent(new Event('input', {bubbles: true}));
-                input.dispatchEvent(new Event('change', {bubbles: true}));
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+                input.dispatchEvent(new Event('change', { bubbles: true }));
             }
         }
 
@@ -61,7 +61,7 @@ export function registerToggles(root: Root = document) {
                 if (thumb) thumb.setAttribute('aria-disabled', input.disabled ? 'true' : 'false');
                 setChecked(!!input.checked);
             });
-            mo.observe(input, {attributes: true, attributeFilter: ['disabled', 'checked']});
+            mo.observe(input, { attributes: true, attributeFilter: ['disabled', 'checked'] });
         }
     });
 }

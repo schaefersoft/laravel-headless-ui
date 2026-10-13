@@ -9,12 +9,10 @@ class Tablist extends Component
 {
     public function __construct(
         public string $class = '',
-    ) {
-    }
+    ) {}
 
     public function render(): View
     {
         return view('hui::tabs.tablist');
     }
 }
-

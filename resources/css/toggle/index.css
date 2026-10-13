@@ -10,12 +10,12 @@
     padding: 4px;
 }
 
-.hui-toggle[aria-disabled="true"] {
+.hui-toggle[aria-disabled='true'] {
     opacity: 0.6;
     cursor: not-allowed;
 }
 
-.hui-toggle[aria-checked="true"] {
+.hui-toggle[aria-checked='true'] {
     background-color: blue;
 }
 
@@ -31,7 +31,7 @@
     transform: translateX(0);
 }
 
-.hui-toggle[aria-checked="true"] .hui-toggle-thumb {
+.hui-toggle[aria-checked='true'] .hui-toggle-thumb {
     margin-left: 100%;
     transform: translateX(-100%);
 }

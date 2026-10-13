@@ -11,11 +11,10 @@ class Content extends Component
         public string $class = '',
         public bool $arrow = true,
         public string $position = 'top',
-    )
-    {
-        $this->position = strtoLower($this->position);
+    ) {
+        $this->position = strtolower($this->position);
 
-        if (!in_array($this->position, ['top', 'bottom', 'left', 'right'], true)) {
+        if (! in_array($this->position, ['top', 'bottom', 'left', 'right'], true)) {
             throw new \Exception("Invalid position '{$this->position}' provided. TOP, BOTTOM, LEFT, RIGHT are supported.");
         }
     }

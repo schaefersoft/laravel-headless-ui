@@ -93,13 +93,15 @@ function prepareEnterTransition(el: HTMLElement, prefix: string): void {
 function startEnterTransition(el: HTMLElement, prefix: string): Promise<void> {
     const { base, from, to } = getTransitionClasses(el, prefix);
     if (base.length === 0 && from.length === 0 && to.length === 0) return Promise.resolve();
-    return nextFrame().then(() => {
-        el.classList.remove(...from);
-        el.classList.add(...to);
-        return afterTransition(el);
-    }).then(() => {
-        el.classList.remove(...base, ...to);
-    });
+    return nextFrame()
+        .then(() => {
+            el.classList.remove(...from);
+            el.classList.add(...to);
+            return afterTransition(el);
+        })
+        .then(() => {
+            el.classList.remove(...base, ...to);
+        });
 }
 
 function runLeaveTransition(el: HTMLElement, prefix: string): Promise<void> {
@@ -124,9 +126,9 @@ function getTransitionTargets(dialog: HTMLDialogElement): HTMLElement[] {
     if (hasTransition(dialog, 'data-hui-dialog-enter') || hasTransition(dialog, 'data-hui-dialog-leave')) {
         targets.push(dialog);
     }
-    targets.push(...Array.from(dialog.querySelectorAll<HTMLElement>(
-        '[data-hui-dialog-enter], [data-hui-dialog-leave]'
-    )));
+    targets.push(
+        ...Array.from(dialog.querySelectorAll<HTMLElement>('[data-hui-dialog-enter], [data-hui-dialog-leave]')),
+    );
     return targets;
 }
 
@@ -186,7 +188,7 @@ function setupDialog(dialog: HTMLDialogElement) {
 
             if (scrollLock) {
                 const otherLocked = document.querySelector<HTMLDialogElement>(
-                    'dialog[data-hui-dialog][data-hui-dialog-scroll-lock][open]'
+                    'dialog[data-hui-dialog][data-hui-dialog-scroll-lock][open]',
                 );
                 if (!otherLocked) {
                     document.body.style.overflow = '';

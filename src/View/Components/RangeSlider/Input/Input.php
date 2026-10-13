@@ -10,15 +10,14 @@ use Schaefersoft\HeadlessUI\Enums\RangeSlider\ThumbRole;
 class Input extends Component
 {
     public function __construct(
-        public string $class = '',
-        public ThumbRole | string $role,
-    )
-    {
+        public string $class,
+        public ThumbRole|string $role,
+    ) {
         if ($this->role instanceof ThumbRole) {
             $this->role = $this->role->value;
         }
 
-        if (!in_array($this->role, ['min', 'max'], true)) {
+        if (! in_array($this->role, ['min', 'max'], true)) {
             throw new InvalidArgumentException("Invalid role for range slider thumb: $this->role");
         }
     }
@@ -28,4 +27,3 @@ class Input extends Component
         return view('hui::range-slider.input.input');
     }
 }
-

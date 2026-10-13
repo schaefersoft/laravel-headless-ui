@@ -109,13 +109,15 @@ function runEnterTransition(el: HTMLElement): Promise<void> {
     if (base.length === 0 && from.length === 0 && to.length === 0) return Promise.resolve();
 
     el.classList.add(...base, ...from);
-    return nextFrame().then(() => {
-        el.classList.remove(...from);
-        el.classList.add(...to);
-        return afterTransition(el);
-    }).then(() => {
-        el.classList.remove(...base, ...to);
-    });
+    return nextFrame()
+        .then(() => {
+            el.classList.remove(...from);
+            el.classList.add(...to);
+            return afterTransition(el);
+        })
+        .then(() => {
+            el.classList.remove(...base, ...to);
+        });
 }
 
 function runLeaveTransition(el: HTMLElement): Promise<void> {
@@ -124,13 +126,15 @@ function runLeaveTransition(el: HTMLElement): Promise<void> {
     if (base.length === 0 && from.length === 0 && to.length === 0) return Promise.resolve();
 
     el.classList.add(...base, ...from);
-    return nextFrame().then(() => {
-        el.classList.remove(...from);
-        el.classList.add(...to);
-        return afterTransition(el);
-    }).then(() => {
-        el.classList.remove(...base, ...to);
-    });
+    return nextFrame()
+        .then(() => {
+            el.classList.remove(...from);
+            el.classList.add(...to);
+            return afterTransition(el);
+        })
+        .then(() => {
+            el.classList.remove(...base, ...to);
+        });
 }
 
 // --- Dropdown setup ---
@@ -392,32 +396,42 @@ function setupDropdown(dropdown: HTMLElement) {
     items.addEventListener('click', (e) => {
         const target = (e.target as HTMLElement).closest<HTMLElement>(FOCUSABLE_ITEM);
         if (target) {
-            target.dispatchEvent(new CustomEvent('hui:dropdown:select', {
-                bubbles: true,
-                detail: { value: target.getAttribute('data-value') || target.textContent?.trim() },
-            }));
+            target.dispatchEvent(
+                new CustomEvent('hui:dropdown:select', {
+                    bubbles: true,
+                    detail: { value: target.getAttribute('data-value') || target.textContent?.trim() },
+                }),
+            );
             close();
         }
     });
 
     // Hover to highlight
-    items.addEventListener('pointerenter', (e) => {
-        const target = (e.target as HTMLElement).closest<HTMLElement>(FOCUSABLE_ITEM);
-        if (target) {
-            const menuItems = getItems();
-            const index = menuItems.indexOf(target);
-            if (index !== -1) {
-                setActiveItem(index);
+    items.addEventListener(
+        'pointerenter',
+        (e) => {
+            const target = (e.target as HTMLElement).closest<HTMLElement>(FOCUSABLE_ITEM);
+            if (target) {
+                const menuItems = getItems();
+                const index = menuItems.indexOf(target);
+                if (index !== -1) {
+                    setActiveItem(index);
+                }
             }
-        }
-    }, true);
+        },
+        true,
+    );
 
-    items.addEventListener('pointerleave', (e) => {
-        const target = (e.target as HTMLElement).closest<HTMLElement>(FOCUSABLE_ITEM);
-        if (target) {
-            clearActive();
-        }
-    }, true);
+    items.addEventListener(
+        'pointerleave',
+        (e) => {
+            const target = (e.target as HTMLElement).closest<HTMLElement>(FOCUSABLE_ITEM);
+            if (target) {
+                clearActive();
+            }
+        },
+        true,
+    );
 
     // Store API
     (dropdown as any)._hui = { open, close, toggle };

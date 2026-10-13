@@ -11,8 +11,7 @@ class Disclosure extends Component
         public string $class = '',
         public bool $opened = false,
         public bool $disabled = false,
-    ) {
-    }
+    ) {}
 
     public function render(): View
     {

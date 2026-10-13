@@ -9,8 +9,7 @@ class Head extends Component
 {
     public function __construct(
         public string $class = '',
-    ) {
-    }
+    ) {}
 
     public function render(): View
     {

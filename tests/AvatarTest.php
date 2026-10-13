@@ -35,7 +35,7 @@ it('uses explicit initials over computed ones', function () {
 });
 
 it('falls back to ? when no name or initials provided', function () {
-    $avatar = new Avatar();
+    $avatar = new Avatar;
 
     expect($avatar->computedInitials())->toBe('?');
 });
@@ -47,7 +47,7 @@ it('defaults alt to name', function () {
 });
 
 it('defaults alt to User avatar when no name', function () {
-    $avatar = new Avatar();
+    $avatar = new Avatar;
 
     expect($avatar->alt)->toBe('User avatar');
 });

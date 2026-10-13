@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {cn} from "./hui";
+import { cn } from './hui';
 
 describe('cn', () => {
     it('joins truthy class parts with spaces', () => {

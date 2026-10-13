@@ -37,7 +37,7 @@ export function registerTooltips(root: Root = document) {
         }
 
         function measure(): { w: number; h: number } {
-            if (content === null) return {w: 0, h: 0};
+            if (content === null) return { w: 0, h: 0 };
 
             const prevDisplay = content.style.display;
             const prevVis = content.style.visibility;
@@ -48,20 +48,23 @@ export function registerTooltips(root: Root = document) {
             const h = rect.height;
             content.style.display = prevDisplay || '';
             content.style.visibility = prevVis || '';
-            return {w, h};
+            return { w, h };
         }
 
         function position(): void {
             if (content === null) return;
 
-            const {innerWidth: vw, innerHeight: vh} = window;
+            const { innerWidth: vw, innerHeight: vh } = window;
             const host = container.getBoundingClientRect();
-            const {w, h} = measure();
+            const { w, h } = measure();
             const gap = 8;
 
             // Determine preferred base placement from attribute, default to top
             const preferredAttr = content.getAttribute('data-hui-tooltip-position') || 'top';
-            const preferred = (preferredAttr === 'bottom' || preferredAttr === 'left' || preferredAttr === 'right') ? preferredAttr : 'top';
+            const preferred =
+                preferredAttr === 'bottom' || preferredAttr === 'left' || preferredAttr === 'right'
+                    ? preferredAttr
+                    : 'top';
 
             // Available spaces in each direction
             const spaceTop = host.top;
@@ -77,19 +80,31 @@ export function registerTooltips(root: Root = document) {
             // Build candidate list: first try preferred, then its opposite,
             // then fall back to the orthogonal axis ordered by available space.
             type Placement = 'top' | 'bottom' | 'left' | 'right';
-            const opposite: Record<Placement, Placement> = { top: 'bottom', bottom: 'top', left: 'right', right: 'left' };
+            const opposite: Record<Placement, Placement> = {
+                top: 'bottom',
+                bottom: 'top',
+                left: 'right',
+                right: 'left',
+            };
             let secondary: Placement[];
             if (preferred === 'top' || preferred === 'bottom') {
-                secondary = spaceLeft >= spaceRight ? ['left', 'right'] as Placement[] : ['right', 'left'] as Placement[];
+                secondary =
+                    spaceLeft >= spaceRight ? (['left', 'right'] as Placement[]) : (['right', 'left'] as Placement[]);
             } else {
-                secondary = spaceTop >= spaceBottom ? ['top', 'bottom'] as Placement[] : ['bottom', 'top'] as Placement[];
+                secondary =
+                    spaceTop >= spaceBottom ? (['top', 'bottom'] as Placement[]) : (['bottom', 'top'] as Placement[]);
             }
 
             const candidates: Placement[] = [preferred as Placement, opposite[preferred as Placement], ...secondary];
 
             let placement: Placement | null = null;
             for (const cand of candidates) {
-                if ((cand === 'top' && fitsTop) || (cand === 'bottom' && fitsBottom) || (cand === 'left' && fitsLeft) || (cand === 'right' && fitsRight)) {
+                if (
+                    (cand === 'top' && fitsTop) ||
+                    (cand === 'bottom' && fitsBottom) ||
+                    (cand === 'left' && fitsLeft) ||
+                    (cand === 'right' && fitsRight)
+                ) {
                     placement = cand;
                     break;
                 }
@@ -97,31 +112,38 @@ export function registerTooltips(root: Root = document) {
             // If nothing fits fully, choose the side with the most space overall
             if (placement === null) {
                 const spaceByPlacement: Record<Placement, number> = {
-                    top: spaceTop, bottom: spaceBottom, left: spaceLeft, right: spaceRight
+                    top: spaceTop,
+                    bottom: spaceBottom,
+                    left: spaceLeft,
+                    right: spaceRight,
                 };
-                placement = (['top','bottom','left','right'] as Placement[]).reduce((best, p) => spaceByPlacement[p] > spaceByPlacement[best] ? p : best, 'top');
+                placement = (['top', 'bottom', 'left', 'right'] as Placement[]).reduce(
+                    (best, p) => (spaceByPlacement[p] > spaceByPlacement[best] ? p : best),
+                    'top',
+                );
             }
 
             // Compute position based on final placement and clamp within viewport
             let x: number, y: number;
             if (placement === 'top') {
                 y = host.top - h - gap;
-                x = host.left + (host.width / 2) - (w / 2);
+                x = host.left + host.width / 2 - w / 2;
                 y = clamp(y, gap, Math.max(gap, vh - gap - h));
                 x = clamp(x, gap, Math.max(gap, vw - gap - w));
             } else if (placement === 'bottom') {
                 y = host.bottom + gap;
-                x = host.left + (host.width / 2) - (w / 2);
+                x = host.left + host.width / 2 - w / 2;
                 y = clamp(y, gap, Math.max(gap, vh - gap - h));
                 x = clamp(x, gap, Math.max(gap, vw - gap - w));
             } else if (placement === 'left') {
                 x = host.left - w - gap;
-                y = host.top + (host.height / 2) - (h / 2);
+                y = host.top + host.height / 2 - h / 2;
                 x = clamp(x, gap, Math.max(gap, vw - gap - w));
                 y = clamp(y, gap, Math.max(gap, vh - gap - h));
-            } else { // right
+            } else {
+                // right
                 x = host.right + gap;
-                y = host.top + (host.height / 2) - (h / 2);
+                y = host.top + host.height / 2 - h / 2;
                 x = clamp(x, gap, Math.max(gap, vw - gap - w));
                 y = clamp(y, gap, Math.max(gap, vh - gap - h));
             }
@@ -134,12 +156,12 @@ export function registerTooltips(root: Root = document) {
 
             // Compute arrow offsets relative to content
             if (placement === 'top' || placement === 'bottom') {
-                const hostCenterX = host.left + (host.width / 2);
+                const hostCenterX = host.left + host.width / 2;
                 const arrowX = clamp(hostCenterX - x, 6, Math.max(6, w - 6));
                 content.style.setProperty('--hui-tooltip-arrow-x', `${Math.round(arrowX)}px`);
                 content.style.removeProperty('--hui-tooltip-arrow-y');
             } else {
-                const hostCenterY = host.top + (host.height / 2);
+                const hostCenterY = host.top + host.height / 2;
                 const arrowY = clamp(hostCenterY - y, 6, Math.max(6, h - 6));
                 content.style.setProperty('--hui-tooltip-arrow-y', `${Math.round(arrowY)}px`);
                 content.style.removeProperty('--hui-tooltip-arrow-x');
@@ -154,8 +176,7 @@ export function registerTooltips(root: Root = document) {
                 } else {
                     content.style.removeProperty('--hui-tooltip-bg');
                 }
-            } catch (_) {
-            }
+            } catch (_) {}
         }
 
         function show(): void {
@@ -295,7 +316,10 @@ export function registerTooltips(root: Root = document) {
                     }
                 }
             });
-            observer.observe(container, { attributes: true, attributeFilter: ['data-hui-tooltip-open', 'data-hui-tooltip-disabled']});
+            observer.observe(container, {
+                attributes: true,
+                attributeFilter: ['data-hui-tooltip-open', 'data-hui-tooltip-disabled'],
+            });
         } catch (_) {
             // ignore MutationObserver issues
         }

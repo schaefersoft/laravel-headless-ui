@@ -7,9 +7,7 @@ use Illuminate\View\Component;
 
 class RangeSlider extends Component
 {
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     public function render(): View
     {

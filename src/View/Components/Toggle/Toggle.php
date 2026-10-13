@@ -12,9 +12,7 @@ class Toggle extends Component
         public bool $checked = false,
         public bool $disabled = false,
         public ?string $name = null,
-    )
-    {
-    }
+    ) {}
 
     public function render(): View
     {

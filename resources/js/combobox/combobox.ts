@@ -34,7 +34,12 @@ function parseAnchor(value: string | null): { side: Side; align: Align } {
 function getViewportBounds() {
     const vv = window.visualViewport;
     if (vv && vv.width > 0 && vv.height > 0) {
-        return { top: vv.offsetTop, left: vv.offsetLeft, right: vv.offsetLeft + vv.width, bottom: vv.offsetTop + vv.height };
+        return {
+            top: vv.offsetTop,
+            left: vv.offsetLeft,
+            right: vv.offsetLeft + vv.width,
+            bottom: vv.offsetTop + vv.height,
+        };
     }
     return { top: 0, left: 0, right: window.innerWidth, bottom: window.innerHeight };
 }
@@ -45,7 +50,8 @@ function containingBlockOrigin(options: HTMLElement): { x: number; y: number } {
     const parent = options.parentElement;
     if (!parent) return { x: 0, y: 0 };
 
-    let probe = Array.from(parent.children).find((el) => el.hasAttribute('data-hui-combobox-probe')) as HTMLElement | undefined;
+    let probe = Array.from(parent.children).find((el) => el.hasAttribute('data-hui-combobox-probe')) as
+        HTMLElement | undefined;
     if (!probe) {
         probe = document.createElement('span');
         probe.setAttribute('data-hui-combobox-probe', '');
@@ -75,9 +81,12 @@ export function positionOptions(reference: HTMLElement, options: HTMLElement): v
     const preferredSpace = preferred === 'bottom' ? spaceBelow : spaceAbove;
     const oppositeSpace = preferred === 'bottom' ? spaceAbove : spaceBelow;
 
-    const side: Side = preferredSpace < height && oppositeSpace > preferredSpace
-        ? (preferred === 'bottom' ? 'top' : 'bottom')
-        : preferred;
+    const side: Side =
+        preferredSpace < height && oppositeSpace > preferredSpace
+            ? preferred === 'bottom'
+                ? 'top'
+                : 'bottom'
+            : preferred;
 
     const space = Math.max(0, side === 'bottom' ? spaceBelow : spaceAbove);
     if (height > space) {
@@ -94,7 +103,11 @@ export function positionOptions(reference: HTMLElement, options: HTMLElement): v
     } else {
         left = rect.right - width;
     }
-    left = clamp(left, bounds.left + VIEWPORT_PADDING, Math.max(bounds.left + VIEWPORT_PADDING, bounds.right - VIEWPORT_PADDING - width));
+    left = clamp(
+        left,
+        bounds.left + VIEWPORT_PADDING,
+        Math.max(bounds.left + VIEWPORT_PADDING, bounds.right - VIEWPORT_PADDING - width),
+    );
     const top = side === 'bottom' ? rect.bottom + gap : rect.top - gap - renderedHeight;
 
     const origin = containingBlockOrigin(options);
@@ -155,13 +168,15 @@ function runTransition(el: HTMLElement, prefix: string): Promise<void> {
     if (base.length === 0 && from.length === 0 && to.length === 0) return Promise.resolve();
 
     el.classList.add(...base, ...from);
-    return nextFrame().then(() => {
-        el.classList.remove(...from);
-        el.classList.add(...to);
-        return afterTransition(el);
-    }).then(() => {
-        el.classList.remove(...base, ...to);
-    });
+    return nextFrame()
+        .then(() => {
+            el.classList.remove(...from);
+            el.classList.add(...to);
+            return afterTransition(el);
+        })
+        .then(() => {
+            el.classList.remove(...base, ...to);
+        });
 }
 
 // --- Combobox setup ---
@@ -199,7 +214,7 @@ function setupCombobox(root: HTMLElement) {
     const immediate = root.hasAttribute('data-hui-combobox-immediate');
     const filterEnabled = root.hasAttribute('data-hui-combobox-filter');
     const name = root.getAttribute('data-hui-combobox-name');
-    const max = multiple ? (parseInt(root.getAttribute('data-hui-combobox-max') || '', 10) || null) : null;
+    const max = multiple ? parseInt(root.getAttribute('data-hui-combobox-max') || '', 10) || null : null;
     const allowCustom = searchable && root.hasAttribute('data-hui-combobox-allow-custom-options');
     let customOption: HTMLElement | null = null;
 
@@ -229,7 +244,9 @@ function setupCombobox(root: HTMLElement) {
     }
 
     function navigableOptions(): HTMLElement[] {
-        const list = allOptions().filter((o) => !o.hasAttribute('data-disabled') && !o.hasAttribute('data-hui-combobox-filtered'));
+        const list = allOptions().filter(
+            (o) => !o.hasAttribute('data-disabled') && !o.hasAttribute('data-hui-combobox-filtered'),
+        );
         if (isCustomVisible() && !isMaxReached()) list.push(customOption!);
         return list;
     }
@@ -240,7 +257,9 @@ function setupCombobox(root: HTMLElement) {
         if (!allowCustom) return null;
         if (customOption && options!.contains(customOption)) return customOption;
 
-        const template = options!.querySelector<HTMLTemplateElement>('template[data-hui-combobox-custom-option-template]');
+        const template = options!.querySelector<HTMLTemplateElement>(
+            'template[data-hui-combobox-custom-option-template]',
+        );
         const templateChild = template?.content.firstElementChild;
         let el: HTMLElement;
 
@@ -277,8 +296,9 @@ function setupCombobox(root: HTMLElement) {
 
         const q = customQuery();
         const nq = normalize(q);
-        const exists = allOptions().some((o) => normalize(optionLabel(o)) === nq || optionValue(o) === q)
-            || selected.some((v) => v === q || normalize(labelFor(v)) === nq);
+        const exists =
+            allOptions().some((o) => normalize(optionLabel(o)) === nq || optionValue(o) === q) ||
+            selected.some((v) => v === q || normalize(labelFor(v)) === nq);
 
         el.hidden = q === '' || exists;
         if (el.hidden) return;
@@ -300,10 +320,12 @@ function setupCombobox(root: HTMLElement) {
         if (value === '' || isDisabled() || isMaxReached()) return;
 
         labels.set(value, value);
-        root.dispatchEvent(new CustomEvent('hui:combobox:create', {
-            bubbles: true,
-            detail: { value },
-        }));
+        root.dispatchEvent(
+            new CustomEvent('hui:combobox:create', {
+                bubbles: true,
+                detail: { value },
+            }),
+        );
 
         query = '';
         if (multiple) {
@@ -371,7 +393,8 @@ function setupCombobox(root: HTMLElement) {
 
         groups().forEach((group) => {
             const groupOptions = Array.from(group.querySelectorAll<HTMLElement>(OPTION));
-            group.hidden = groupOptions.length > 0 && groupOptions.every((o) => o.hasAttribute('data-hui-combobox-filtered'));
+            group.hidden =
+                groupOptions.length > 0 && groupOptions.every((o) => o.hasAttribute('data-hui-combobox-filtered'));
         });
 
         updateCustomOption();
@@ -404,9 +427,7 @@ function setupCombobox(root: HTMLElement) {
         const list = navigableOptions();
         if (list.length === 0) return;
         const index = activeOption ? list.indexOf(activeOption) : -1;
-        const next = index === -1
-            ? (delta > 0 ? 0 : list.length - 1)
-            : (index + delta + list.length) % list.length;
+        const next = index === -1 ? (delta > 0 ? 0 : list.length - 1) : (index + delta + list.length) % list.length;
         setActive(list[next]);
     }
 
@@ -523,13 +544,15 @@ function setupCombobox(root: HTMLElement) {
         syncClear();
 
         if (emit) {
-            root.dispatchEvent(new CustomEvent('hui:combobox:change', {
-                bubbles: true,
-                detail: {
-                    value: multiple ? [...selected] : (selected[0] ?? null),
-                    label: multiple ? selected.map(labelFor) : (selected.length ? labelFor(selected[0]) : null),
-                },
-            }));
+            root.dispatchEvent(
+                new CustomEvent('hui:combobox:change', {
+                    bubbles: true,
+                    detail: {
+                        value: multiple ? [...selected] : (selected[0] ?? null),
+                        label: multiple ? selected.map(labelFor) : selected.length ? labelFor(selected[0]) : null,
+                    },
+                }),
+            );
         }
     }
 
@@ -801,10 +824,12 @@ function setupCombobox(root: HTMLElement) {
         setActive(query.trim() !== '' && list.length ? list[0] : null);
         schedulePosition();
 
-        root.dispatchEvent(new CustomEvent('hui:combobox:search', {
-            bubbles: true,
-            detail: { query },
-        }));
+        root.dispatchEvent(
+            new CustomEvent('hui:combobox:search', {
+                bubbles: true,
+                detail: { query },
+            }),
+        );
     }
 
     // --- Disabled state ---
@@ -941,8 +966,10 @@ function setupCombobox(root: HTMLElement) {
             schedulePosition();
         }).observe(options, { childList: true, subtree: true });
 
-        new MutationObserver(applyDisabled)
-            .observe(root, { attributes: true, attributeFilter: ['data-hui-combobox-disabled'] });
+        new MutationObserver(applyDisabled).observe(root, {
+            attributes: true,
+            attributeFilter: ['data-hui-combobox-disabled'],
+        });
     } catch (_) {
         // ignore MutationObserver issues
     }
@@ -955,7 +982,7 @@ function setupCombobox(root: HTMLElement) {
         toggle,
         getValue: () => (multiple ? [...selected] : (selected[0] ?? null)),
         setValue: (value: string | string[] | null) => {
-            setSelected(value === null ? [] : (Array.isArray(value) ? value : [value]));
+            setSelected(value === null ? [] : Array.isArray(value) ? value : [value]);
             syncInputText();
         },
     };

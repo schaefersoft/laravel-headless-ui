@@ -10,9 +10,7 @@ class Container extends Component
     public function __construct(
         public string $class = '',
         public ?int $maxCount = null
-    )
-    {
-    }
+    ) {}
 
     public function render(): View
     {
