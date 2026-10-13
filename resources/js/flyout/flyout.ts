@@ -16,13 +16,22 @@ function getFocusable(container: HTMLElement): HTMLElement[] {
 function trapFocus(el: HTMLElement, e: KeyboardEvent) {
     if (e.key !== 'Tab') return;
     const focusable = getFocusable(el);
-    if (focusable.length === 0) { e.preventDefault(); return; }
+    if (focusable.length === 0) {
+        e.preventDefault();
+        return;
+    }
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
     if (e.shiftKey) {
-        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+        if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+        }
     } else {
-        if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+        if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+        }
     }
 }
 
@@ -49,9 +58,17 @@ function afterTransition(el: HTMLElement): Promise<void> {
         const dur = parseFloat(styles.transitionDuration || '0');
         const del = parseFloat(styles.transitionDelay || '0');
         const total = (dur + del) * 1000;
-        if (total <= 0) { resolve(); return; }
+        if (total <= 0) {
+            resolve();
+            return;
+        }
         let done = false;
-        const finish = () => { if (done) return; done = true; el.removeEventListener('transitionend', finish); resolve(); };
+        const finish = () => {
+            if (done) return;
+            done = true;
+            el.removeEventListener('transitionend', finish);
+            resolve();
+        };
         el.addEventListener('transitionend', finish, { once: true });
         setTimeout(finish, total + 50);
     });
@@ -68,13 +85,15 @@ function startEnterTransition(el: HTMLElement, prefix: string): Promise<void> {
     const { base, from, to } = getTransitionClasses(el, prefix);
     if (base.length === 0 && from.length === 0 && to.length === 0) return Promise.resolve();
     // base + from were already applied by prepareEnterTransition
-    return nextFrame().then(() => {
-        el.classList.remove(...from);
-        el.classList.add(...to);
-        return afterTransition(el);
-    }).then(() => {
-        el.classList.remove(...base, ...to);
-    });
+    return nextFrame()
+        .then(() => {
+            el.classList.remove(...from);
+            el.classList.add(...to);
+            return afterTransition(el);
+        })
+        .then(() => {
+            el.classList.remove(...base, ...to);
+        });
 }
 
 function runLeaveTransition(el: HTMLElement, prefix: string): Promise<void> {
@@ -99,9 +118,9 @@ function getTransitionTargets(dialog: HTMLElement): HTMLElement[] {
     if (hasTransition(dialog, 'data-hui-flyout-enter') || hasTransition(dialog, 'data-hui-flyout-leave')) {
         targets.push(dialog);
     }
-    targets.push(...Array.from(dialog.querySelectorAll<HTMLElement>(
-        '[data-hui-flyout-enter], [data-hui-flyout-leave]'
-    )));
+    targets.push(
+        ...Array.from(dialog.querySelectorAll<HTMLElement>('[data-hui-flyout-enter], [data-hui-flyout-leave]')),
+    );
     return targets;
 }
 
@@ -126,22 +145,28 @@ type FlyoutPosition = 'left' | 'right' | 'top' | 'bottom';
 type SwipeMode = 'open' | 'close' | 'both';
 
 const SWIPE_AXIS: Record<FlyoutPosition, 'x' | 'y'> = {
-    left: 'x', right: 'x', top: 'y', bottom: 'y',
+    left: 'x',
+    right: 'x',
+    top: 'y',
+    bottom: 'y',
 };
 
 // Direction the panel exits in: right/bottom = positive, left/top = negative.
 const SWIPE_CLOSE_SIGN: Record<FlyoutPosition, 1 | -1> = {
-    left: -1, right: 1, top: -1, bottom: 1,
+    left: -1,
+    right: 1,
+    top: -1,
+    bottom: 1,
 };
 
 function getFlyoutPosition(flyout: HTMLElement): FlyoutPosition {
     const p = flyout.getAttribute('data-hui-flyout-position');
-    return (p === 'left' || p === 'top' || p === 'bottom') ? p : 'right';
+    return p === 'left' || p === 'top' || p === 'bottom' ? p : 'right';
 }
 
 function getSwipeMode(flyout: HTMLElement): SwipeMode | null {
     const v = flyout.getAttribute('data-hui-flyout-swipe');
-    return (v === 'open' || v === 'close' || v === 'both') ? v : null;
+    return v === 'open' || v === 'close' || v === 'both' ? v : null;
 }
 
 function atCloseScrollBoundary(panel: HTMLElement, position: FlyoutPosition): boolean {
@@ -152,19 +177,27 @@ function atCloseScrollBoundary(panel: HTMLElement, position: FlyoutPosition): bo
 
 function projectOpenSwipe(position: FlyoutPosition, dx: number, dy: number): { inward: number; cross: number } {
     switch (position) {
-        case 'left': return { inward: dx, cross: dy };
-        case 'right': return { inward: -dx, cross: dy };
-        case 'top': return { inward: dy, cross: dx };
-        case 'bottom': return { inward: -dy, cross: dx };
+        case 'left':
+            return { inward: dx, cross: dy };
+        case 'right':
+            return { inward: -dx, cross: dy };
+        case 'top':
+            return { inward: dy, cross: dx };
+        case 'bottom':
+            return { inward: -dy, cross: dx };
     }
 }
 
 function inOpenEdgeZone(x: number, y: number, position: FlyoutPosition, edge: number): boolean {
     switch (position) {
-        case 'left': return x <= edge;
-        case 'right': return x >= window.innerWidth - edge;
-        case 'top': return y <= edge;
-        case 'bottom': return y >= window.innerHeight - edge;
+        case 'left':
+            return x <= edge;
+        case 'right':
+            return x >= window.innerWidth - edge;
+        case 'top':
+            return y <= edge;
+        case 'bottom':
+            return y >= window.innerHeight - edge;
     }
 }
 
@@ -223,9 +256,7 @@ function setupFlyout(flyout: HTMLDialogElement) {
         if (!flyout.open || isTransitioning) return;
 
         const targets = getTransitionTargets(flyout);
-        const leaveTargets = opts.immediate
-            ? []
-            : targets.filter((t) => hasTransition(t, 'data-hui-flyout-leave'));
+        const leaveTargets = opts.immediate ? [] : targets.filter((t) => hasTransition(t, 'data-hui-flyout-leave'));
 
         function finishClose() {
             flyout.close();
@@ -233,7 +264,7 @@ function setupFlyout(flyout: HTMLDialogElement) {
 
             if (scrollLock) {
                 const otherLocked = document.querySelector<HTMLDialogElement>(
-                    'dialog[data-hui-flyout][data-hui-flyout-scroll-lock][open]'
+                    'dialog[data-hui-flyout][data-hui-flyout-scroll-lock][open]',
                 );
                 if (!otherLocked) {
                     document.body.style.overflow = '';
@@ -312,7 +343,9 @@ function setupFlyout(flyout: HTMLDialogElement) {
         const panels = Array.from(flyout.querySelectorAll<HTMLElement>('[data-hui-flyout-panel]'));
 
         panels.forEach((panel) => {
-            let startX = 0, startY = 0, lastTime = 0;
+            let startX = 0,
+                startY = 0,
+                lastTime = 0;
             let progress = 0;
             let velocity = 0;
             let size = 0;
@@ -320,7 +353,10 @@ function setupFlyout(flyout: HTMLDialogElement) {
             let active = false;
 
             function reset() {
-                decided = false; active = false; progress = 0; velocity = 0;
+                decided = false;
+                active = false;
+                progress = 0;
+                velocity = 0;
             }
 
             function settle(transform: string, then?: () => void) {
@@ -333,55 +369,72 @@ function setupFlyout(flyout: HTMLDialogElement) {
                 });
             }
 
-            panel.addEventListener('touchstart', (e: TouchEvent) => {
-                if (e.touches.length !== 1) return;
-                if (!flyout.open || isInlineMode(flyout) || isTransitioning) return;
-                const t = e.touches[0];
-                startX = t.clientX; startY = t.clientY; lastTime = e.timeStamp;
-                size = axis === 'x'
-                    ? panel.getBoundingClientRect().width
-                    : panel.getBoundingClientRect().height;
-                reset();
-            }, { passive: true });
+            panel.addEventListener(
+                'touchstart',
+                (e: TouchEvent) => {
+                    if (e.touches.length !== 1) return;
+                    if (!flyout.open || isInlineMode(flyout) || isTransitioning) return;
+                    const t = e.touches[0];
+                    startX = t.clientX;
+                    startY = t.clientY;
+                    lastTime = e.timeStamp;
+                    size = axis === 'x' ? panel.getBoundingClientRect().width : panel.getBoundingClientRect().height;
+                    reset();
+                },
+                { passive: true },
+            );
 
-            panel.addEventListener('touchmove', (e: TouchEvent) => {
-                if (e.touches.length !== 1) return;
-                if (!flyout.open || isInlineMode(flyout)) return;
-                const t = e.touches[0];
-                const along = axis === 'x' ? t.clientX - startX : t.clientY - startY;
-                const cross = axis === 'x' ? t.clientY - startY : t.clientX - startX;
-                const closeDelta = along * sign;
+            panel.addEventListener(
+                'touchmove',
+                (e: TouchEvent) => {
+                    if (e.touches.length !== 1) return;
+                    if (!flyout.open || isInlineMode(flyout)) return;
+                    const t = e.touches[0];
+                    const along = axis === 'x' ? t.clientX - startX : t.clientY - startY;
+                    const cross = axis === 'x' ? t.clientY - startY : t.clientX - startX;
+                    const closeDelta = along * sign;
 
-                if (!decided) {
-                    if (Math.abs(along) < 8 && Math.abs(cross) < 8) return;
-                    decided = true;
-                    active = Math.abs(along) > Math.abs(cross)
-                        && closeDelta > 0
-                        && atCloseScrollBoundary(panel, position);
-                    if (active) panel.style.transition = 'none';
-                }
-                if (!active) return;
+                    if (!decided) {
+                        if (Math.abs(along) < 8 && Math.abs(cross) < 8) return;
+                        decided = true;
+                        active =
+                            Math.abs(along) > Math.abs(cross) &&
+                            closeDelta > 0 &&
+                            atCloseScrollBoundary(panel, position);
+                        if (active) panel.style.transition = 'none';
+                    }
+                    if (!active) return;
 
-                e.preventDefault();
-                const moved = Math.max(0, closeDelta);
-                const dt = e.timeStamp - lastTime;
-                if (dt > 0) velocity = (moved - progress) / dt;
-                progress = moved; lastTime = e.timeStamp;
-                panel.style.transform = axis === 'x'
-                    ? `translateX(${sign * moved}px)`
-                    : `translateY(${sign * moved}px)`;
-            }, { passive: false });
+                    e.preventDefault();
+                    const moved = Math.max(0, closeDelta);
+                    const dt = e.timeStamp - lastTime;
+                    if (dt > 0) velocity = (moved - progress) / dt;
+                    progress = moved;
+                    lastTime = e.timeStamp;
+                    panel.style.transform =
+                        axis === 'x' ? `translateX(${sign * moved}px)` : `translateY(${sign * moved}px)`;
+                },
+                { passive: false },
+            );
 
             function end() {
-                if (!active) { reset(); return; }
+                if (!active) {
+                    reset();
+                    return;
+                }
                 const shouldClose = (size > 0 && progress > size * 0.4) || velocity > 0.5;
                 reset();
                 isTransitioning = true;
                 if (shouldClose) {
                     const off = axis === 'x' ? `translateX(${sign * 100}%)` : `translateY(${sign * 100}%)`;
-                    settle(off, () => { isTransitioning = false; close({ immediate: true }); });
+                    settle(off, () => {
+                        isTransitioning = false;
+                        close({ immediate: true });
+                    });
                 } else {
-                    settle(axis === 'x' ? 'translateX(0)' : 'translateY(0)', () => { isTransitioning = false; });
+                    settle(axis === 'x' ? 'translateX(0)' : 'translateY(0)', () => {
+                        isTransitioning = false;
+                    });
                 }
             }
 
@@ -394,27 +447,40 @@ function setupFlyout(flyout: HTMLDialogElement) {
         const EDGE = 24;
         const THRESHOLD = 48;
         let tracking = false;
-        let startX = 0, startY = 0;
+        let startX = 0,
+            startY = 0;
 
-        document.addEventListener('touchstart', (e: TouchEvent) => {
-            if (!flyout.isConnected || e.touches.length !== 1) return;
-            if (flyout.open || isInlineMode(flyout) || isTransitioning) return;
-            const t = e.touches[0];
-            if (!inOpenEdgeZone(t.clientX, t.clientY, position, EDGE)) return;
-            tracking = true; startX = t.clientX; startY = t.clientY;
-        }, { passive: true });
+        document.addEventListener(
+            'touchstart',
+            (e: TouchEvent) => {
+                if (!flyout.isConnected || e.touches.length !== 1) return;
+                if (flyout.open || isInlineMode(flyout) || isTransitioning) return;
+                const t = e.touches[0];
+                if (!inOpenEdgeZone(t.clientX, t.clientY, position, EDGE)) return;
+                tracking = true;
+                startX = t.clientX;
+                startY = t.clientY;
+            },
+            { passive: true },
+        );
 
-        document.addEventListener('touchmove', (e: TouchEvent) => {
-            if (!tracking || e.touches.length !== 1) return;
-            const t = e.touches[0];
-            const { inward, cross } = projectOpenSwipe(position, t.clientX - startX, t.clientY - startY);
-            if (inward > THRESHOLD && inward > Math.abs(cross)) {
-                tracking = false;
-                open();
-            }
-        }, { passive: true });
+        document.addEventListener(
+            'touchmove',
+            (e: TouchEvent) => {
+                if (!tracking || e.touches.length !== 1) return;
+                const t = e.touches[0];
+                const { inward, cross } = projectOpenSwipe(position, t.clientX - startX, t.clientY - startY);
+                if (inward > THRESHOLD && inward > Math.abs(cross)) {
+                    tracking = false;
+                    open();
+                }
+            },
+            { passive: true },
+        );
 
-        const stop = () => { tracking = false; };
+        const stop = () => {
+            tracking = false;
+        };
         document.addEventListener('touchend', stop, { passive: true });
         document.addEventListener('touchcancel', stop, { passive: true });
     }

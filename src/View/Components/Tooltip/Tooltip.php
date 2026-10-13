@@ -11,9 +11,7 @@ class Tooltip extends Component
         public string $class = '',
         public bool $open = false,
         public bool $disabled = false,
-    )
-    {
-    }
+    ) {}
 
     public function render(): View
     {

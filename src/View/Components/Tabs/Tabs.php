@@ -11,12 +11,10 @@ class Tabs extends Component
         public string $class = '',
         public bool $vertical = false,
         public ?int $initialIndex = null,
-    ) {
-    }
+    ) {}
 
     public function render(): View
     {
         return view('hui::tabs.tabs');
     }
 }
-

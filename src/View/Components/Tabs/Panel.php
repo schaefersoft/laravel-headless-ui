@@ -10,12 +10,10 @@ class Panel extends Component
     public function __construct(
         public string $class = '',
         public bool $active = false,
-    ) {
-    }
+    ) {}
 
     public function render(): View
     {
         return view('hui::tabs.panel');
     }
 }
-

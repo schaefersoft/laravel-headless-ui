@@ -6,8 +6,7 @@ export function registerAvatars(root: Document | HTMLElement = document) {
         const fallback = container.querySelector<HTMLElement>('[data-ui-avatar-fallback]');
 
         function showFallback() {
-            if (img)
-                (img as HTMLElement).style.display = 'none';
+            if (img) (img as HTMLElement).style.display = 'none';
             if (fallback) {
                 fallback.style.display = 'flex';
                 fallback.setAttribute('aria-hidden', 'false');
@@ -15,10 +14,11 @@ export function registerAvatars(root: Document | HTMLElement = document) {
         }
 
         if (img) {
-            img.addEventListener('error', showFallback, {once: true});
+            img.addEventListener('error', showFallback, { once: true });
 
             const anyImg = img as any;
-            const failed = (typeof anyImg.naturalWidth === 'number' && anyImg.naturalWidth === 0 && anyImg.complete === true);
+            const failed =
+                typeof anyImg.naturalWidth === 'number' && anyImg.naturalWidth === 0 && anyImg.complete === true;
             if (failed) showFallback();
         } else {
             if (fallback) {
@@ -36,4 +36,3 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
         registerAvatars();
     }
 }
-

@@ -19,8 +19,12 @@ export function registerRangeSliders(root: Root = document) {
         const fill = container.querySelector<HTMLElement>('[data-hui-range-slider-track-value]');
 
         //Thumb controls for the slider
-        const minThumb = container.querySelector<HTMLInputElement>('input.hui-range-slider-thumb[data-hui-range-slider-thumb="min"]');
-        const maxThumb = container.querySelector<HTMLInputElement>('input.hui-range-slider-thumb[data-hui-range-slider-thumb="max"]');
+        const minThumb = container.querySelector<HTMLInputElement>(
+            'input.hui-range-slider-thumb[data-hui-range-slider-thumb="min"]',
+        );
+        const maxThumb = container.querySelector<HTMLInputElement>(
+            'input.hui-range-slider-thumb[data-hui-range-slider-thumb="max"]',
+        );
         const hasMax = !!maxThumb;
         const thumbs = [minThumb, maxThumb].filter(Boolean) as HTMLInputElement[];
 
@@ -45,7 +49,7 @@ export function registerRangeSliders(root: Root = document) {
 
         //Update the wrappers aria-disabled attribute if all o fthe thumbs are disabled
         function updateDisabled() {
-            const anyEnabled = thumbs.some(t => !t.disabled);
+            const anyEnabled = thumbs.some((t) => !t.disabled);
             container.setAttribute('aria-disabled', anyEnabled ? 'false' : 'true');
         }
 
@@ -66,11 +70,20 @@ export function registerRangeSliders(root: Root = document) {
             if (hasMax && Number(maxThumb!.value) !== hi) maxThumb!.value = String(hi);
 
             // Reflect into optional inputs and display elements
-            minInputs.forEach(input => { if (Number(input.value) !== lo) input.value = String(lo); });
-            maxInputs.forEach(input => { if (hasMax && Number(input.value) !== hi) input.value = String(hi); });
-            minDisplays.forEach(el => { if (el.textContent !== String(lo)) el.textContent = String(lo); });
+            minInputs.forEach((input) => {
+                if (Number(input.value) !== lo) input.value = String(lo);
+            });
+            maxInputs.forEach((input) => {
+                if (hasMax && Number(input.value) !== hi) input.value = String(hi);
+            });
+            minDisplays.forEach((el) => {
+                if (el.textContent !== String(lo)) el.textContent = String(lo);
+            });
             // Show the effective hi (rangeMax when single-thumb)
-            maxDisplays.forEach(el => { const val = String(hi); if (el.textContent !== val) el.textContent = val; });
+            maxDisplays.forEach((el) => {
+                const val = String(hi);
+                if (el.textContent !== val) el.textContent = val;
+            });
 
             if (fill) {
                 if (hasMax) {
@@ -121,7 +134,7 @@ export function registerRangeSliders(root: Root = document) {
                     updateFill('min');
                 }
             };
-            minInputs.forEach(input => {
+            minInputs.forEach((input) => {
                 input.addEventListener('input', applyMinFromInput);
                 input.addEventListener('change', applyMinFromInput);
             });
@@ -142,7 +155,7 @@ export function registerRangeSliders(root: Root = document) {
                     updateFill('max');
                 }
             };
-            maxInputs.forEach(input => {
+            maxInputs.forEach((input) => {
                 input.addEventListener('input', applyMaxFromInput);
                 input.addEventListener('change', applyMaxFromInput);
             });
@@ -220,19 +233,25 @@ export function registerRangeSliders(root: Root = document) {
                 moved = false;
                 pointerId = null;
             };
-            el.addEventListener('pointerdown', (e: PointerEvent) => {
-                downX = e.clientX;
-                moved = false;
-                pointerId = e.pointerId;
-                window.addEventListener('pointermove', onPointerMove, true);
-                window.addEventListener('pointerup', onPointerUp, true);
-                window.addEventListener('pointercancel', onPointerUp, true);
-            }, true);
+            el.addEventListener(
+                'pointerdown',
+                (e: PointerEvent) => {
+                    downX = e.clientX;
+                    moved = false;
+                    pointerId = e.pointerId;
+                    window.addEventListener('pointermove', onPointerMove, true);
+                    window.addEventListener('pointerup', onPointerUp, true);
+                    window.addEventListener('pointercancel', onPointerUp, true);
+                },
+                true,
+            );
 
             // Mouse fallback
             let mouseDownX = 0;
             let mouseMoved = false;
-            const onMouseMove = (e: MouseEvent) => { if (Math.abs(e.clientX - mouseDownX) > DRIFT) mouseMoved = true; };
+            const onMouseMove = (e: MouseEvent) => {
+                if (Math.abs(e.clientX - mouseDownX) > DRIFT) mouseMoved = true;
+            };
             const onMouseUp = (e: MouseEvent) => {
                 window.removeEventListener('mousemove', onMouseMove, true);
                 window.removeEventListener('mouseup', onMouseUp, true);
@@ -243,17 +262,21 @@ export function registerRangeSliders(root: Root = document) {
                 }
                 mouseMoved = false;
             };
-            el.addEventListener('mousedown', (e: MouseEvent) => {
-                mouseDownX = e.clientX;
-                mouseMoved = false;
-                window.addEventListener('mousemove', onMouseMove, true);
-                window.addEventListener('mouseup', onMouseUp, true);
-            }, true);
+            el.addEventListener(
+                'mousedown',
+                (e: MouseEvent) => {
+                    mouseDownX = e.clientX;
+                    mouseMoved = false;
+                    window.addEventListener('mousemove', onMouseMove, true);
+                    window.addEventListener('mouseup', onMouseUp, true);
+                },
+                true,
+            );
         }
         installClickToMove(track);
 
         const mo = new MutationObserver(() => updateDisabled());
-        thumbs.forEach(t => mo.observe(t, { attributes: true, attributeFilter: ['disabled'] }));
+        thumbs.forEach((t) => mo.observe(t, { attributes: true, attributeFilter: ['disabled'] }));
 
         updateDisabled();
         updateFill('init');

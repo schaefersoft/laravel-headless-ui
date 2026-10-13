@@ -4,5 +4,5 @@ export default defineConfig({
     test: {
         include: ['resources/js/**/*.test.ts'],
         environment: 'happy-dom',
-    }
+    },
 });

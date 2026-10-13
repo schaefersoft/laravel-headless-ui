@@ -304,8 +304,12 @@ describe('Dropdown', () => {
         let opened = false;
         let closed = false;
 
-        dropdown.addEventListener('hui:dropdown:open', () => { opened = true; });
-        dropdown.addEventListener('hui:dropdown:close', () => { closed = true; });
+        dropdown.addEventListener('hui:dropdown:open', () => {
+            opened = true;
+        });
+        dropdown.addEventListener('hui:dropdown:close', () => {
+            closed = true;
+        });
 
         openDropdown('test-dd');
         expect(opened).toBe(true);

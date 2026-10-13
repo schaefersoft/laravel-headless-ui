@@ -8,10 +8,8 @@ use Illuminate\View\Component;
 class Thumb extends Component
 {
     public function __construct(
-        public string  $class = ''
-    )
-    {
-    }
+        public string $class = ''
+    ) {}
 
     public function render(): View
     {

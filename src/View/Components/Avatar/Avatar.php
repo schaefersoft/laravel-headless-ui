@@ -12,9 +12,8 @@ class Avatar extends Component
         public ?string $name = null,
         public ?string $initials = null,
         public ?string $alt = null,
-        public string  $class = ''
-    )
-    {
+        public string $class = ''
+    ) {
         $this->src = $this->src ?: null;
         $this->name = $this->name ?: null;
         $this->initials = $this->initials ?: null;
@@ -23,7 +22,7 @@ class Avatar extends Component
 
     public function computedInitials(): string
     {
-        if (!empty($this->initials)) {
+        if (! empty($this->initials)) {
             return mb_strtoupper(trim($this->initials));
         }
 
@@ -33,7 +32,7 @@ class Avatar extends Component
         }
 
         $parts = preg_split('/\s+/u', $name, -1, PREG_SPLIT_NO_EMPTY);
-        if (!$parts) {
+        if (! $parts) {
             return '?';
         }
 

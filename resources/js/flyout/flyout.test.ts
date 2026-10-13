@@ -20,7 +20,9 @@ function createFlyout(id: string, opts: FlyoutOpts = {}): HTMLDialogElement {
         opts.scrollLock ? 'data-hui-flyout-scroll-lock' : '',
         opts.inline ? `data-hui-flyout-inline="${opts.inline}"` : '',
         opts.swipe ? `data-hui-flyout-swipe="${opts.swipe}"` : '',
-    ].filter(Boolean).join(' ');
+    ]
+        .filter(Boolean)
+        .join(' ');
 
     document.body.innerHTML = `
         <button data-hui-flyout-trigger="${id}">Open</button>
@@ -42,17 +44,25 @@ function dispatchTouch(el: EventTarget, type: string, x: number, y: number, ts =
     const e = new Event(type, { bubbles: true, cancelable: true });
     const point = { clientX: x, clientY: y };
     Object.defineProperty(e, 'timeStamp', { value: ts, configurable: true });
-    (e as any).touches = (type === 'touchend' || type === 'touchcancel') ? [] : [point];
+    (e as any).touches = type === 'touchend' || type === 'touchcancel' ? [] : [point];
     (e as any).changedTouches = [point];
     el.dispatchEvent(e);
     return e;
 }
 
 function stubPanelSize(panel: HTMLElement, width: number, height: number) {
-    panel.getBoundingClientRect = () => ({
-        width, height, top: 0, left: 0, right: width, bottom: height, x: 0, y: 0,
-        toJSON() {},
-    }) as DOMRect;
+    panel.getBoundingClientRect = () =>
+        ({
+            width,
+            height,
+            top: 0,
+            left: 0,
+            right: width,
+            bottom: height,
+            x: 0,
+            y: 0,
+            toJSON() {},
+        }) as DOMRect;
 }
 
 const DEFAULT_INNER_WIDTH = window.innerWidth;
@@ -197,8 +207,12 @@ describe('Flyout', () => {
         const flyout = createFlyout('test-flyout');
         let opened = false;
         let closed = false;
-        flyout.addEventListener('hui:flyout:open', () => { opened = true; });
-        flyout.addEventListener('hui:flyout:close', () => { closed = true; });
+        flyout.addEventListener('hui:flyout:open', () => {
+            opened = true;
+        });
+        flyout.addEventListener('hui:flyout:close', () => {
+            closed = true;
+        });
         openFlyout('test-flyout');
         expect(opened).toBe(true);
         closeFlyout('test-flyout');
@@ -217,7 +231,9 @@ describe('Flyout', () => {
     it('does nothing when opening already open flyout', () => {
         const flyout = createFlyout('test-flyout');
         let count = 0;
-        flyout.addEventListener('hui:flyout:open', () => { count++; });
+        flyout.addEventListener('hui:flyout:open', () => {
+            count++;
+        });
         openFlyout('test-flyout');
         openFlyout('test-flyout');
         expect(count).toBe(1);
@@ -226,7 +242,9 @@ describe('Flyout', () => {
     it('does nothing when closing already closed flyout', () => {
         const flyout = createFlyout('test-flyout');
         let count = 0;
-        flyout.addEventListener('hui:flyout:close', () => { count++; });
+        flyout.addEventListener('hui:flyout:close', () => {
+            count++;
+        });
         closeFlyout('test-flyout');
         expect(count).toBe(0);
     });

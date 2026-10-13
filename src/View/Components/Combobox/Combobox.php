@@ -25,8 +25,7 @@ class Combobox extends Component
         public bool $filter = true,
         public ?int $max = null,
         public bool $allowCustomOptions = false,
-    )
-    {
+    ) {
         if ($max !== null && $max < 1) {
             throw new \Exception("Invalid max '{$max}' provided. Max must be at least 1.");
         }
@@ -38,14 +37,14 @@ class Combobox extends Component
             array_filter($values, fn ($v) => $v !== null && $v !== ''),
         ));
 
-        if (!$this->multiple) {
+        if (! $this->multiple) {
             $this->values = array_slice($this->values, 0, 1);
         } elseif ($max !== null) {
             $this->values = array_slice($this->values, 0, $max);
         }
 
-        $this->inputName = $name !== null && $multiple && !str_ends_with($name, '[]')
-            ? $name . '[]'
+        $this->inputName = $name !== null && $multiple && ! str_ends_with($name, '[]')
+            ? $name.'[]'
             : $name;
     }
 

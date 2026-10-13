@@ -57,9 +57,14 @@ function createCombobox(opts: Opts = {}): HTMLElement {
 const input = () => document.querySelector<HTMLInputElement>('[data-hui-combobox-input]')!;
 const button = () => document.querySelector<HTMLButtonElement>('[data-hui-combobox-button]')!;
 const options = () => document.querySelector<HTMLElement>('[data-hui-combobox-options]')!;
-const option = (value: string) => document.querySelector<HTMLElement>(`[data-hui-combobox-option][data-value="${value}"]`)!;
-const visible = () => Array.from(document.querySelectorAll<HTMLElement>('[data-hui-combobox-option]')).filter((o) => !o.hidden).map((o) => o.dataset.value);
-const hiddenInputs = () => Array.from(document.querySelectorAll<HTMLInputElement>('input[data-hui-combobox-hidden-input]'));
+const option = (value: string) =>
+    document.querySelector<HTMLElement>(`[data-hui-combobox-option][data-value="${value}"]`)!;
+const visible = () =>
+    Array.from(document.querySelectorAll<HTMLElement>('[data-hui-combobox-option]'))
+        .filter((o) => !o.hidden)
+        .map((o) => o.dataset.value);
+const hiddenInputs = () =>
+    Array.from(document.querySelectorAll<HTMLInputElement>('input[data-hui-combobox-hidden-input]'));
 
 function key(k: string, init: KeyboardEventInit = {}) {
     input().dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true, ...init }));
@@ -402,7 +407,10 @@ describe('Combobox', () => {
 
         expect(options().hidden).toBe(false);
         expect(getComboboxValue('cb')).toEqual(['1', '4']);
-        expect(hiddenInputs().map((i) => [i.name, i.value])).toEqual([['people[]', '1'], ['people[]', '4']]);
+        expect(hiddenInputs().map((i) => [i.name, i.value])).toEqual([
+            ['people[]', '1'],
+            ['people[]', '4'],
+        ]);
         expect(onChange.mock.calls[1][0].detail).toEqual({ value: ['1', '4'], label: ['Wade Cooper', 'Tom Cook'] });
 
         option('1').click();
@@ -551,7 +559,12 @@ describe('Combobox', () => {
     });
 
     it('adds custom values in multiple mode', () => {
-        createCombobox({ multiple: true, allowCustom: true, value: ['1'], chips: '<div data-hui-combobox-chips></div>' });
+        createCombobox({
+            multiple: true,
+            allowCustom: true,
+            value: ['1'],
+            chips: '<div data-hui-combobox-chips></div>',
+        });
         type('Mia Frei');
         custom().click();
 
@@ -559,7 +572,9 @@ describe('Combobox', () => {
         expect(input().value).toBe('');
         expect(custom().hidden).toBe(true);
         expect(options().hidden).toBe(false);
-        expect(Array.from(document.querySelectorAll('[data-hui-combobox-chip-label]')).map((c) => c.textContent)).toEqual(['Wade Cooper', 'Mia Frei']);
+        expect(
+            Array.from(document.querySelectorAll('[data-hui-combobox-chip-label]')).map((c) => c.textContent),
+        ).toEqual(['Wade Cooper', 'Mia Frei']);
 
         type('mia frei');
         expect(custom().hidden).toBe(true);
@@ -577,7 +592,8 @@ describe('Combobox', () => {
     it('renders the custom option from a template', () => {
         createCombobox({
             allowCustom: true,
-            customTemplate: '<template data-hui-combobox-custom-option-template><div class="create">Add <b data-hui-combobox-custom-query></b> as contact</div></template>',
+            customTemplate:
+                '<template data-hui-combobox-custom-option-template><div class="create">Add <b data-hui-combobox-custom-query></b> as contact</div></template>',
         });
         type('Mia');
 
@@ -713,9 +729,18 @@ describe('Combobox', () => {
 
     it('flips to top when there is no room below', () => {
         createCombobox();
-        const rect = (top: number, height: number) => ({
-            top, bottom: top + height, left: 10, right: 210, width: 200, height, x: 10, y: top, toJSON: () => ({}),
-        }) as DOMRect;
+        const rect = (top: number, height: number) =>
+            ({
+                top,
+                bottom: top + height,
+                left: 10,
+                right: 210,
+                width: 200,
+                height,
+                x: 10,
+                y: top,
+                toJSON: () => ({}),
+            }) as DOMRect;
 
         vi.spyOn(input(), 'getBoundingClientRect').mockReturnValue(rect(700, 36));
         vi.spyOn(options(), 'getBoundingClientRect').mockReturnValue(rect(0, 200));
@@ -727,9 +752,18 @@ describe('Combobox', () => {
 
     it('constrains height when neither side fits', () => {
         createCombobox();
-        const rect = (top: number, height: number) => ({
-            top, bottom: top + height, left: 10, right: 210, width: 200, height, x: 10, y: top, toJSON: () => ({}),
-        }) as DOMRect;
+        const rect = (top: number, height: number) =>
+            ({
+                top,
+                bottom: top + height,
+                left: 10,
+                right: 210,
+                width: 200,
+                height,
+                x: 10,
+                y: top,
+                toJSON: () => ({}),
+            }) as DOMRect;
 
         vi.spyOn(input(), 'getBoundingClientRect').mockReturnValue(rect(300, 36));
         vi.spyOn(options(), 'getBoundingClientRect').mockReturnValue(rect(0, 1000));

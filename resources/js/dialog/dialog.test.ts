@@ -14,7 +14,9 @@ function createDialog(id: string, opts: DialogOpts = {}): HTMLDialogElement {
         opts.noEscape ? 'data-hui-dialog-no-escape' : '',
         opts.noBackdropClose ? 'data-hui-dialog-no-backdrop-close' : '',
         opts.scrollLock ? 'data-hui-dialog-scroll-lock' : '',
-    ].filter(Boolean).join(' ');
+    ]
+        .filter(Boolean)
+        .join(' ');
 
     document.body.innerHTML = `
         <button data-hui-dialog-trigger="${id}">Open</button>
@@ -149,8 +151,12 @@ describe('Dialog', () => {
         let opened = false;
         let closed = false;
 
-        dialog.addEventListener('hui:dialog:open', () => { opened = true; });
-        dialog.addEventListener('hui:dialog:close', () => { closed = true; });
+        dialog.addEventListener('hui:dialog:open', () => {
+            opened = true;
+        });
+        dialog.addEventListener('hui:dialog:close', () => {
+            closed = true;
+        });
 
         openDialog('test-dialog');
         expect(opened).toBe(true);
@@ -163,7 +169,9 @@ describe('Dialog', () => {
         const dialog = createDialog('test-dialog');
         let openCount = 0;
 
-        dialog.addEventListener('hui:dialog:open', () => { openCount++; });
+        dialog.addEventListener('hui:dialog:open', () => {
+            openCount++;
+        });
 
         openDialog('test-dialog');
         openDialog('test-dialog');
@@ -175,7 +183,9 @@ describe('Dialog', () => {
         const dialog = createDialog('test-dialog');
         let closeCount = 0;
 
-        dialog.addEventListener('hui:dialog:close', () => { closeCount++; });
+        dialog.addEventListener('hui:dialog:close', () => {
+            closeCount++;
+        });
 
         closeDialog('test-dialog');
 
