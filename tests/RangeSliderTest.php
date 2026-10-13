@@ -49,6 +49,19 @@ it('renders synced input', function () {
     $view->assertSee('data-hui-range-slider-value="min"', false);
 });
 
+it('renders synced input without a class', function () {
+    $view = $this->blade('
+        <x-hui::range-slider>
+            <x-hui::range-slider.track>
+                <x-hui::range-slider.thumb role="max" min="0" max="100" value="80"/>
+            </x-hui::range-slider.track>
+            <x-hui::range-slider.input role="max"/>
+        </x-hui::range-slider>
+    ');
+
+    $view->assertSee('data-hui-range-slider-value="max"', false);
+});
+
 it('accepts ThumbRole enum for thumb', function () {
     $thumb = new Thumb(role: ThumbRole::Min);
 
