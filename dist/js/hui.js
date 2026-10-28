@@ -1,4 +1,4 @@
-//#region resources/js/avatar/avatar.ts
+// resources/js/avatar/avatar.ts
 function e(e = document) {
 	Array.from(e.querySelectorAll("[data-ui-avatar]")).forEach((e) => {
 		let t = e.querySelector("img"), n = e.querySelector("[data-ui-avatar-fallback]");
@@ -13,8 +13,7 @@ function e(e = document) {
 	});
 }
 typeof window < "u" && typeof document < "u" && (document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", () => e()) : e());
-//#endregion
-//#region resources/js/combobox/combobox.ts
+// resources/js/combobox/combobox.ts
 var t = 8, n = "[data-hui-combobox-option]", r = `${n}, [data-hui-combobox-custom-option]`, i = 0;
 function a(e) {
 	return `hui-combobox-${e}-${++i}`;
@@ -268,14 +267,13 @@ function v(e) {
 		}
 		if (e.hasAttribute("data-disabled") || M()) return;
 		let n = L(e);
-		if (T.set(n, I(e)), !h) {
-			E[0] !== n && G([n]), A = "", U(), X();
-			return;
+		if (T.set(n, I(e)), !h) E[0] !== n && G([n]), A = "", U(), X();
+		else {
+			if (E.includes(n)) G(E.filter((e) => e !== n));
+			else if (!N()) G([...E, n]);
+			else return;
+			A !== "" && (A = "", t.value = "", B(), K()), F().includes(e) && V(e, !1);
 		}
-		if (E.includes(n)) G(E.filter((e) => e !== n));
-		else if (!N()) G([...E, n]);
-		else return;
-		A !== "" && (A = "", t.value = "", B(), K()), F().includes(e) && V(e, !1);
 	}
 	function _e(e) {
 		!M() && E.includes(e) && G(E.filter((t) => t !== e));
@@ -349,7 +347,7 @@ function v(e) {
 			case "Backspace":
 				h && t.value === "" && E.length > 0 && _e(E[E.length - 1]);
 				break;
-			default: !v && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), D || Y(), Se(e.key));
+			default: v || e.key.length !== 1 || e.ctrlKey || e.metaKey || e.altKey || (e.preventDefault(), D || Y(), Se(e.key));
 		}
 	}
 	function we() {
@@ -436,16 +434,8 @@ function ee(e = document) {
 	Array.from(e.querySelectorAll("[data-hui-combobox]")).forEach(v);
 }
 typeof window < "u" && typeof document < "u" && (document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", () => ee()) : ee());
-//#endregion
-//#region resources/js/dialog/dialog.ts
-var w = [
-	"a[href]",
-	"button:not([disabled])",
-	"input:not([disabled]):not([type=\"hidden\"])",
-	"select:not([disabled])",
-	"textarea:not([disabled])",
-	"[tabindex]:not([tabindex=\"-1\"])"
-].join(",");
+// resources/js/dialog/dialog.ts
+var w = "a[href],button:not([disabled]),input:not([disabled]):not([type=\"hidden\"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex=\"-1\"])";
 function T(e) {
 	return Array.from(e.querySelectorAll(w));
 }
@@ -570,16 +560,11 @@ function ae(e = document) {
 	Array.from(e.querySelectorAll("[data-hui-dialog]")).forEach(N), ie(e);
 }
 typeof window < "u" && typeof document < "u" && (document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", () => ae()) : ae());
-//#endregion
-//#region resources/js/disclosure/disclosure.ts
+// resources/js/disclosure/disclosure.ts
 function oe(e = document) {
 	let t = Array.from(e.querySelectorAll("[data-hui-disclosure]")), n = (e, t) => {
 		let n = e.hasAttribute("open");
-		if (t === "close" || t === void 0 && n) {
-			e.removeAttribute("open"), e.removeAttribute("data-opened");
-			return;
-		}
-		(t === "open" || t === void 0 && !n) && (e.setAttribute("open", ""), e.setAttribute("data-opened", String(Date.now())));
+		t === "close" || t === void 0 && n ? (e.removeAttribute("open"), e.removeAttribute("data-opened")) : (t === "open" || t === void 0 && !n) && (e.setAttribute("open", ""), e.setAttribute("data-opened", String(Date.now())));
 	}, r = (e, t, r) => {
 		if (!Number.isFinite(t) || t <= 0) return;
 		let i = Array.from(e.querySelectorAll(":scope > [data-hui-disclosure]")).filter((e) => e.hasAttribute("open")).sort((e, t) => Number(e.getAttribute("data-opened") ?? "0") - Number(t.getAttribute("data-opened") ?? "0")), a = i.length - t;
@@ -604,8 +589,7 @@ function oe(e = document) {
 	});
 }
 typeof window < "u" && typeof document < "u" && (document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", () => oe()) : oe());
-//#endregion
-//#region resources/js/dropdown/dropdown.ts
+// resources/js/dropdown/dropdown.ts
 var se = "[data-hui-dropdown-item]:not([data-disabled])";
 function ce(e, t) {
 	let n = e.getBoundingClientRect(), { innerHeight: r } = window;
@@ -765,16 +749,8 @@ function H(e = document) {
 	Array.from(e.querySelectorAll("[data-hui-dropdown]")).forEach(V);
 }
 typeof window < "u" && typeof document < "u" && (document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", () => H()) : H());
-//#endregion
-//#region resources/js/flyout/flyout.ts
-var de = [
-	"a[href]",
-	"button:not([disabled])",
-	"input:not([disabled]):not([type=\"hidden\"])",
-	"select:not([disabled])",
-	"textarea:not([disabled])",
-	"[tabindex]:not([tabindex=\"-1\"])"
-].join(",");
+// resources/js/flyout/flyout.ts
+var de = "a[href],button:not([disabled]),input:not([disabled]):not([type=\"hidden\"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex=\"-1\"])";
 function fe(e) {
 	return Array.from(e.querySelectorAll(de));
 }
@@ -1027,8 +1003,7 @@ function Oe(e = document) {
 	Array.from(e.querySelectorAll("[data-hui-flyout]")).forEach(we), De(e);
 }
 typeof window < "u" && typeof document < "u" && (document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", () => Oe()) : Oe());
-//#endregion
-//#region resources/js/range-slider/range-slider.ts
+// resources/js/range-slider/range-slider.ts
 function Z(e, t, n) {
 	return Math.min(Math.max(e, t), n);
 }
@@ -1137,8 +1112,7 @@ function Ae(e = document) {
 	});
 }
 typeof window < "u" && typeof document < "u" && (document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", () => Ae()) : Ae());
-//#endregion
-//#region resources/js/tabs/tabs.ts
+// resources/js/tabs/tabs.ts
 function Q(e, t) {
 	return e.hasAttribute(t);
 }
@@ -1199,21 +1173,11 @@ function Me(e = document) {
 			e && n[l].focus(), u = !1;
 		}
 		function m(e, t = !1) {
-			if (!(e < 0 || e >= o) && !Q(n[e], "data-disabled")) {
-				if (e === l) {
-					t && n[l].focus();
-					return;
-				}
-				l = e, p(t);
-			}
+			e < 0 || e >= o || Q(n[e], "data-disabled") || (e === l ? t && n[l].focus() : (l = e, p(t)));
 		}
 		n.forEach((e, t) => {
 			e.addEventListener("click", (n) => {
-				if (Q(e, "data-disabled")) {
-					n.preventDefault();
-					return;
-				}
-				m(t, !0);
+				Q(e, "data-disabled") ? n.preventDefault() : m(t, !0);
 			});
 		}), t.addEventListener("keydown", (e) => {
 			let t = e.key, r = !1;
@@ -1245,8 +1209,7 @@ function Me(e = document) {
 	});
 }
 typeof window < "u" && typeof document < "u" && (document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", () => Me()) : Me());
-//#endregion
-//#region resources/js/toggle/toggle.ts
+// resources/js/toggle/toggle.ts
 function Ne(e = document) {
 	Array.from(e.querySelectorAll("[data-hui-toggle]")).forEach((e) => {
 		let t = e.querySelector(".hui-toggle-input") || void 0, n = e.querySelector(".hui-toggle-thumb") || void 0, r = () => e.getAttribute("aria-disabled") === "true", i = (t) => {
@@ -1278,8 +1241,7 @@ function Ne(e = document) {
 	});
 }
 typeof window < "u" && typeof document < "u" && (document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", () => Ne()) : Ne());
-//#endregion
-//#region resources/js/tooltip/tooltip.ts
+// resources/js/tooltip/tooltip.ts
 function $(e, t, n) {
 	return Math.min(Math.max(e, t), n);
 }
@@ -1357,7 +1319,7 @@ function Pe(e = document) {
 			} catch {}
 		}
 		function d() {
-			t !== null && (!o() || s()) && (n || (n = !0, t.style.display = "block", t.setAttribute("aria-hidden", "false"), t.setAttribute("data-open", "true"), u(), window.addEventListener("scroll", m, !0), window.addEventListener("resize", h, !0), document.addEventListener("pointerdown", p, !0), document.addEventListener("keydown", c, !0)));
+			t === null || o() && !s() || n || (n = !0, t.style.display = "block", t.setAttribute("aria-hidden", "false"), t.setAttribute("data-open", "true"), u(), window.addEventListener("scroll", m, !0), window.addEventListener("resize", h, !0), document.addEventListener("pointerdown", p, !0), document.addEventListener("keydown", c, !0));
 		}
 		function f() {
 			t !== null && n && (o() && s() || (n = !1, t.style.display = "none", t.setAttribute("aria-hidden", "true"), t.setAttribute("data-open", "false"), window.removeEventListener("scroll", m, !0), window.removeEventListener("resize", h, !0), document.removeEventListener("pointerdown", p, !0), document.removeEventListener("keydown", c, !0)));
@@ -1403,10 +1365,8 @@ function Pe(e = document) {
 	});
 }
 typeof window < "u" && typeof document < "u" && (document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", () => Pe()) : Pe());
-//#endregion
-//#region resources/js/hui.ts
+// resources/js/hui.ts
 function Fe(...e) {
 	return e.filter(Boolean).join(" ");
 }
-//#endregion
 export { x as closeCombobox, Fe as cn, S as getComboboxValue, b as openCombobox, ee as registerComboboxes, C as setComboboxValue };
