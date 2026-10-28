@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.7.4](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.7.3...v1.7.4) (2026-10-28)
+
+
+### Bug Fixes
+
+* **deps:** bump happy-dom to 21.0.4 ([26870d8](https://github.com/schaefersoft/laravel-headless-ui/commit/26870d8f967cd14ba7d6eba29c56eb516ce7a34c))
+
+
+### Miscellaneous Chores
+
+* **build:** rebuild dist with updated rolldown ([0e78723](https://github.com/schaefersoft/laravel-headless-ui/commit/0e78723be59778c19515816011fafb30162eb458))
+
 ## [1.7.3](https://github.com/schaefersoft/laravel-headless-ui/compare/v1.7.2...v1.7.3) (2026-10-13)
 
 
